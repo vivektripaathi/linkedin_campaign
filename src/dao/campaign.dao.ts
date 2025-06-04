@@ -13,7 +13,7 @@ export const create = async (campaignRequest: CreateCampaignRequestDto): Promise
 };
 
 export const getById = async (campaignId: UUIDTypes): Promise<CampaignResponseDto | null> => {
-    const campaignDbEntry = await Campaign.findById(campaignId);
+    const campaignDbEntry = await Campaign.findOne({ _id: campaignId, deletedAt: null });
     if (campaignDbEntry) {
         const [campaignResponse, errors] = await validateAndParseDto(CampaignResponseDto, campaignDbEntry);
         if (errors.length) throw (errors.join(', '));
@@ -35,7 +35,7 @@ export const updateById = async (campaignId: UUIDTypes, updateRequest: UpdateCam
 }
 
 export const getAll = async (): Promise<CampaignResponseDto[]> => {
-    const campaignDbEntries = await Campaign.find();
+    const campaignDbEntries = await Campaign.find({ deletedAt: null });
 
     const validatedCampaigns: CampaignResponseDto[] = [];
     for (const campaign of campaignDbEntries) {
