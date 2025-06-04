@@ -1,7 +1,13 @@
-import * as fs from 'fs';
+import dotenv from 'dotenv';
+import app from './app.js';
+import { connectDB } from './config/db.js';
 
-fs;
+dotenv.config();
 
-const hello = (name: string): string => `Hello ${name}`;
+const PORT = process.env.PORT || 3000;
 
-console.log(hello("world"))
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+});
