@@ -1,24 +1,21 @@
 import { IsEnum, IsString, IsArray, ArrayNotEmpty } from 'class-validator';
 import { Expose } from 'class-transformer';
+import { BaseDomainModel } from './base.dto.js';
 
 export enum campaignStatusEnum {
     ACTIVE = "active",
     INACTIVE = "inactive",
 }
 
-export class CampaignDomainModel {
-    _id!: string;
+export class CampaignDomainModel extends BaseDomainModel {
     name!: string;
     description!: string;
     status!: campaignStatusEnum;
     leads!: string[];
     accountIDs!: string[];
-    createdAt!: string;
-    updatedAt!: string;
-    __v!: number;
 }
 
-export class  CreateCampaignRequestDto implements Omit<CampaignDomainModel, '_id' | 'createdAt' | 'updatedAt' | '__v'>{
+export class CreateCampaignRequestDto implements Omit<CampaignDomainModel, '_id' | 'createdAt' | 'updatedAt' | '__v'> {
     @Expose()
     @IsString()
     name!: string;
