@@ -42,3 +42,14 @@ export const updateCampaignById = wrapAsync(async (req: Request, res: Response) 
 });
 
 export const getAllCampaigns = wrapAsync(async (_: Request, res: Response) => successResponse(res, (await campaignDao.getAll())));
+
+export const deleteCampaign = wrapAsync(async (req: Request, res: Response) => {
+    const [deleteCampaignByIdParam, errors] = await validateAndParseDto(ParamIdRequestDto, req.params);
+    if (errors.length) return errorResponse(res, errors.join(', '), 400);
+
+    const campaign = await campaignDao.updateById(deleteCampaignByIdParam.id, { deletedAt: new Date() });
+    if (!campaign) return errorResponse(res, `Campaign with id ${deleteCampaignByIdParam.id} does not exists`, 404);
+
+    if (!campaign) return errorResponse(res, 'Campaign not found', 404);
+    return successResponse(res, null, 'Campaign soft-deleted');
+});

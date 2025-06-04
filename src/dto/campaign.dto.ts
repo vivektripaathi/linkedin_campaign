@@ -99,4 +99,9 @@ export class UpdateCampaignRequestDto implements Omit<CampaignDomainModel, '_id'
     @IsString({ each: true })
     @IsOptional()
     accountIDs!: string[];
+
+    @Expose()
+    @IsDate()
+    @IsOptional()
+    deletedAt: Date | null = null;
 }
