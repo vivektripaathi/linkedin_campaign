@@ -2,6 +2,7 @@ import { IsEnum, IsString, IsArray, ArrayNotEmpty, IsNumber, IsUUID, IsDate, IsO
 import { Expose } from 'class-transformer';
 import { BaseDomainModel } from './base.dto.js';
 import { UUIDTypes } from 'uuid';
+import { Date } from 'mongoose';
 
 export enum campaignStatusEnum {
     ACTIVE = "active",
@@ -16,7 +17,7 @@ export class CampaignDomainModel extends BaseDomainModel {
     accountIDs!: string[];
 }
 
-export class CreateCampaignRequestDto implements Omit<CampaignDomainModel, '_id' | 'createdAt' | 'updatedAt' | '__v'> {
+export class CreateCampaignRequestDto implements Omit<CampaignDomainModel, '_id' | 'createdAt' | 'updatedAt' | '__v' | 'deletedAt'> {
     @Expose()
     @IsString()
     name!: string;
@@ -39,6 +40,11 @@ export class CreateCampaignRequestDto implements Omit<CampaignDomainModel, '_id'
     @IsArray()
     @IsString({ each: true })
     accountIDs!: string[];
+
+    @Expose()
+    @IsDate()
+    @IsOptional()
+    deletedAt: Date | null = null;
 }
 
 export class CampaignResponseDto extends CreateCampaignRequestDto {
@@ -48,11 +54,16 @@ export class CampaignResponseDto extends CreateCampaignRequestDto {
 
     @Expose()
     @IsDate()
-    createdAt!: string;
+    createdAt!: Date;
 
     @Expose()
     @IsDate()
-    updatedAt!: string;
+    updatedAt!: Date;
+
+    @Expose()
+    @IsDate()
+    @IsOptional()
+    deletedAt: Date | null = null;
 
     @Expose()
     @IsNumber()
@@ -60,7 +71,7 @@ export class CampaignResponseDto extends CreateCampaignRequestDto {
 }
 
 
-export class UpdateCampaignRequestDto implements Omit<CampaignDomainModel, '_id' | 'createdAt' | 'updatedAt' | '__v'> {
+export class UpdateCampaignRequestDto implements Omit<CampaignDomainModel, '_id' | 'createdAt' | 'updatedAt' | '__v' | 'deletedAt'> {
     @Expose()
     @IsString()
     @IsOptional()

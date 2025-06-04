@@ -25,6 +25,10 @@ const campaignSchema = new Schema<CampaignDomainModel>({
         required: true,
         default: []
     },
+    deletedAt: {
+        type: Date,
+        default: null
+    }
 }, { collection: 'campaigns', timestamps: true });
 
 export const Campaign: Model<CampaignDomainModel> = model('Campaign', campaignSchema);

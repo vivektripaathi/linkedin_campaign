@@ -1,10 +1,12 @@
 import { Expose } from "class-transformer";
 import { IsUUID } from "class-validator";
+import { Date } from "mongoose";
 
 export class BaseDomainModel {
     _id!: string;
-    createdAt!: string;
-    updatedAt!: string;
+    createdAt!: Date;
+    updatedAt!: Date;
+    deletedAt: Date | null = null;
     __v!: number;
 }
 
