@@ -4,3 +4,5 @@
 # Ds store file
 *.DS_Store
 *dump.rdb
+
+.env
