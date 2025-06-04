@@ -1,6 +1,7 @@
 import { CreateCampaignRequestDto, CampaignResponseDto } from "../dto/campaign.dto.js";
 import { validateAndParseDto } from "../utils/validateAndParseDto.js";
 import { Campaign } from '../models/campaign.model.js';
+import { UUIDTypes } from "uuid";
 
 export const create = async (campaignRequest: CreateCampaignRequestDto): Promise<CampaignResponseDto> => {
     const createdCampaign = await Campaign.create(campaignRequest);
@@ -12,3 +13,5 @@ export const create = async (campaignRequest: CreateCampaignRequestDto): Promise
 
     return createdCampaignResponse;
 };
+
+export const getById = async (campaignId: UUIDTypes): Promise<CampaignResponseDto | null> => await Campaign.findById(campaignId);
