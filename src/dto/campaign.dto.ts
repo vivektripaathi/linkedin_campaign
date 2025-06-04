@@ -43,7 +43,7 @@ export class CreateCampaignRequestDto implements Omit<CampaignDomainModel, '_id'
 
 export class CampaignResponseDto extends CreateCampaignRequestDto {
     @Expose()
-    @IsUUID()
+    @IsUUID('4', { message: 'Invalid campaign ID. Must be a valid UUID v4.' })
     _id!: UUIDTypes;
 
     @Expose()
@@ -57,4 +57,10 @@ export class CampaignResponseDto extends CreateCampaignRequestDto {
     @Expose()
     @IsNumber()
     __v!: number;
+}
+
+export class GetCampaignByIdRequestDto {
+    @Expose()
+    @IsUUID('4', { message: 'Invalid campaign ID. Must be a valid UUID v4.' })
+    id!: string;
 }
