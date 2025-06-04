@@ -27,3 +27,16 @@ export const getCampaignById = wrapAsync(async (req: Request, res: Response) => 
 
     return successResponse(res, campaign);
 });
+
+export const updateCampaignById = wrapAsync(async (req: Request, res: Response) => {
+    const [updateCampaignParam, paramErrors] = await validateAndParseDto(ParamIdRequestDto, req.params);
+    if (paramErrors.length) return errorResponse(res, paramErrors.join(', '), 400);
+
+    const [updateCampaignRequest, requestErrors] = await validateAndParseDto(UpdateCampaignRequestDto, req.body);
+    if (requestErrors.length) return errorResponse(res, requestErrors.join(', '), 400);
+
+    const campaign = await campaignDao.updateById(updateCampaignParam.id, updateCampaignRequest);
+    if (!campaign) return errorResponse(res, `Campaign with id ${updateCampaignParam.id} does not exists`, 404);
+
+    return successResponse(res, campaign, 'Campaign updated');
+});
