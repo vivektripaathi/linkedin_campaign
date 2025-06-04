@@ -33,3 +33,16 @@ export const updateById = async (campaignId: UUIDTypes, updateRequest: UpdateCam
 
     return updatedCampaignResponse;
 }
+
+export const getAll = async (): Promise<CampaignResponseDto[]> => {
+    const campaignDbEntries = await Campaign.find();
+
+    const validatedCampaigns: CampaignResponseDto[] = [];
+    for (const campaign of campaignDbEntries) {
+        const [validatedCampaign, errors] = await validateAndParseDto(CampaignResponseDto, campaign);
+        if (errors.length) throw new Error(errors.join(', '));
+        validatedCampaigns.push(validatedCampaign);
+    }
+
+    return validatedCampaigns;
+};

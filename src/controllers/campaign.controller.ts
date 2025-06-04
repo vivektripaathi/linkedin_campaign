@@ -40,3 +40,5 @@ export const updateCampaignById = wrapAsync(async (req: Request, res: Response) 
 
     return successResponse(res, campaign, 'Campaign updated');
 });
+
+export const getAllCampaigns = wrapAsync(async (_: Request, res: Response) => successResponse(res, (await campaignDao.getAll())));
