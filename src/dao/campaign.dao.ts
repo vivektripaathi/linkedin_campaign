@@ -12,7 +12,15 @@ export const create = async (campaignRequest: CreateCampaignRequestDto): Promise
     return createdCampaignResponse;
 };
 
-export const getById = async (campaignId: UUIDTypes): Promise<CampaignResponseDto | null> => await Campaign.findById(campaignId);
+export const getById = async (campaignId: UUIDTypes): Promise<CampaignResponseDto | null> => {
+    const campaignDbEntry = await Campaign.findById(campaignId);
+    if (campaignDbEntry) {
+        const [campaignResponse, errors] = await validateAndParseDto(CampaignResponseDto, campaignDbEntry);
+        if (errors.length) throw (errors.join(', '));
+        return campaignResponse;
+    }
+    return campaignDbEntry;
+}
 
 export const updateById = async (campaignId: UUIDTypes, updateRequest: UpdateCampaignRequestDto): Promise<CampaignResponseDto | null> => {
     const campaignExists = !!(await getById(campaignId));
