@@ -41,7 +41,7 @@ export class CreateCampaignRequestDto implements Omit<CampaignDomainModel, '_id'
     accountIDs!: string[];
 }
 
-export class CreateCampaignResponseDto extends CreateCampaignRequestDto {
+export class CampaignResponseDto extends CreateCampaignRequestDto {
     @Expose()
     @IsUUID()
     _id!: UUIDTypes;
