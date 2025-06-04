@@ -1,6 +1,7 @@
-import { IsEnum, IsString, IsArray, ArrayNotEmpty } from 'class-validator';
+import { IsEnum, IsString, IsArray, ArrayNotEmpty, IsNumber, IsUUID, IsDate } from 'class-validator';
 import { Expose } from 'class-transformer';
 import { BaseDomainModel } from './base.dto.js';
+import { UUIDTypes } from 'uuid';
 
 export enum campaignStatusEnum {
     ACTIVE = "active",
@@ -38,4 +39,22 @@ export class CreateCampaignRequestDto implements Omit<CampaignDomainModel, '_id'
     @IsArray()
     @IsString({ each: true })
     accountIDs!: string[];
+}
+
+export class CreateCampaignResponseDto extends CreateCampaignRequestDto {
+    @Expose()
+    @IsUUID()
+    _id!: UUIDTypes;
+
+    @Expose()
+    @IsDate()
+    createdAt!: string;
+
+    @Expose()
+    @IsDate()
+    updatedAt!: string;
+
+    @Expose()
+    @IsNumber()
+    __v!: number;
 }
