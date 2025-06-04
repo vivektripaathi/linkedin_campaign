@@ -1,3 +1,9 @@
 {
-  "compilerOptions": {}
+  "extends": "@tsconfig/node23/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "allowJs": false
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }
