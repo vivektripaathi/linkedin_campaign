@@ -1,0 +1,6 @@
+/node_modules
+/dist
+
+# Ds store file
+*.DS_Store
+*dump.rdb
