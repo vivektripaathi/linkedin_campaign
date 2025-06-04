@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
 import { wrapAsync } from '../utils/errorHandler.js';
 import { successResponse, errorResponse } from '../utils/apiResponse.js';
-import { CreateCampaignRequestDto, GetCampaignByIdRequestDto } from '../dto/campaign.dto.js';
+import { CreateCampaignRequestDto, UpdateCampaignRequestDto } from '../dto/campaign.dto.js';
 import { validateAndParseDto } from '../utils/validateAndParseDto.js';
 import * as campaignDao from '../dao/campaign.dao.js';
+import { ParamIdRequestDto } from '../dto/base.dto.js';
 
 export const createCampaign = wrapAsync(async (req: Request, res: Response) => {
     const [createCampaignRequest, errors] = await validateAndParseDto(CreateCampaignRequestDto, req.body);
@@ -15,7 +16,7 @@ export const createCampaign = wrapAsync(async (req: Request, res: Response) => {
 
 
 export const getCampaignById = wrapAsync(async (req: Request, res: Response) => {
-    const [getCampaignByIdRequest, errors] = await validateAndParseDto(GetCampaignByIdRequestDto, req.params);
+    const [getCampaignByIdRequest, errors] = await validateAndParseDto(ParamIdRequestDto, req.params);
     if (errors.length) return errorResponse(res, errors.join(', '), 400);
 
     const campaignId = getCampaignByIdRequest.id;

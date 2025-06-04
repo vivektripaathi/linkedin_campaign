@@ -1,4 +1,4 @@
-import { IsEnum, IsString, IsArray, ArrayNotEmpty, IsNumber, IsUUID, IsDate } from 'class-validator';
+import { IsEnum, IsString, IsArray, ArrayNotEmpty, IsNumber, IsUUID, IsDate, IsOptional } from 'class-validator';
 import { Expose } from 'class-transformer';
 import { BaseDomainModel } from './base.dto.js';
 import { UUIDTypes } from 'uuid';
@@ -59,8 +59,33 @@ export class CampaignResponseDto extends CreateCampaignRequestDto {
     __v!: number;
 }
 
-export class GetCampaignByIdRequestDto {
+
+export class UpdateCampaignRequestDto implements Omit<CampaignDomainModel, '_id' | 'createdAt' | 'updatedAt' | '__v'> {
     @Expose()
-    @IsUUID('4', { message: 'Invalid campaign ID. Must be a valid UUID v4.' })
-    id!: string;
+    @IsString()
+    @IsOptional()
+    name!: string;
+
+    @Expose()
+    @IsString()
+    @IsOptional()
+    description!: string;
+
+    @Expose()
+    @IsEnum(campaignStatusEnum)
+    @IsOptional()
+    status!: campaignStatusEnum;
+
+    @Expose()
+    @IsArray()
+    @ArrayNotEmpty()
+    @IsString({ each: true })
+    @IsOptional()
+    leads!: string[];
+
+    @Expose()
+    @IsArray()
+    @IsString({ each: true })
+    @IsOptional()
+    accountIDs!: string[];
 }
