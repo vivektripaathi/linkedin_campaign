@@ -1,6 +1,5 @@
 import { Expose } from "class-transformer";
 import { IsUUID } from "class-validator";
-import { Date } from "mongoose";
 
 export class BaseDomainModel {
     _id!: string;

@@ -2,7 +2,6 @@ import { IsEnum, IsString, IsArray, ArrayNotEmpty, IsNumber, IsUUID, IsDate, IsO
 import { Expose } from 'class-transformer';
 import { BaseDomainModel } from './base.dto.js';
 import { UUIDTypes } from 'uuid';
-import { Date } from 'mongoose';
 
 export enum campaignStatusEnum {
     ACTIVE = "active",
