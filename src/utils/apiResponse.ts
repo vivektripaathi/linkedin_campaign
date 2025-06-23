@@ -3,11 +3,10 @@
  *
  * @param res - Express response object
  * @param data - Data to return in the response
- * @param message - Optional success message (default: "Success")
- * @param code - HTTP status code (default: 200)
+ * @param statusCode - HTTP status code (default: 200)
  */
-export const successResponse = (res: any, data: any, message = 'Success', code = 200) => {
-    return res.status(code).json({ success: true, message, data });
+export const successResponse = (res: any, data: any, statusCode = 200) => {
+    return res.status(statusCode).json(data);
 };
 
 /**

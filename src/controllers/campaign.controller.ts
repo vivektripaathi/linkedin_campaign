@@ -40,7 +40,7 @@ export class CampaignController {
         //validate and parse response and return response
         const [response, responseErrors] = await validateAndParseDto(CampaignResponseDto, createdCampaign);
         if (responseErrors.length) return errorResponse(res, responseErrors.join(', '), 500);
-        return successResponse(res, response, 'Campaign created', 201);
+        return successResponse(res, response, 201);
     };
 
 
@@ -53,7 +53,7 @@ export class CampaignController {
 
         const [response, responseErrors] = await validateAndParseDto(CampaignResponseDto, campaign);
         if (responseErrors.length) return errorResponse(res, responseErrors.join(', '), 500);
-        return successResponse(res, response);
+        return successResponse(res, response, 200);
     };
 
 
@@ -69,7 +69,7 @@ export class CampaignController {
 
         const [response, responseErrors] = await validateAndParseDto(CampaignResponseDto, updated);
         if (responseErrors.length) return errorResponse(res, responseErrors.join(', '), 500);
-        return successResponse(res, response, 'Campaign updated');
+        return successResponse(res, response, 200);
     };
 
 
@@ -82,7 +82,7 @@ export class CampaignController {
             if (errors.length) return errorResponse(res, errors.join(', '), 500);
             validatedList.push(validated);
         }
-        return successResponse(res, validatedList);
+        return successResponse(res, validatedList, 200);
     };
 
     async deleteCampaign(req: Request, res: Response) {
@@ -92,6 +92,6 @@ export class CampaignController {
         const updated = await this.campaignDao.updateById(deleteParams.id, { deletedAt: new Date() });
         if (!updated) return errorResponse(res, `Campaign with id ${deleteParams.id} not found`, 404);
 
-        return successResponse(res, null, 'Campaign soft-deleted');
+        return successResponse(res, null, 204);
     };
 }
