@@ -14,8 +14,8 @@ export const successResponse = (res: any, data: any, statusCode = 200) => {
  *
  * @param res - Express response object
  * @param message - Error message (default: "Something went wrong")
- * @param code - HTTP status code (default: 500)
+ * @param statusCode - HTTP status code (default: 500)
  */
-export const errorResponse = (res: any, message = 'Something went wrong', code = 500) => {
-    return res.status(code).json({ success: false, message });
+export const errorResponse = (res: any, message = 'Something went wrong', statusCode = 500) => {
+    return res.status(statusCode).json({ status_code: statusCode, details: message });
 };
