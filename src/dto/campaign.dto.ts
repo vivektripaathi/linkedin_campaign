@@ -64,10 +64,6 @@ export class CampaignResponseDto extends CreateCampaignRequestDto {
     @IsDate()
     @IsOptional()
     deletedAt: Date | null = null;
-
-    @Expose()
-    @IsNumber()
-    __v!: number;
 }
 
 

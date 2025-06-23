@@ -7,7 +7,6 @@ export class BaseDomainModel {
     createdAt!: Date;
     updatedAt!: Date;
     deletedAt: Date | null = null;
-    __v!: number;
 }
 
 export class ParamIdRequestDto {
