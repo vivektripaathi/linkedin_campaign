@@ -8,6 +8,7 @@ import {
     CampaignResponseDto,
 } from '../dto/campaign.dto.js';
 import { ParamIdRequestDto } from '../dto/base.dto.js';
+import { InvalidRequestException } from '../utils/exceptions.js';
 
 export class CampaignController {
     constructor(private readonly campaignDao: CampaignDao) { }
@@ -31,7 +32,7 @@ export class CampaignController {
     async createCampaign(req: Request, res: Response) {
         //create campaign request validation
         const [createRequest, errors] = await validateAndParseDto(CreateOrUpdateCampaignRequestDto, req.body ?? {});
-        if (errors.length) return errorResponse(res, errors.join(', '), 400);
+        if (errors.length) throw new InvalidRequestException(errors.join(', '));
 
         //prepare domain model from create request and create campaign
         const createCampaignPayload = this._prepareCreateCampaignPayload(createRequest);
@@ -46,7 +47,7 @@ export class CampaignController {
 
     async getCampaignById(req: Request, res: Response) {
         const [getRequest, errors] = await validateAndParseDto(ParamIdRequestDto, req.params);
-        if (errors.length) return errorResponse(res, errors.join(', '), 400);
+        if (errors.length) throw new InvalidRequestException(errors.join(', '));
 
         const campaign = await this.campaignDao.getById(getRequest.id);
         if (!campaign) return errorResponse(res, `Campaign with id ${getRequest.id} not found`, 404);
@@ -77,11 +78,11 @@ export class CampaignController {
     async updateCampaignById(req: Request, res: Response) {
         //validate and parse id from request params
         const [updateParam, paramErrors] = await validateAndParseDto(ParamIdRequestDto, req.params);
-        if (paramErrors.length) return errorResponse(res, paramErrors.join(', '), 400);
+        if (paramErrors.length) throw new InvalidRequestException(paramErrors.join(', '));
 
         //validate and parse request body
         const [updateRequest, dtoErrors] = await validateAndParseDto(CreateOrUpdateCampaignRequestDto, req.body ?? {});
-        if (dtoErrors.length) return errorResponse(res, dtoErrors.join(', '), 400);
+        if (dtoErrors.length) throw new InvalidRequestException(dtoErrors.join(', '));
 
         //check if campaign exists
         const campaignEntry = await this.campaignDao.getById(updateParam.id);
@@ -113,7 +114,7 @@ export class CampaignController {
 
     async deleteCampaign(req: Request, res: Response) {
         const [deleteParams, errors] = await validateAndParseDto(ParamIdRequestDto, req.params);
-        if (errors.length) return errorResponse(res, errors.join(', '), 400);
+        if (errors.length) throw new InvalidRequestException(errors.join(', '));
 
         const updated = await this.campaignDao.deleteById(deleteParams.id);
         if (!updated) return errorResponse(res, `Campaign with id ${deleteParams.id} not found`, 404);

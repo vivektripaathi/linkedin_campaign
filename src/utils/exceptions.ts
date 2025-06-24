@@ -16,3 +16,10 @@ export class AiApiKeyMissingException extends AppError {
         Object.setPrototypeOf(this, AiApiKeyMissingException.prototype)
     }
 }
+
+export class InvalidRequestException extends AppError {
+    constructor(message = "Invalid request") {
+        super(message, 400, "INVALID_API_REQUEST")
+        Object.setPrototypeOf(this, InvalidRequestException.prototype)
+    }
+}
