@@ -7,6 +7,6 @@ const campaignController = new CampaignController(new CampaignDao());
 
 export default Router().post('/', wrapAsync(campaignController.createCampaign.bind(campaignController)))
     .get('/:id', wrapAsync(campaignController.getCampaignById.bind(campaignController)))
-    .put('/:id', wrapAsync(campaignController.updateCampaignById.bind(campaignController)))
+    .patch('/:id', wrapAsync(campaignController.updateCampaignById.bind(campaignController)))
     .get('/', wrapAsync(campaignController.getAllCampaigns.bind(campaignController)))
     .delete('/:id', wrapAsync(campaignController.deleteCampaign.bind(campaignController)));
