@@ -16,9 +16,9 @@
     "baseUrl": ".",
     "paths": {
       "~/*": ["./app/*"],
-      "@components/*": ["./app/components/*"],
-      "@components/ui/*": ["./app/components/ui/*"],
-      "@hooks/*": ["./app/hooks/*"],
+      "@components/*": ["./app/lib/components/*"],
+      "@components/ui/*": ["./app/lib/components/ui/*"],
+      "@hooks/*": ["app/lib/hooks/*"],
       "@lib/*": ["./app/lib/*"]
     },
     "esModuleInterop": true,
