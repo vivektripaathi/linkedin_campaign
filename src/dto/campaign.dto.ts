@@ -41,6 +41,7 @@ export class CreateCampaignRequestDto implements Omit<CampaignDomainModel, '_id'
     accountIDs!: string[];
 }
 
+
 export class CampaignResponseDto extends CreateCampaignRequestDto {
     @Expose()
     @IsUUID('4', { message: 'Invalid campaign ID. Must be a valid UUID v4.' })
@@ -53,11 +54,6 @@ export class CampaignResponseDto extends CreateCampaignRequestDto {
     @Expose()
     @IsDate()
     updatedAt!: Date;
-
-    @Expose()
-    @IsDate()
-    @IsOptional()
-    deletedAt: Date | null = null;
 }
 
 
