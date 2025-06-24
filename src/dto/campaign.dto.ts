@@ -39,11 +39,6 @@ export class CreateCampaignRequestDto implements Omit<CampaignDomainModel, '_id'
     @IsArray()
     @IsString({ each: true })
     accountIDs!: string[];
-
-    @Expose()
-    @IsDate()
-    @IsOptional()
-    deletedAt: Date | null = null;
 }
 
 export class CampaignResponseDto extends CreateCampaignRequestDto {
@@ -94,9 +89,4 @@ export class UpdateCampaignRequestDto implements Omit<CampaignDomainModel, '_id'
     @IsString({ each: true })
     @IsOptional()
     accountIDs!: string[];
-
-    @Expose()
-    @IsDate()
-    @IsOptional()
-    deletedAt: Date | null = null;
 }
