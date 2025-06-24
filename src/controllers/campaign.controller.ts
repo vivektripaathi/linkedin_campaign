@@ -8,7 +8,7 @@ import {
     CampaignResponseDto,
 } from '../dto/campaign.dto.js';
 import { ParamIdRequestDto } from '../dto/base.dto.js';
-import { InvalidRequestException, NotFoundException } from '../utils/exceptions.js';
+import { BadResponseException, InvalidRequestException, NotFoundException } from '../utils/exceptions.js';
 
 export class CampaignController {
     constructor(private readonly campaignDao: CampaignDao) { }
@@ -40,7 +40,7 @@ export class CampaignController {
 
         //validate and parse response and return response
         const [response, responseErrors] = await validateAndParseDto(CampaignResponseDto, createdCampaign);
-        if (responseErrors.length) return errorResponse(res, responseErrors.join(', '), 500);
+        if (responseErrors.length) throw new BadResponseException(responseErrors.join(', '));
         return successResponse(res, response, 201);
     };
 
@@ -53,7 +53,7 @@ export class CampaignController {
         if (!campaign) throw new NotFoundException(`Campaign with id ${getRequest.id} not found`);
 
         const [response, responseErrors] = await validateAndParseDto(CampaignResponseDto, campaign);
-        if (responseErrors.length) return errorResponse(res, responseErrors.join(', '), 500);
+        if (responseErrors.length) throw new BadResponseException(responseErrors.join(', '));
         return successResponse(res, response, 200);
     };
 
@@ -95,7 +95,7 @@ export class CampaignController {
 
         //validate and parse response and return response
         const [response, responseErrors] = await validateAndParseDto(CampaignResponseDto, updatedCampaign);
-        if (responseErrors.length) return errorResponse(res, responseErrors.join(', '), 500);
+        if (responseErrors.length) throw new BadResponseException(responseErrors.join(', '));
         return successResponse(res, response, 200);
     };
 
@@ -106,7 +106,7 @@ export class CampaignController {
         const validatedList: CampaignResponseDto[] = [];
         for (const campaign of campaigns) {
             const [validated, errors] = await validateAndParseDto(CampaignResponseDto, campaign);
-            if (errors.length) return errorResponse(res, errors.join(', '), 500);
+            if (errors.length) throw new BadResponseException(errors.join(', '));
             validatedList.push(validated);
         }
         return successResponse(res, validatedList, 200);

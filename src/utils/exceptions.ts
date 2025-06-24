@@ -30,3 +30,10 @@ export class NotFoundException extends AppError {
         Object.setPrototypeOf(this, NotFoundException.prototype)
     }
 }
+
+export class BadResponseException extends AppError {
+    constructor(message = "Bad response") {
+        super(message, 400, "BAD_RESPONSE")
+        Object.setPrototypeOf(this, BadResponseException.prototype)
+    }
+}
