@@ -36,7 +36,7 @@ export const errorHandlerMiddleware: ErrorRequestHandler = (
     const message = err.message || "Internal Server Error"
 
     res.status(statusCode).json({
-        status_code: statusCode,
+        code: err.code,
         message,
     })
 }
