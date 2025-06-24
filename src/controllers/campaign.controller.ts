@@ -13,8 +13,10 @@ import { ParamIdRequestDto } from '../dto/base.dto.js';
 export class CampaignController {
     constructor(private readonly campaignDao: CampaignDao) { }
 
-    private prepareDomainModelFromCreateDto(dto: CreateCampaignRequestDto): CampaignDomainModel {
+
+    private _prepareCreateCampaignPayload(dto: CreateCampaignRequestDto): CampaignDomainModel {
         return {
+            _id: crypto.randomUUID(),
             name: dto.name,
             description: dto.description,
             status: dto.status,
@@ -22,19 +24,18 @@ export class CampaignController {
             accountIDs: dto.accountIDs,
             createdAt: new Date(),
             updatedAt: new Date(),
-            deletedAt: dto.deletedAt ?? null,
-            _id: undefined as any
+            deletedAt: null,
         };
     }
 
 
     async createCampaign(req: Request, res: Response) {
         //create campaign request validation
-        const [createRequest, errors] = await validateAndParseDto(CreateCampaignRequestDto, req.body);
+        const [createRequest, errors] = await validateAndParseDto(CreateCampaignRequestDto, req.body ?? {});
         if (errors.length) return errorResponse(res, errors.join(', '), 400);
 
         //prepare domain model from create request and create campaign
-        const createCampaignPayload = this.prepareDomainModelFromCreateDto(createRequest);
+        const createCampaignPayload = this._prepareCreateCampaignPayload(createRequest);
         const createdCampaign = await this.campaignDao.create(createCampaignPayload);
 
         //validate and parse response and return response
@@ -57,17 +58,27 @@ export class CampaignController {
     };
 
 
+    private _prepareUpdateCampaignPayload(dto: UpdateCampaignRequestDto): Partial<CampaignDomainModel> {
+        return {
+            ...dto,
+            updatedAt: new Date(),
+        } as Partial<CampaignDomainModel>;
+    }
+
 
     async updateCampaignById(req: Request, res: Response) {
         const [updateParam, paramErrors] = await validateAndParseDto(ParamIdRequestDto, req.params);
         if (paramErrors.length) return errorResponse(res, paramErrors.join(', '), 400);
-        const [updateRequest, dtoErrors] = await validateAndParseDto(UpdateCampaignRequestDto, req.body);
+
+        const [updateRequest, dtoErrors] = await validateAndParseDto(UpdateCampaignRequestDto, req.body ?? {});
         if (dtoErrors.length) return errorResponse(res, dtoErrors.join(', '), 400);
 
-        const updated = await this.campaignDao.updateById(updateParam.id, updateRequest);
-        if (!updated) return errorResponse(res, `Campaign with id ${updateParam.id} not found`, 404);
+        const updatePayload = this._prepareUpdateCampaignPayload(updateRequest);
 
-        const [response, responseErrors] = await validateAndParseDto(CampaignResponseDto, updated);
+        const updatedCampaign = await this.campaignDao.updateById(updateParam.id, updatePayload);
+        if (!updatedCampaign) return errorResponse(res, `Campaign with id ${updateParam.id} not found`, 404);
+
+        const [response, responseErrors] = await validateAndParseDto(CampaignResponseDto, updatedCampaign);
         if (responseErrors.length) return errorResponse(res, responseErrors.join(', '), 500);
         return successResponse(res, response, 200);
     };
