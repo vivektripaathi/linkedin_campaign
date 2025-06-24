@@ -1,3 +1,7 @@
+import { Request, Response, NextFunction, ErrorRequestHandler } from "express"
+import { AppError } from "./exceptions.js";
+
+
 /**
  * A helper function to handle errors in async route handlers.
  *
@@ -19,3 +23,20 @@
  */
 export const wrapAsync = (fn: any) => (req: any, res: any, next: any) =>
     Promise.resolve(fn(req, res, next)).catch(next);
+
+
+
+export const errorHandlerMiddleware: ErrorRequestHandler = (
+    err: any,
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    const statusCode = err instanceof AppError ? err.statusCode : 500
+    const message = err.message || "Internal Server Error"
+
+    res.status(statusCode).json({
+        status_code: statusCode,
+        message,
+    })
+}
