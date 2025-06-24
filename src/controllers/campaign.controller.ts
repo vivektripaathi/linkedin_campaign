@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { successResponse, errorResponse } from '../utils/apiResponse.js';
+import { successResponse } from '../utils/apiResponse.js';
 import { CampaignDao } from '../dao/campaign.dao.js';
 import { validateAndParseDto } from '../utils/validateAndParseDto.js';
 import {

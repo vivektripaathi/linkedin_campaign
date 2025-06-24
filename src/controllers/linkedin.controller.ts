@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
-import { successResponse, errorResponse } from '../utils/apiResponse.js';
+import { successResponse } from '../utils/apiResponse.js';
 import { validateAndParseDto } from '../utils/validateAndParseDto.js';
-import { ParamIdRequestDto } from '../dto/base.dto.js';
 import { LinkedInMessageService } from '../services/linkedin.service.js';
 import { LinkedInProfileRequestDto } from '../dto/linkedin.dto.js';
 import { InvalidRequestException } from '../utils/exceptions.js';
