@@ -16,7 +16,7 @@ export class CampaignDomainModel extends BaseDomainModel {
     accountIDs!: string[];
 }
 
-export class CreateCampaignRequestDto implements Omit<CampaignDomainModel, '_id' | 'createdAt' | 'updatedAt' | '__v' | 'deletedAt'> {
+export class CreateOrUpdateCampaignRequestDto implements Omit<CampaignDomainModel, '_id' | 'createdAt' | 'updatedAt' | '__v' | 'deletedAt'> {
     @Expose()
     @IsString()
     name!: string;
@@ -42,7 +42,7 @@ export class CreateCampaignRequestDto implements Omit<CampaignDomainModel, '_id'
 }
 
 
-export class CampaignResponseDto extends CreateCampaignRequestDto {
+export class CampaignResponseDto extends CreateOrUpdateCampaignRequestDto {
     @Expose()
     @IsUUID('4', { message: 'Invalid campaign ID. Must be a valid UUID v4.' })
     _id!: UUIDTypes;
@@ -56,33 +56,3 @@ export class CampaignResponseDto extends CreateCampaignRequestDto {
     updatedAt!: Date;
 }
 
-
-export class UpdateCampaignRequestDto implements Omit<CampaignDomainModel, '_id' | 'createdAt' | 'updatedAt' | '__v' | 'deletedAt'> {
-    @Expose()
-    @IsString()
-    @IsOptional()
-    name!: string;
-
-    @Expose()
-    @IsString()
-    @IsOptional()
-    description!: string;
-
-    @Expose()
-    @IsEnum(campaignStatusEnum)
-    @IsOptional()
-    status!: campaignStatusEnum;
-
-    @Expose()
-    @IsArray()
-    @ArrayNotEmpty()
-    @IsString({ each: true })
-    @IsOptional()
-    leads!: string[];
-
-    @Expose()
-    @IsArray()
-    @IsString({ each: true })
-    @IsOptional()
-    accountIDs!: string[];
-}
