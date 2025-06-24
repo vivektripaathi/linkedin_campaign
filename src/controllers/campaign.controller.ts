@@ -100,9 +100,9 @@ export class CampaignController {
         const [deleteParams, errors] = await validateAndParseDto(ParamIdRequestDto, req.params);
         if (errors.length) return errorResponse(res, errors.join(', '), 400);
 
-        const updated = await this.campaignDao.updateById(deleteParams.id, { deletedAt: new Date() });
+        const updated = await this.campaignDao.deleteById(deleteParams.id);
         if (!updated) return errorResponse(res, `Campaign with id ${deleteParams.id} not found`, 404);
 
-        return successResponse(res, null, 204);
+        return successResponse(res, undefined, 204);
     };
 }

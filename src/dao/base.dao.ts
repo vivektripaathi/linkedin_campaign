@@ -24,4 +24,12 @@ export class BaseDao<T> {
     async getAll(): Promise<T[]> {
         return await this.model.find({ deletedAt: null }) as T[];
     }
+
+    async deleteById(id: UUIDTypes): Promise<T | null> {
+        return await this.model.findOneAndUpdate(
+            { _id: id, deletedAt: null },
+            { deletedAt: new Date() },
+            { new: true }
+        ) as T | null;
+    }
 }
