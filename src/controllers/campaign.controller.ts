@@ -8,7 +8,7 @@ import {
     CampaignResponseDto,
 } from '../dto/campaign.dto.js';
 import { ParamIdRequestDto } from '../dto/base.dto.js';
-import { InvalidRequestException } from '../utils/exceptions.js';
+import { InvalidRequestException, NotFoundException } from '../utils/exceptions.js';
 
 export class CampaignController {
     constructor(private readonly campaignDao: CampaignDao) { }
@@ -50,7 +50,7 @@ export class CampaignController {
         if (errors.length) throw new InvalidRequestException(errors.join(', '));
 
         const campaign = await this.campaignDao.getById(getRequest.id);
-        if (!campaign) return errorResponse(res, `Campaign with id ${getRequest.id} not found`, 404);
+        if (!campaign) throw new NotFoundException(`Campaign with id ${getRequest.id} not found`);
 
         const [response, responseErrors] = await validateAndParseDto(CampaignResponseDto, campaign);
         if (responseErrors.length) return errorResponse(res, responseErrors.join(', '), 500);
@@ -86,12 +86,12 @@ export class CampaignController {
 
         //check if campaign exists
         const campaignEntry = await this.campaignDao.getById(updateParam.id);
-        if (!campaignEntry) return errorResponse(res, `Campaign with id ${updateParam.id} not found`, 404);
+        if (!campaignEntry) throw new NotFoundException(`Campaign with id ${updateParam.id} not found`);
 
         //prepare update payload and send update request to dao
         const updatePayload = this._prepareUpdateCampaignPayload(updateRequest, campaignEntry);
         const updatedCampaign = await this.campaignDao.updateById(updateParam.id, updatePayload);
-        if (!updatedCampaign) return errorResponse(res, `Campaign with id ${updateParam.id} not found`, 404);
+        if (!updatedCampaign) throw new NotFoundException(`Campaign with id ${updateParam.id} not found`);
 
         //validate and parse response and return response
         const [response, responseErrors] = await validateAndParseDto(CampaignResponseDto, updatedCampaign);
@@ -117,7 +117,7 @@ export class CampaignController {
         if (errors.length) throw new InvalidRequestException(errors.join(', '));
 
         const updated = await this.campaignDao.deleteById(deleteParams.id);
-        if (!updated) return errorResponse(res, `Campaign with id ${deleteParams.id} not found`, 404);
+        if (!updated) throw new NotFoundException(`Campaign with id ${deleteParams.id} not found`);
 
         return successResponse(res, undefined, 204);
     };

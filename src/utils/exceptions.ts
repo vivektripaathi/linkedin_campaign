@@ -23,3 +23,10 @@ export class InvalidRequestException extends AppError {
         Object.setPrototypeOf(this, InvalidRequestException.prototype)
     }
 }
+
+export class NotFoundException extends AppError {
+    constructor(message = "Not found") {
+        super(message, 404, "NOT_FOUND")
+        Object.setPrototypeOf(this, NotFoundException.prototype)
+    }
+}
