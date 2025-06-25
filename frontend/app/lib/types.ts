@@ -4,7 +4,7 @@ export enum CampaignStatus {
 }
 
 export interface ICampaign {
-    id: string
+    _id: string
     name: string
     description: string
     status: CampaignStatus
@@ -21,4 +21,20 @@ export interface CampaignViewInterface {
     status: CampaignStatus
     leads: string[]
     accountIDs: string[]
+}
+
+export interface LinkedInProfile {
+    name: string
+    job_title: string
+    company: string
+    location: string
+    summary: string
+}
+
+export interface CreateCampaignData {
+    name: string
+    description: string
+    status: "active" | "inactive"
+    leads: string[]
+    accountIds: string[]
 }
