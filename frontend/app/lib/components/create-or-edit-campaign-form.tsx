@@ -39,7 +39,7 @@ interface CampaignFormProps {
     open: boolean;
     campaign?: CampaignViewInterface;
     onClose: () => void;
-    onSubmit: (campaign: CampaignFormData) => void;
+    onSubmit: (campaign?: CampaignFormData) => void;
 }
 
 export function CreateOrEditCampaignForm({
@@ -110,7 +110,7 @@ export function CreateOrEditCampaignForm({
     });
 
     return (
-        <Dialog open={open} onOpenChange={onClose}>
+        <Dialog open={open} onOpenChange={() => {onClose(); form.reset()}}>
             <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle>
@@ -124,7 +124,10 @@ export function CreateOrEditCampaignForm({
                 </DialogHeader>
                 <Form {...form}>
                     <form
-                        onSubmit={form.handleSubmit(onSubmit)}
+                        onSubmit={form.handleSubmit(async (data) => {
+                            onSubmit?.(data);
+                            form.reset();
+                        })}
                         className="space-y-6"
                     >
                         <FormField
@@ -301,7 +304,7 @@ export function CreateOrEditCampaignForm({
                             <Button
                                 type="button"
                                 variant="outline"
-                                onClick={onClose}
+                                onClick={() => {onClose(); form.reset()}}
                             >
                                 Cancel
                             </Button>

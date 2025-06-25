@@ -2,10 +2,11 @@
 
 import { Switch } from "@components/ui/switch";
 import { Badge } from "@components/ui/badge";
+import { CampaignStatus } from "@lib/types";
 
 interface StatusToggleProps {
-    status: "active" | "inactive";
-    onStatusChange: (newStatus: "active" | "inactive") => void;
+    status: CampaignStatus;
+    onStatusChange: (newStatus: CampaignStatus) => void;
     disabled?: boolean;
 }
 
@@ -14,10 +15,12 @@ export function StatusToggle({
     onStatusChange,
     disabled = false,
 }: StatusToggleProps) {
-    const isActive = status === "active";
+    const isActive = status === CampaignStatus.ACTIVE;
 
     const handleToggle = (checked: boolean) => {
-        onStatusChange(checked ? "active" : "inactive");
+        onStatusChange(
+            checked ? CampaignStatus.ACTIVE : CampaignStatus.INACTIVE
+        );
     };
 
     return (

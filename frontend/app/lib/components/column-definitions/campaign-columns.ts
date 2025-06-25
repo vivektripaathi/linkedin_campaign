@@ -1,8 +1,6 @@
 import React from "react";
 import type { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal, Trash2, Edit } from "lucide-react";
-
-import { Checkbox } from "@components/ui/checkbox";
 import { Button } from "@components/ui/button";
 import {
     DropdownMenu,
@@ -13,12 +11,12 @@ import {
 
 import { StatusToggle } from "@components/status-toggle";
 import { Tooltip } from "~/lib/components/tooltip";
-import type { CampaignViewInterface } from "@lib/types";
+import type { CampaignStatus, CampaignViewInterface } from "@lib/types";
 
 interface CampaignColumnsOptions {
     onEdit: (campaign: CampaignViewInterface) => void;
-    onDelete: (campaigns: CampaignViewInterface[]) => void;
-    onStatusChange: (id: string, status: "active" | "inactive") => void;
+    onDelete: (campaigns: CampaignViewInterface) => void;
+    onStatusChange: (campaign: CampaignViewInterface, status: CampaignStatus) => void;
 }
 
 export const createCampaignColumns = ({
@@ -28,23 +26,8 @@ export const createCampaignColumns = ({
 }: CampaignColumnsOptions): ColumnDef<CampaignViewInterface>[] => [
         {
             id: "select",
-            header: ({ table }) =>
-                React.createElement(Checkbox, {
-                    checked:
-                        table.getIsAllPageRowsSelected() ||
-                        (table.getIsSomePageRowsSelected() && "indeterminate"),
-                    onCheckedChange: (value) =>
-                        table.toggleAllPageRowsSelected(!!value),
-                    "aria-label": "Select all",
-                }),
-            cell: ({ row }) =>
-                React.createElement(Checkbox, {
-                    checked: row.getIsSelected(),
-                    onCheckedChange: (value) => row.toggleSelected(!!value),
-                    "aria-label": "Select row",
-                }),
             enableSorting: false,
-            enableHiding: false,
+            enableHiding: true,
         },
         {
             accessorKey: "name",
@@ -78,7 +61,7 @@ export const createCampaignColumns = ({
                 return React.createElement(StatusToggle, {
                     status: campaign.status,
                     onStatusChange: (newStatus) =>
-                        onStatusChange(campaign.id, newStatus),
+                        onStatusChange(campaign, newStatus),
                 });
             },
         },
@@ -147,7 +130,7 @@ export const createCampaignColumns = ({
                         React.createElement(
                             DropdownMenuItem,
                             {
-                                onClick: () => onDelete([campaign]),
+                                onClick: () => onDelete(campaign),
                                 className: "text-destructive",
                             },
                             React.createElement(Trash2, { className: "mr-2 h-4 w-4" }),

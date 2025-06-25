@@ -34,7 +34,7 @@ export interface LinkedInProfile {
 export interface CreateCampaignData {
     name: string
     description: string
-    status: "active" | "inactive"
+    status: CampaignStatus
     leads: string[]
     accountIds: string[]
 }
