@@ -92,7 +92,7 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
                                         <CollapsibleTrigger asChild>
                                             <SidebarMenuButton
                                                 tooltip={item.title}
-                                                className={item.isActive ? "bg-sidebar-border text-sidebar-accent-foreground font-semibold" : ""}
+                                                className={item.isActive ? "bg-sidebar-border text-sidebar-accent-foreground font-medium" : ""}
                                                 >
                                                 {item.icon && <item.icon />}
                                                 <span>{item.title}</span>
