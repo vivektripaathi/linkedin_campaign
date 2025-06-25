@@ -125,8 +125,13 @@ export function DataTable<TData, TValue>({
                                                     key={cell.id}
                                                     className={cn(
                                                         "relative",
-                                                        // Show first cell (checkbox) and last cell (actions) on all screens
-                                                        // Hide middle cells on mobile, show on desktop
+                                                        index === 0 &&
+                                                            "table-cell",
+                                                        index ===
+                                                            row.getVisibleCells()
+                                                                .length -
+                                                                1 &&
+                                                            "table-cell",
                                                         index > 0 &&
                                                             index <
                                                                 row.getVisibleCells()
@@ -135,7 +140,7 @@ export function DataTable<TData, TValue>({
                                                             "hidden md:table-cell"
                                                     )}
                                                 >
-                                                    {index === 1 && (
+                                                    {index === 0 && (
                                                         <Button
                                                             variant="ghost"
                                                             size="sm"
@@ -157,7 +162,7 @@ export function DataTable<TData, TValue>({
                                                     )}
                                                     <div
                                                         className={cn(
-                                                            index === 1 &&
+                                                            index === 0 &&
                                                                 "md:ml-0 ml-8"
                                                         )}
                                                     >
