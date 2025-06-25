@@ -4,14 +4,16 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "build": "tsc && node dist/index.js",
-    "dev": "tsx watch src/index.ts"
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
     "@tsconfig/node23": "^23.0.2",
+    "@types/cors": "^2.8.19",
     "@types/node": "^22.15.29",
     "@types/uuid": "^10.0.0",
     "tsx": "^4.19.4",
@@ -23,6 +25,7 @@
     "ai": "^4.3.16",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
+    "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "mongoose": "^8.16.0",
