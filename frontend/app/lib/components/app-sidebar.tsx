@@ -79,7 +79,8 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
                 <Separator />
                 <SidebarContent>
                     <SidebarGroup>
-                        <SidebarMenu>
+                        <SidebarMenu
+                        className="">
                             {data.navMain.map((item) => (
                                 <Collapsible
                                     key={item.title}
@@ -91,7 +92,8 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
                                         <CollapsibleTrigger asChild>
                                             <SidebarMenuButton
                                                 tooltip={item.title}
-                                            >
+                                                className={item.isActive ? "bg-sidebar-border text-sidebar-accent-foreground font-semibold" : ""}
+                                                >
                                                 {item.icon && <item.icon />}
                                                 <span>{item.title}</span>
                                             </SidebarMenuButton>

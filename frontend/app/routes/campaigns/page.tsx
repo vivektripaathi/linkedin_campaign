@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Search, Trash2, MessageSquare } from "lucide-react";
+import { Search } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
@@ -253,11 +253,9 @@ export function Campaigns() {
                                 variant="outline"
                                 onClick={() => setShowLinkedInForm(true)}
                             >
-                                <MessageSquare className="mr-2 h-4 w-4" />
                                 LinkedIn Message
                             </Button>
                             <Button onClick={() => setShowCampaignForm(true)}>
-                                <Plus className="mr-2 h-4 w-4" />
                                 Create Campaign
                             </Button>
                         </div>

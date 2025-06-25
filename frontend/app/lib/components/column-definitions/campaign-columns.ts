@@ -25,11 +25,6 @@ export const createCampaignColumns = ({
     onStatusChange,
 }: CampaignColumnsOptions): ColumnDef<CampaignViewInterface>[] => [
         {
-            id: "select",
-            enableSorting: false,
-            enableHiding: true,
-        },
-        {
             accessorKey: "name",
             header: "Campaign Name",
             cell: ({ row }) =>
@@ -111,7 +106,7 @@ export const createCampaignColumns = ({
                         { asChild: true },
                         React.createElement(
                             Button,
-                            { variant: "ghost", className: "h-8 w-8 p-0" },
+                            { variant: "ghost", className: "h-8 w- p-0 hover:bg-sidebar-border cursor-pointer" },
                             React.createElement("span", { className: "sr-only" }, "Open menu"),
                             React.createElement(MoreHorizontal, { className: "h-4 w-4" })
                         )
