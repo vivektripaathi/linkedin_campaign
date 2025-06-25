@@ -16,7 +16,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/campaigns', campaignRoutes);
-app.use('/api/linkedin', linkedinRoutes);
+app.use('/api/personalized-message', linkedinRoutes);
 
 // Error handling
 app.use(errorHandlerMiddleware);
