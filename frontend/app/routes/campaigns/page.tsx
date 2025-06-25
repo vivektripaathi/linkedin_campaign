@@ -7,8 +7,13 @@ import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
 import { DataTable } from "@components/data-table";
 import { CreateOrEditCampaignForm } from "~/lib/components/create-or-edit-campaign-form";
+import { LinkedInMessageForm } from "@components/linkedin-message-form";
 import { DeleteConfirmationDialog } from "@components/delete-confirmation-dialog";
-import type { ICampaign, CampaignViewInterface, CampaignStatus } from "@lib/types";
+import type {
+    ICampaign,
+    CampaignViewInterface,
+    CampaignStatus,
+} from "@lib/types";
 import type { CampaignFormData } from "@lib/validations";
 import { createCampaignColumns } from "~/lib/components/column-definitions/campaign-columns";
 
@@ -17,14 +22,14 @@ export function Campaigns() {
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
     const [showCampaignForm, setShowCampaignForm] = useState(false);
+    const [showLinkedInForm, setShowLinkedInForm] = useState(false);
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [editingCampaign, setEditingCampaign] = useState<
         CampaignViewInterface | undefined
     >(undefined);
     const [deletingCampaign, setDeletingCampaign] = useState<
-    CampaignViewInterface | undefined
+        CampaignViewInterface | undefined
     >(undefined);
-
 
     const _prepareCampaignsForView = (
         campaigns: ICampaign[]
@@ -42,12 +47,12 @@ export function Campaigns() {
         campaign: CampaignViewInterface,
         status: CampaignStatus
     ): Omit<CampaignViewInterface, "id"> => ({
-            name: campaign.name,
-            description: campaign.description,
-            status: status,
-            leads: campaign.leads,
-            accountIDs: campaign.accountIDs,
-        });
+        name: campaign.name,
+        description: campaign.description,
+        status: status,
+        leads: campaign.leads,
+        accountIDs: campaign.accountIDs,
+    });
 
     const fetchCampaigns = async () => {
         setLoading(true);
@@ -85,13 +90,10 @@ export function Campaigns() {
                 throw new Error(`Failed to create campaign: ${err}`);
             }
 
-            const data = await response.json(); 
+            const data = await response.json();
             const createdCampaign = _prepareCampaignsForView([data])[0];
             toast.success("Campaign created successfully");
-            setCampaigns((existing) => [
-                createdCampaign,
-                ...existing,
-            ]);
+            setCampaigns((existing) => [createdCampaign, ...existing]);
             closeCampaignForm();
         } catch (error) {
             console.error("Error creating campaign:", error);
@@ -99,10 +101,15 @@ export function Campaigns() {
         }
     };
 
-    const updateCampaign = async(campaign: CampaignFormData, editingCampaignId: string) => {
+    const updateCampaign = async (
+        campaign: CampaignFormData,
+        editingCampaignId: string
+    ) => {
         try {
             const response = await fetch(
-                `${import.meta.env.VITE_API_BASE_URL}/api/campaigns/${editingCampaignId}`,
+                `${
+                    import.meta.env.VITE_API_BASE_URL
+                }/api/campaigns/${editingCampaignId}`,
                 {
                     method: "PUT",
                     headers: {
@@ -119,22 +126,28 @@ export function Campaigns() {
             const updatedCampaign = _prepareCampaignsForView([data])[0];
             setCampaigns((existing) =>
                 existing.map((campaign) =>
-                    campaign.id === editingCampaignId ? updatedCampaign : campaign
+                    campaign.id === editingCampaignId
+                        ? updatedCampaign
+                        : campaign
                 )
             );
             toast.success("Campaign updated successfully");
-            closeCampaignForm();    
+            closeCampaignForm();
         } catch (error) {
             console.error("Error updating campaign:", error);
             toast.error("Failed to update campaign");
         }
     };
 
-    const deleteCampaigns = async (campaignsToDelete: CampaignViewInterface | undefined) => {
+    const deleteCampaigns = async (
+        campaignsToDelete: CampaignViewInterface | undefined
+    ) => {
         if (!campaignsToDelete) return;
         try {
             const response = await fetch(
-                `${import.meta.env.VITE_API_BASE_URL}/api/campaigns/${campaignsToDelete.id}`,
+                `${import.meta.env.VITE_API_BASE_URL}/api/campaigns/${
+                    campaignsToDelete.id
+                }`,
                 {
                     method: "DELETE",
                 }
@@ -144,12 +157,10 @@ export function Campaigns() {
                 throw new Error(`Failed to delete campaign: ${err}`);
             }
             setCampaigns((prev) =>
-                prev.filter(
-                    (campaign) => campaign?.id !== campaignsToDelete.id
-                )
+                prev.filter((campaign) => campaign?.id !== campaignsToDelete.id)
             );
             setDeletingCampaign(undefined);
-            toast.success('Campaign deleted successfully!');
+            toast.success("Campaign deleted successfully!");
         } catch (error) {
             console.error("Error deleting campaign:", error);
             toast.error("Failed to delete campaign");
@@ -238,6 +249,13 @@ export function Campaigns() {
                             />
                         </div>
                         <div className="flex gap-2">
+                            <Button
+                                variant="outline"
+                                onClick={() => setShowLinkedInForm(true)}
+                            >
+                                <MessageSquare className="mr-2 h-4 w-4" />
+                                LinkedIn Message
+                            </Button>
                             <Button onClick={() => setShowCampaignForm(true)}>
                                 <Plus className="mr-2 h-4 w-4" />
                                 Create Campaign
@@ -258,9 +276,16 @@ export function Campaigns() {
                 campaign={editingCampaign}
                 onSubmit={(campaign) => {
                     if (campaign) {
-                        editingCampaign ? updateCampaign(campaign, editingCampaign.id) : createCampaign(campaign);
+                        editingCampaign
+                            ? updateCampaign(campaign, editingCampaign.id)
+                            : createCampaign(campaign);
                     }
                 }}
+            />
+
+            <LinkedInMessageForm
+                open={showLinkedInForm}
+                onOpenChange={setShowLinkedInForm}
             />
 
             <DeleteConfirmationDialog
