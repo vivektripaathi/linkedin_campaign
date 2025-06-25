@@ -30,7 +30,7 @@ export const createCampaignColumns = ({
             cell: ({ row }) =>
                 React.createElement(
                     "div",
-                    { className: "w-100px" },
+                    { className: "min-w-[150px] max-w-full font-medium" },
                     row.getValue("name") as string
                 ),
         },
@@ -45,6 +45,7 @@ export const createCampaignColumns = ({
                         title: "Description",
                         description: row.getValue("description") as string,
                         maxLength: 60,
+                        triggerMode: "button",
                     })
                 ),
         },
@@ -72,6 +73,7 @@ export const createCampaignColumns = ({
                         title: "Leads",
                         description: leads,
                         maxLength: 60,
+                        triggerMode: "button",
                     })
                 );
             },
@@ -88,6 +90,7 @@ export const createCampaignColumns = ({
                         title: "Accounts",
                         description: accounts,
                         maxLength: 60,
+                        triggerMode: "button",
                     })
                 );
             },
@@ -106,7 +109,7 @@ export const createCampaignColumns = ({
                         { asChild: true },
                         React.createElement(
                             Button,
-                            { variant: "ghost", className: "h-8 w- p-0 hover:bg-sidebar-border cursor-pointer" },
+                            { variant: "ghost", className: "h-8 w-8 p-0 hover:bg-sidebar-border cursor-pointer" },
                             React.createElement("span", { className: "sr-only" }, "Open menu"),
                             React.createElement(MoreHorizontal, { className: "h-4 w-4" })
                         )
