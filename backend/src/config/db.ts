@@ -1,8 +1,9 @@
 import mongoose from 'mongoose';
 
-export const connectDB = async () => {
+export const connectDB = async (mongoUri: string) => {
+
     try {
-        await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/linkedin_campaign_db');
+        await mongoose.connect(mongoUri);
         console.log('MongoDB connected');
     } catch (error) {
         console.error('MongoDB connection error:', error);
