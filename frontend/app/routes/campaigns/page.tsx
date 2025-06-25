@@ -57,7 +57,7 @@ export function Campaigns() {
     const fetchCampaigns = async () => {
         setLoading(true);
         try {
-            const response = await fetch("/api/campaigns");
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/campaigns`);
             if (!response.ok) {
                 throw new Error("Failed to fetch campaigns");
             }
