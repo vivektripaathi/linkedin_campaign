@@ -1,14 +1,13 @@
 # LinkedIn Campaign Backend
 
-A Node.js backend service for managing LinkedIn outreach campaigns with AI-powered personalized messaging.
+A Node.js backend service for managing LinkedIn outreach campaigns and leads with AI-powered personalized messaging .
 
 ## Features
 
 - Campaign management (CRUD operations)
+- Lead management
 - AI-powered personalized LinkedIn message generation
-- Error handling middleware
-- Async operation wrapper
-- Type-safe DTOs and data validation
+- Export leads from LinkedIn search
 
 ## Tech Stack
 
@@ -17,8 +16,7 @@ A Node.js backend service for managing LinkedIn outreach campaigns with AI-power
 - **Framework**: Express.js
 - **Database**: MongoDB
 - **AI Integration**: Google AI SDK
-- **Validation**: class-validator, class-transformer
-- **Other Tools**: UUID for IDs
+- **Render**: Deployment
 
 ## API Endpoints
 
@@ -34,6 +32,11 @@ A Node.js backend service for managing LinkedIn outreach campaigns with AI-power
 
 - `POST /` - Generate personalized LinkedIn message using AI
 
+### Lead Routes (`/api/leads`)
+
+- `POST /bulk` - Create bulk leads
+- `GET /` - Get all leads
+
 ## Project Structure
 
 ```text
@@ -42,13 +45,12 @@ linkedin_campaign_backend/
 │ ├── config/ # Configuration files (DB, AI)
 │ ├── controllers/ # Request handlers
 │ ├── dao/ # Data Access Objects
-│ ├── dto/ # Data Transfer Objects
+│ ├── dto/ # Data Transfer Objects and types
 │ ├── models/ # MongoDB models
 │ ├── routes/ # API routes
 │ ├── services/ # Business logic
 │ ├── utils/ # Utility functions
-│ ├── app.ts # Express app setup
-│ └── index.ts # Entry point
+│ └── index.ts # Entry point and express app setup
 ├── package.json
 └── tsconfig.json
 ```
@@ -59,7 +61,7 @@ linkedin_campaign_backend/
 
    ```bash
    git clone [repository-url]
-   cd linkedin_campaign_backend
+   cd linkedin_campaign/backend
    ```
 
 2. **Install dependencies**
@@ -111,3 +113,7 @@ npm run build
 ```
 
 This will compile TypeScript and start the server.
+
+## 🌍 Deployment
+
+Deployed on: [https://linkedin-campaign-rest-api.onrender.com](https://github.com/vivektripaathi)

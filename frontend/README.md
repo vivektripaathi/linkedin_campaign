@@ -1,87 +1,72 @@
-# Welcome to React Router!
+# LinkedIn Campaign Backend
 
-A modern, production-ready template for building full-stack React applications using React Router.
+This is the frontend of linkedin Campaign built with React-Router framework. It serves as the UI for managing outreach campaigns and exporting leads from linkedin search and generating AI-powered personalized LinkedIn messages.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+## 🚀 Features
 
-## Features
+- ✅ Campaign Dashboard: List all active/inactive campaigns
+- ➕ Create/Edit/Delete Campaigns
+- 🔀 Toggle campaign status between ACTIVE and INACTIVE
+- 🧠 LinkedIn Message Generator UI
+- 🔎 Lead Search: Display scraped LinkedIn profiles from the local database
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+## 🧱 Tech Stack
 
-## Getting Started
+- React-Router
+- TypeScript
+- ShadCn UI with Tailwind CSS
+- Hosted on Vercel
 
-### Installation
+## 📸 UI Screens
 
-Install the dependencies:
+1. **Campaign Management:**
 
-```bash
-npm install
-```
+    - Dashboard with campaign list
+    - Add/Edit forms
+    - Toggle button for ACTIVE/INACTIVE status
 
-### Development
+2. **Lead Management:**
 
-Start the development server with HMR:
+    - Dashboard with campaign list
+    - Form to generate linked outreach message for leads.
 
-```bash
-npm run dev
-```
+## 🔧 Getting Started
 
-Your application will be available at `http://localhost:5173`.
+1. **Clone the repository**
 
-## Building for Production
+   ```bash
+   git clone [repository-url]
+   cd linkedin_campaign/backend
+   ```
 
-Create a production build:
+2. **Install dependencies**
 
-```bash
-npm run build
-```
+   ```bash
+   npm install
+   ```
 
-## Deployment
+3. **Environment Variables**
+   - Copy the `.env.example` file to create your `.env`:
 
-### Docker Deployment
+     ```bash
+     cp .env.example .env
+     ```
 
-To build and run using Docker:
+   - Update the values in `.env`:
 
-```bash
-docker build -t my-app .
+     ```env
+     # Backend API URL configuration
+     VITE_API_BASE_URL=http://localhost:3000 # if started backend locally
+     ```
 
-# Run the container
-docker run -p 3000:3000 my-app
-```
+4. **Run the Dev Server**
 
-The containerized application can be deployed to any platform that supports Docker, including:
+    ```bash
+    npm run dev
+    ```
 
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
+    Make sure the backend service is running on the expected URL.
 
-### DIY Deployment
+## 🌍 Deployment
 
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
-```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
-
----
-
-Built with ❤️ using React Router.
+Deployed on: [https://campaign-pro.vercel.app](https://github.com/vivektripaathi)
