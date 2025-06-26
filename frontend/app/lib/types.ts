@@ -1,3 +1,4 @@
+// Campaign Types
 export enum CampaignStatus {
     ACTIVE = "active",
     INACTIVE = "inactive",
@@ -38,3 +39,21 @@ export interface CreateCampaignData {
     leads: string[]
     accountIds: string[]
 }
+
+
+// Lead Types
+export interface ILead {
+    _id: string
+    fullName: string
+    location: string
+    profilePic: string
+    profileUrl: string
+    companyName: string
+    currentJobTitle: string
+    createdAt: string
+    updatedAt: string
+}
+
+export type LeadViewInterface = Omit<ILead, "_id" | "createdAt" | "updatedAt"> & {
+    id: string;
+};
