@@ -60,7 +60,6 @@ export const createLeadColumns = ({ generateLinkedInMessage }: { generateLinkedI
                     title: "Location",
                     description: row.getValue("location") as string,
                     maxLength: 60,
-                    triggerMode: "button",
                 })
             ),
     },
@@ -99,7 +98,6 @@ export const createLeadColumns = ({ generateLinkedInMessage }: { generateLinkedI
                     title: "Company Name",
                     description: companyName,
                     maxLength: 60,
-                    triggerMode: "button",
                 })
             );
         },
@@ -116,7 +114,6 @@ export const createLeadColumns = ({ generateLinkedInMessage }: { generateLinkedI
                     title: "Current Job Title",
                     description: currentJobTitle,
                     maxLength: 60,
-                    triggerMode: "button",
                 })
             );
         },

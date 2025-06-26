@@ -6,21 +6,28 @@ import {
     HoverCardTrigger,
 } from "@components/ui/hover-card";
 import { Button } from "@components/ui/button";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 interface TooltipProps {
     title: string;
     description: string;
     maxLength?: number;
-    triggerMode?: "hover" | "button"; // 👈 new optional prop
 }
 
-export function Tooltip({
-    title,
-    description,
-    maxLength = 50,
-    triggerMode = "hover", // default behavior
-}: TooltipProps) {
+export function Tooltip({ title, description, maxLength = 50 }: TooltipProps) {
+    const [isMobile, setIsMobile] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+        return () => window.removeEventListener("resize", checkMobile);
+    }, []);
+
     const shouldTruncate = description.length > maxLength;
     const truncatedDescription = shouldTruncate
         ? `${description.substring(0, maxLength)}...`
@@ -30,14 +37,23 @@ export function Tooltip({
         return <span className="text-muted-foreground">{description}</span>;
     }
 
+    // Use button trigger on mobile, hover trigger on desktop
+    const useButtonTrigger = isMobile;
+
     return (
-        <HoverCard openDelay={0} closeDelay={0}>
+        <HoverCard
+            open={useButtonTrigger ? isOpen : undefined}
+            onOpenChange={useButtonTrigger ? setIsOpen : undefined}
+            openDelay={0}
+            closeDelay={0}
+        >
             <HoverCardTrigger asChild>
-                {triggerMode === "button" ? (
+                {useButtonTrigger ? (
                     <Button
                         variant="outline"
                         size="sm"
-                        className="text-xs h-auto px-2 py-1"
+                        className="text-xs h-auto px-2 py-1 cursor-pointer"
+                        onClick={() => setIsOpen(!isOpen)}
                     >
                         View
                     </Button>

@@ -45,7 +45,6 @@ export const createCampaignColumns = ({
                         title: "Description",
                         description: row.getValue("description") as string,
                         maxLength: 60,
-                        triggerMode: "button",
                     })
                 ),
         },
@@ -73,7 +72,6 @@ export const createCampaignColumns = ({
                         title: "Leads",
                         description: leads,
                         maxLength: 60,
-                        triggerMode: "button",
                     })
                 );
             },
@@ -90,7 +88,6 @@ export const createCampaignColumns = ({
                         title: "Accounts",
                         description: accounts,
                         maxLength: 60,
-                        triggerMode: "button",
                     })
                 );
             },
