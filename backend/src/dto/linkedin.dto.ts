@@ -32,3 +32,10 @@ export class LinkedInProfileRequestDto implements LinkedInProfile {
     @IsString()
     summary!: string;
 }
+
+
+export class LinkedInLeadScrapeRequestDto {
+    @Expose()
+    @IsString()
+    searchUrl!: string;
+}
