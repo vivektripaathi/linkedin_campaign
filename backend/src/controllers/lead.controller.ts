@@ -69,4 +69,19 @@ export class LeadController {
 
         return successResponse(res, response, 201);
     }
+
+
+
+    async getAllLeads(_: Request, res: Response) {
+        const leadDbEntries = await this.leadDao.getAll();
+
+        const leads: LeadResponseDto[] = [];
+        for (const lead of leadDbEntries) {
+            const [validated, errors] = await validateAndParseDto(LeadResponseDto, lead);
+            if (errors.length) throw new BadResponseException(errors.join(', '));
+            leads.push(validated);
+        }
+
+        return successResponse(res, leads, 200);
+    };
 }
