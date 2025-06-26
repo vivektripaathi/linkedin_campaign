@@ -1,9 +1,12 @@
 import axios from "axios"
 import { LinkedInProfile } from "../dto/linkedin.dto.js"
-import {  LinkedInProfileResponse } from "../dto/phantom-bustor.js"
+import { LinkedInProfileResponse } from "../dto/phantom-bustor.js"
 import { AIService } from "./ai.service.js"
 import { PhantomBusterService } from "./phantom-buster.service.js"
-import { ErrorScrapingLeads } from "../utils/exceptions.js"
+import { 
+    AlreadyRetrievedSearchResultsException, 
+    ErrorScrapingLeads 
+} from "../utils/exceptions.js"
 
 
 export class LinkedInMessageService {
@@ -63,6 +66,7 @@ Return only the message text, no formatting or labels.`
 
     private async _parseContainerResultObject(resultObject: string): Promise<LinkedInProfileResponse[]> {
         const parsed = JSON.parse(resultObject);
+        if (!parsed) throw new AlreadyRetrievedSearchResultsException();
         return this._extractProfiles((parsed.jsonUrl
             ? (await axios.get(parsed.jsonUrl)).data
             : parsed
@@ -78,9 +82,13 @@ Return only the message text, no formatting or labels.`
 
     async scrapLeadProfiles(searchUrl: string): Promise<LinkedInProfileResponse[]> {
         try {
+            console.log(`Got request to scrap leads from: ${searchUrl}`);
             const containerId = (await this.phantomBusterService.launchAgent(searchUrl)).containerId;
+            console.log(`Linkedin Search Export agent launched in a container with id: ${containerId}`);
             await this.phantomBusterService.waitForContainerFinish(containerId);
+            console.log(`Lead Scrapping finished.`);
             const containerResult = await this.phantomBusterService.fetchContainerResult(containerId);
+            console.log(`Received scrap result from container. Extracting lead profiles out of it...`);
             return this._parseContainerResultObject(containerResult.resultObject);
         } catch (error) {
             throw new ErrorScrapingLeads()

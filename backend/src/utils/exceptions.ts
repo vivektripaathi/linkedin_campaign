@@ -41,6 +41,13 @@ export class BadResponseException extends AppError {
 export class ErrorScrapingLeads extends AppError {
     constructor(message = "Error scraping for leads.") {
         super(message, 500, "SCRAPING_ERROR")
-        Object.setPrototypeOf(this, BadResponseException.prototype)
+        Object.setPrototypeOf(this, ErrorScrapingLeads.prototype)
+    }
+}
+
+export class AlreadyRetrievedSearchResultsException extends AppError {
+    constructor(message = "We've already retrieved all results from that search.") {
+        super(message, 400, "SCRAPING_ERROR")
+        Object.setPrototypeOf(this, AlreadyRetrievedSearchResultsException.prototype)
     }
 }
