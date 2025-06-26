@@ -5,8 +5,12 @@ import { UUIDTypes } from 'uuid';
 export class BaseDao<T> {
     constructor(protected readonly model: Model<T>) { }
 
-    async create(data:  T,): Promise<T> {
+    async create(data: T,): Promise<T> {
         return await this.model.create(data);
+    }
+
+    async bulkCreate(dataArray: T[]): Promise<T[]> {
+        return await this.model.insertMany(dataArray);
     }
 
     async getById(id: UUIDTypes): Promise<T | null> {
@@ -19,7 +23,7 @@ export class BaseDao<T> {
             data,
             { new: true }
         ) as T | null;
-    }    
+    }
 
     async getAll(): Promise<T[]> {
         return await this.model.find({ deletedAt: null }) as T[];

@@ -1,12 +1,12 @@
 import axios from "axios"
 import { LinkedInProfile } from "../dto/linkedin.dto.js"
-import { LinkedInProfileResponse } from "../dto/phantom-bustor.js"
 import { AIService } from "./ai.service.js"
 import { PhantomBusterService } from "./phantom-buster.service.js"
-import { 
-    AlreadyRetrievedSearchResultsException, 
-    ErrorScrapingLeads 
+import {
+    AlreadyRetrievedSearchResultsException,
+    ErrorScrapingLeads
 } from "../utils/exceptions.js"
+import { LeadProfile } from "../dto/phantom-bustor.js"
 
 
 export class LinkedInMessageService {
@@ -41,7 +41,7 @@ Return only the message text, no formatting or labels.`
     }
 
 
-    private async _extractProfiles(data: any[], numberOfProfiles: number = 20): Promise<LinkedInProfileResponse[]> {
+    private async _extractProfiles(data: any[], numberOfProfiles: number = 20): Promise<LeadProfile[]> {
         return data
             .filter((item) =>
                 item.fullName &&
@@ -53,18 +53,18 @@ Return only the message text, no formatting or labels.`
             )
             .slice(0, numberOfProfiles)
             .map((item) => ({
-                full_name: item.fullName,
-                profile_url: item.profileUrl,
-                current_job_title: item.jobTitle,
+                fullName: item.fullName,
+                profileUrl: item.profileUrl,
+                currentJobTitle: item.jobTitle,
                 location: item.location,
-                profile_pic: item.profileImageUrl,
-                company_name: item.company
+                profilePic: item.profileImageUrl,
+                companyName: item.company
             }));
     }
 
 
 
-    private async _parseContainerResultObject(resultObject: string): Promise<LinkedInProfileResponse[]> {
+    private async _parseContainerResultObject(resultObject: string): Promise<LeadProfile[]> {
         const parsed = JSON.parse(resultObject);
         if (!parsed) throw new AlreadyRetrievedSearchResultsException();
         return this._extractProfiles((parsed.jsonUrl
@@ -80,7 +80,7 @@ Return only the message text, no formatting or labels.`
     }
 
 
-    async scrapLeadProfiles(searchUrl: string): Promise<LinkedInProfileResponse[]> {
+    async scrapLeadProfiles(searchUrl: string): Promise<LeadProfile[]> {
         try {
             console.log(`Got request to scrap leads from: ${searchUrl}`);
             const containerId = (await this.phantomBusterService.launchAgent(searchUrl)).containerId;

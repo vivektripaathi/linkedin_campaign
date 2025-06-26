@@ -1,3 +1,5 @@
+import { LeadDomainModel } from "./lead.dto.js";
+
 export interface AgentLaunchResponse {
     containerId: string;
 }
@@ -23,13 +25,4 @@ export interface ContainerResultObjectResponse {
     resultObject: string;
 }
 
-export interface LinkedInProfileResponse {
-    full_name: string;
-    profile_url: string;
-    current_job_title: string;
-    location: string;
-    profile_pic: string;
-    company_name: string;
-}
-
-
+export type LeadProfile = Omit<LeadDomainModel, '_id' | 'createdAt' | 'updatedAt' | '__v' | 'deletedAt'>

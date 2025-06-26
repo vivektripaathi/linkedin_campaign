@@ -5,6 +5,7 @@ import { connectDB } from './config/db.js';
 import campaignRoutes from './routes/campaign.routes.js';
 import linkedinRoutes from './routes/linkedin.routes.js';
 import { errorHandlerMiddleware } from './utils/errorHandler.js';
+import leadRoutes from './routes/lead.routes.js';
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ app.use(express.json());
 // Routes
 app.use('/api/campaigns', campaignRoutes);
 app.use('/api/personalized-message', linkedinRoutes);
+app.use('/api/leads', leadRoutes);
 
 // Error handling
 app.use(errorHandlerMiddleware);
