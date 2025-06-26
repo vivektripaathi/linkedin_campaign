@@ -28,6 +28,8 @@ import {
     SidebarMenuItem,
     SidebarRail,
 } from "@components/ui/sidebar";
+import { useLocation, useNavigate } from "react-router-dom";
+import { PAGE_TITLES, ROUTES } from "~/routes";
 
 const data = {
     user: {
@@ -36,20 +38,22 @@ const data = {
     },
     navMain: [
         {
-            title: "Campaigns",
-            url: "campaigns",
+            title: PAGE_TITLES[ROUTES.CAMPAIGNS],
+            url: ROUTES.CAMPAIGNS,
             icon: SquareTerminal,
-            isActive: true,
         },
         {
-            title: "Leads",
-            url: "leads",
+            title: PAGE_TITLES[ROUTES.LEADS],
+            url: ROUTES.LEADS,
             icon: Bot,
         },
     ],
 };
 
 export function AppSidebar({ children }: { children: React.ReactNode }) {
+    const location = useLocation();
+    const navigate = useNavigate();
+
     return (
         <>
             <Sidebar collapsible="icon">
@@ -79,21 +83,27 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
                 <Separator />
                 <SidebarContent>
                     <SidebarGroup>
-                        <SidebarMenu
-                        className="">
+                        <SidebarMenu className="">
                             {data.navMain.map((item) => (
                                 <Collapsible
                                     key={item.title}
                                     asChild
-                                    defaultOpen={item.isActive}
                                     className="group/collapsible"
                                 >
                                     <SidebarMenuItem>
                                         <CollapsibleTrigger asChild>
                                             <SidebarMenuButton
                                                 tooltip={item.title}
-                                                className={item.isActive ? "bg-sidebar-border text-sidebar-accent-foreground font-medium" : ""}
-                                                >
+                                                className={`cursor-pointer ${
+                                                    location.pathname ===
+                                                    item.url
+                                                        ? "bg-sidebar-border text-sidebar-accent-foreground font-medium"
+                                                        : ""
+                                                }`}
+                                                onClick={() => {
+                                                    navigate(item.url);
+                                                }}
+                                            >
                                                 {item.icon && <item.icon />}
                                                 <span>{item.title}</span>
                                             </SidebarMenuButton>
