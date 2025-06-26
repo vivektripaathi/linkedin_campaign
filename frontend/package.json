@@ -24,6 +24,7 @@
     "@radix-ui/react-switch": "^1.2.5",
     "@radix-ui/react-toast": "^1.2.14",
     "@radix-ui/react-tooltip": "^1.2.7",
+    "@react-router/fs-routes": "^7.6.2",
     "@react-router/node": "^7.5.3",
     "@react-router/serve": "^7.5.3",
     "@tanstack/react-table": "^8.21.3",
