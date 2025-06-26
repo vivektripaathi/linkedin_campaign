@@ -15,7 +15,7 @@ import type {
     CampaignStatus,
 } from "@lib/types";
 import type { CampaignFormData } from "@lib/validations";
-import { createCampaignColumns } from "~/lib/components/column-definitions/campaign-columns";
+import { createCampaignColumns } from "~/lib/components/column-definitions/campaign.columns";
 
 export function Campaigns() {
     const [campaigns, setCampaigns] = useState<CampaignViewInterface[]>([]);
