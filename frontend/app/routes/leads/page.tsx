@@ -50,6 +50,19 @@ export function Leads() {
         },
     });
 
+    const filteredLeads = leads.filter(
+        (lead) =>
+            lead.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            lead.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            lead.companyName
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase()) ||
+            lead.currentJobTitle
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase()) ||
+            lead.profileUrl.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     useEffect(() => {
         fetchLeads();
     }, []);
@@ -88,7 +101,7 @@ export function Leads() {
 
                     <DataTable<LeadViewInterface, unknown>
                         columns={columns}
-                        data={leads}
+                        data={filteredLeads}
                     />
                 </div>
             </div>
