@@ -1,13 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search } from "lucide-react";
+import { Search, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
 import { DataTable } from "@components/data-table";
 import { CreateOrEditCampaignForm } from "~/lib/components/create-or-edit-campaign-form";
-import { LinkedInMessageForm } from "@components/linkedin-message-form";
 import { DeleteConfirmationDialog } from "@components/delete-confirmation-dialog";
 import type {
     ICampaign,
@@ -22,7 +21,6 @@ export function Campaigns() {
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
     const [showCampaignForm, setShowCampaignForm] = useState(false);
-    const [showLinkedInForm, setShowLinkedInForm] = useState(false);
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [editingCampaign, setEditingCampaign] = useState<
         CampaignViewInterface | undefined
@@ -57,7 +55,9 @@ export function Campaigns() {
     const fetchCampaigns = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/campaigns`);
+            const response = await fetch(
+                `${import.meta.env.VITE_API_BASE_URL}/api/campaigns`
+            );
             if (!response.ok) {
                 throw new Error("Failed to fetch campaigns");
             }
@@ -249,13 +249,8 @@ export function Campaigns() {
                             />
                         </div>
                         <div className="flex gap-2">
-                            <Button
-                                variant="outline"
-                                onClick={() => setShowLinkedInForm(true)}
-                            >
-                                LinkedIn Message
-                            </Button>
                             <Button onClick={() => setShowCampaignForm(true)}>
+                                <Plus className="mr-2 h-4 w-4" />
                                 Create Campaign
                             </Button>
                         </div>
@@ -279,11 +274,6 @@ export function Campaigns() {
                             : createCampaign(campaign);
                     }
                 }}
-            />
-
-            <LinkedInMessageForm
-                open={showLinkedInForm}
-                onOpenChange={setShowLinkedInForm}
             />
 
             <DeleteConfirmationDialog

@@ -28,32 +28,52 @@ import {
     linkedInProfileSchema,
     type LinkedInProfileFormData,
 } from "@lib/validations";
-import { useState } from "react";
-import { tr } from "zod/v4/locales";
+import { useEffect, useState } from "react";
+import type { LeadViewInterface } from "../types";
 
 interface LinkedInMessageFormProps {
     open: boolean;
-    onOpenChange: (open: boolean) => void;
+    onClose: () => void;
+    profile?: LeadViewInterface;
 }
 
 export function LinkedInMessageForm({
     open,
-    onOpenChange,
+    onClose,
+    profile,
 }: LinkedInMessageFormProps) {
     const [generatedMessage, setGeneratedMessage] = useState("");
     const [isGenerating, setIsGenerating] = useState(false);
 
+    const defaultProfileValues: LinkedInProfileFormData = {
+        name: "John Smith",
+        job_title: "Senior Software Engineer",
+        company: "TechCorp Solutions",
+        location: "San Francisco, CA",
+        summary:
+            "Experienced software engineer with 8+ years in full-stack development. Passionate about building scalable web applications and leading development teams. Currently focused on React, Node.js, and cloud architecture.",
+    };
+    
+
     const form = useForm<LinkedInProfileFormData>({
         resolver: zodResolver(linkedInProfileSchema),
-        defaultValues: {
-            name: "John Smith",
-            job_title: "Senior Software Engineer",
-            company: "TechCorp Solutions",
-            location: "San Francisco, CA",
-            summary:
-                "Experienced software engineer with 8+ years in full-stack development. Passionate about building scalable web applications and leading development teams. Currently focused on React, Node.js, and cloud architecture.",
-        },
+        defaultValues: defaultProfileValues,
+
     });
+
+    useEffect(() => {
+        if (profile) {
+            form.reset({
+                name: profile.fullName,
+                job_title: profile.currentJobTitle,
+                company: profile.companyName,
+                location: profile.location,
+                summary: defaultProfileValues.summary,
+            });
+        } else {
+            form.reset(defaultProfileValues);
+        }
+    }, [profile, form]);
 
     const generateMessage = async (profile: LinkedInProfileFormData) => {
         setIsGenerating(true);
@@ -84,7 +104,7 @@ export function LinkedInMessageForm({
     };
 
     const handleClose = () => {
-        onOpenChange(false);
+        onClose();
         form.reset();
         setGeneratedMessage("");
     };
