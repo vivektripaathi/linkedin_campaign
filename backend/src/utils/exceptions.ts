@@ -37,3 +37,10 @@ export class BadResponseException extends AppError {
         Object.setPrototypeOf(this, BadResponseException.prototype)
     }
 }
+
+export class ErrorScrapingLeads extends AppError {
+    constructor(message = "Error scraping for leads.") {
+        super(message, 500, "SCRAPING_ERROR")
+        Object.setPrototypeOf(this, BadResponseException.prototype)
+    }
+}

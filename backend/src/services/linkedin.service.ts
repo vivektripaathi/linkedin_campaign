@@ -1,9 +1,14 @@
+import axios from "axios"
 import { LinkedInProfile } from "../dto/linkedin.dto.js"
+import {  LinkedInProfileResponse } from "../dto/phantom-bustor.js"
 import { AIService } from "./ai.service.js"
+import { PhantomBusterService } from "./phantom-buster.service.js"
+import { ErrorScrapingLeads } from "../utils/exceptions.js"
 
 
 export class LinkedInMessageService {
     private aiService: AIService
+    private phantomBusterService: PhantomBusterService
     private readonly linkedInOutreachPromptTemplate = (profile: LinkedInProfile) => `You're an expert AI sales assistant writing personalized LinkedIn outreach messages for a B2B sales team.
 
 Write a short and friendly message that:
@@ -23,7 +28,8 @@ Summary: ${profile.summary}
 Return only the message text, no formatting or labels.`
 
     constructor() {
-        this.aiService = new AIService()
+        this.aiService = new AIService();
+        this.phantomBusterService = new PhantomBusterService();
     }
 
 
@@ -32,8 +38,52 @@ Return only the message text, no formatting or labels.`
     }
 
 
+    private async _extractProfiles(data: any[], numberOfProfiles: number = 20): Promise<LinkedInProfileResponse[]> {
+        return data
+            .filter((item) =>
+                item.fullName &&
+                item.profileUrl &&
+                item.jobTitle &&
+                item.location &&
+                item.profileImageUrl &&
+                item.company
+            )
+            .slice(0, numberOfProfiles)
+            .map((item) => ({
+                full_name: item.fullName,
+                profile_url: item.profileUrl,
+                current_job_title: item.jobTitle,
+                location: item.location,
+                profile_pic: item.profileImageUrl,
+                company_name: item.company
+            }));
+    }
+
+
+
+    private async _parseContainerResultObject(resultObject: string): Promise<LinkedInProfileResponse[]> {
+        const parsed = JSON.parse(resultObject);
+        return this._extractProfiles((parsed.jsonUrl
+            ? (await axios.get(parsed.jsonUrl)).data
+            : parsed
+        ))
+    }
+
+
     public async generatePersonalizedMessage(profile: LinkedInProfile): Promise<string> {
         const prompt = this._buildPrompt(profile)
         return await this.aiService.getTextResponse(prompt)
+    }
+
+
+    async scrapLeadProfiles(searchUrl: string): Promise<LinkedInProfileResponse[]> {
+        try {
+            const containerId = (await this.phantomBusterService.launchAgent(searchUrl)).containerId;
+            await this.phantomBusterService.waitForContainerFinish(containerId);
+            const containerResult = await this.phantomBusterService.fetchContainerResult(containerId);
+            return this._parseContainerResultObject(containerResult.resultObject);
+        } catch (error) {
+            throw new ErrorScrapingLeads()
+        }
     }
 }
