@@ -22,6 +22,7 @@ export class MessageController {
                 text: messageDto.text,
                 chatId: messageDto.chatId,
                 timestamp: messageDto.timestamp,
+                accountId: messageDto.accountId,
                 senderProviderId: messageDto.senderProviderId,
                 createdAt: new Date(),
                 updatedAt: new Date(),

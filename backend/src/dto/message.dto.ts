@@ -7,6 +7,7 @@ export class MessageDomainModel extends BaseDomainModel {
     text!: string;
     chatId!: string;
     timestamp!: string;
+    accountId!: string;
     senderProviderId!: string;
 }
 
@@ -14,6 +15,10 @@ export class CreateMessageRequestDto implements Omit<MessageDomainModel, '_id' |
     @Expose()
     @IsString()
     id!: string;
+
+    @Expose()
+    @IsString()
+    accountId!: string;
 
     @Expose()
     @IsString()

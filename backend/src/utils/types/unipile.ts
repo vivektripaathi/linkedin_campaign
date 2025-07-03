@@ -40,6 +40,7 @@ export interface IMessage {
     id: string;
     text: string;
     chatId: string;
+    accountId: string;
     timestamp: string;
     senderProviderId: string;
 }

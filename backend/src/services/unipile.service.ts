@@ -116,6 +116,7 @@ export class UnipileService {
             text: message?.text,
             chatId: message?.chat_id,
             timestamp: message?.timestamp,
+            accountId: message?.account_id,
             senderProviderId: message?.sender_id
         }
     }
