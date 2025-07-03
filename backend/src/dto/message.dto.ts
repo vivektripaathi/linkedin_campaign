@@ -30,8 +30,8 @@ export class CreateMessageRequestDto implements Omit<MessageDomainModel, '_id' |
 
 export class MessageResponseDto extends CreateMessageRequestDto {
     @Expose()
-    @IsUUID('4', { message: 'Invalid message ID. Must be a valid UUID v4.' })
-    _id!: UUIDTypes;
+    @IsString()
+    _id!: string;
 
     @Expose()
     @IsDate()

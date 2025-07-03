@@ -30,8 +30,8 @@ export class CreateChatRequestDto implements Omit<ChatDomainModel, '_id' | 'crea
 
 export class ChatResponseDto extends CreateChatRequestDto {
     @Expose()
-    @IsUUID('4', { message: 'Invalid chat ID. Must be a valid UUID v4.' })
-    _id!: UUIDTypes;
+    @IsString()
+    _id!: string;
 
     @Expose()
     @IsDate()
