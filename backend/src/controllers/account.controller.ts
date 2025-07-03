@@ -6,11 +6,20 @@ import {
     CreateAccountRequestDto,
     AccountDomainModel,
     AccountResponseDto,
+    LinkAccountRequestDto,
 } from '../dto/account.dto.js';
 import { BadResponseException, InvalidRequestException, NotFoundException } from '../utils/exceptions.js';
+import { UnipileService } from '../services/unipile.service.js';
+import { ChatController } from './chat.controller.js';
+import { MessageController } from './message.controller.js';
 
 export class AccountController {
-    constructor(private readonly accountDao: AccountDao) { }
+    constructor(
+        private readonly accountDao: AccountDao,
+        private readonly unipileService: UnipileService,
+        private readonly chatController: ChatController,
+        private readonly MessageController: MessageController,
+    ) { }
 
 
     private _prepareCreateAccountPayload(dto: CreateAccountRequestDto): AccountDomainModel {
@@ -27,18 +36,22 @@ export class AccountController {
     }
 
 
-    async createAccount(req: Request, res: Response) {
-        //create account request validation
-        const [createRequest, errors] = await validateAndParseDto(CreateAccountRequestDto, req.body ?? {});
+    private async _createAccount(input: any): Promise<AccountResponseDto> {
+        const [dto, errors] = await validateAndParseDto(CreateAccountRequestDto, input);
         if (errors.length) throw new InvalidRequestException(errors.join(', '));
 
-        //prepare domain model from create request and create account
-        const createAccountPayload = this._prepareCreateAccountPayload(createRequest);
+        const createAccountPayload = this._prepareCreateAccountPayload(dto);
         const createdAccount = await this.accountDao.create(createAccountPayload);
 
-        //validate and parse response and return response
         const [response, responseErrors] = await validateAndParseDto(AccountResponseDto, createdAccount);
         if (responseErrors.length) throw new BadResponseException(responseErrors.join(', '));
+
+        return response;
+    }
+
+
+    async createAccount(req: Request, res: Response) {
+        const response = await this._createAccount(req.body ?? {});
         return successResponse(res, response, 201);
     };
 
@@ -54,4 +67,36 @@ export class AccountController {
         }
         return successResponse(res, validatedList, 200);
     };
+
+
+    async LinkAccountAndOnboardUser(req: Request, res: Response) {
+        // validate request
+        const [linkRequest, errors] = await validateAndParseDto(LinkAccountRequestDto, req.body ?? {});
+        if (errors.length) throw new InvalidRequestException(errors.join(', '));
+
+        // link account
+        const linkedAccount = await this.unipileService.connectLinkedin(
+            linkRequest.sessionCookie, linkRequest.userAgent
+        )
+
+        //get linked account info
+        const account = await this.unipileService.retrieveAccount(linkedAccount.account_id);
+
+        //create account entry in db
+        await this._createAccount(account);
+
+        //list all chats
+        const chats = await this.unipileService.getAllChats();
+
+        //create chat entries in db
+        await this.chatController.createBulkChatsUseCase(chats);
+
+        //list all messages
+        const messages = await this.unipileService.getAllMessages();
+
+        //create messages entries in db
+        await this.MessageController.createBulkMessagesUseCase(messages);
+
+        return successResponse(res, 201);
+    }
 }

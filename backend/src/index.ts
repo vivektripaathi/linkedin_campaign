@@ -7,6 +7,7 @@ import linkedinRoutes from './routes/linkedin.routes.js';
 import { errorHandlerMiddleware } from './utils/errorHandler.js';
 import leadRoutes from './routes/lead.routes.js';
 import webhookRoutes from './routes/webhook.routes.js';
+import accountRoutes from './routes/account.routes.js';
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ app.use(express.json());
 app.use('/api/campaigns', campaignRoutes);
 app.use('/api/personalized-message', linkedinRoutes);
 app.use('/api/leads', leadRoutes);
+app.use('/api/accounts', accountRoutes);
 app.use('/webhooks', webhookRoutes);
 
 // Error handling
