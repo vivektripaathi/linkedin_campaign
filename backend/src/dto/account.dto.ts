@@ -7,7 +7,6 @@ export class AccountDomainModel extends BaseDomainModel {
     username!: string;
     providerId!: string;
     publicIdentifier!: string;
-    attendeeProviderId!: string;
 }
 
 
@@ -38,10 +37,6 @@ export class CreateAccountRequestDto implements Omit<AccountDomainModel, '_id' |
     @Expose()
     @IsString()
     publicIdentifier!: string;
-
-    @Expose()
-    @IsString()
-    attendeeProviderId!: string;
 }
 
 

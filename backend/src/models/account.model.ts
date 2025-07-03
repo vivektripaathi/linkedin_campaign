@@ -11,7 +11,6 @@ const AccountSchema = new Schema<AccountDomainModel>({
     username: { type: String, required: true },
     providerId: { type: String, required: true },
     publicIdentifier: { type: String, required: true },
-    attendeeProviderId: { type: String, required: true },
 }, { collection: 'accounts', timestamps: true });
 
 export const Account: Model<AccountDomainModel> = model('Account', AccountSchema);
