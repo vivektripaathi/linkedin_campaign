@@ -24,6 +24,10 @@ export class LinkAccountRequestDto {
 export class CreateAccountRequestDto implements Omit<AccountDomainModel, '_id' | 'createdAt' | 'updatedAt' | '__v' | 'deletedAt'> {
     @Expose()
     @IsString()
+    id!: string;
+
+    @Expose()
+    @IsString()
     name!: string;
 
     @Expose()

@@ -13,6 +13,10 @@ export class ChatDomainModel extends BaseDomainModel {
 export class CreateChatRequestDto implements Omit<ChatDomainModel, '_id' | 'createdAt' | 'updatedAt' | '__v' | 'deletedAt'> {
     @Expose()
     @IsString()
+    id!: string;
+
+    @Expose()
+    @IsString()
     accountId!: string;
 
     @Expose()

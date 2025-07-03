@@ -13,6 +13,10 @@ export class MessageDomainModel extends BaseDomainModel {
 export class CreateMessageRequestDto implements Omit<MessageDomainModel, '_id' | 'createdAt' | 'updatedAt' | '__v' | 'deletedAt'> {
     @Expose()
     @IsString()
+    id!: string;
+
+    @Expose()
+    @IsString()
     text!: string;
 
     @Expose()
