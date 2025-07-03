@@ -12,6 +12,7 @@ const MessageSchema = new Schema<MessageDomainModel>({
         required: true,
         ref: 'Chat',
     },
+    accountId: { type: String, required: true },
     text: { type: String, required: true },
     timestamp: { type: String, required: true },
     senderProviderId: { type: String, required: true },
