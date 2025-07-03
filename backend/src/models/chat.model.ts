@@ -10,7 +10,7 @@ const ChatSchema = new Schema<ChatDomainModel>({
     accountId: { type: String, required: true },
     attendeeName: { type: String, required: true },
     attendeeProviderId: { type: String, required: true },
-    attendeePictureUrl: { type: String, required: true },
+    attendeePictureUrl: { type: String },
 }, { collection: 'chats', timestamps: true });
 
 export const Chat: Model<ChatDomainModel> = model('Chat', ChatSchema);

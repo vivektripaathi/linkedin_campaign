@@ -1,13 +1,12 @@
 import { Expose } from 'class-transformer';
 import { BaseDomainModel } from './base.dto.js';
-import { IsDate, IsString, IsUUID } from 'class-validator';
-import { UUIDTypes } from 'uuid';
+import { IsDate, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class ChatDomainModel extends BaseDomainModel {
     accountId!: string;
     attendeeName!: string;
     attendeeProviderId!: string;
-    attendeePictureUrl!: string;
+    attendeePictureUrl!: string | undefined;
 }
 
 export class CreateChatRequestDto implements Omit<ChatDomainModel, '_id' | 'createdAt' | 'updatedAt' | '__v' | 'deletedAt'> {
@@ -29,6 +28,7 @@ export class CreateChatRequestDto implements Omit<ChatDomainModel, '_id' | 'crea
 
     @Expose()
     @IsString()
+    @IsOptional()
     attendeePictureUrl!: string;
 }
 
