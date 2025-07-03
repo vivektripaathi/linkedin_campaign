@@ -44,10 +44,26 @@ export class CreateAccountRequestDto implements Omit<AccountDomainModel, '_id' |
 }
 
 
-export class AccountResponseDto extends CreateAccountRequestDto {
+export class AccountResponseDto {
     @Expose()
     @IsString()
     _id!: string;
+
+    @Expose()
+    @IsString()
+    name!: string;
+
+    @Expose()
+    @IsString()
+    username!: string;
+
+    @Expose()
+    @IsString()
+    providerId!: string;
+
+    @Expose()
+    @IsString()
+    publicIdentifier!: string;
 
     @Expose()
     @IsDate()
