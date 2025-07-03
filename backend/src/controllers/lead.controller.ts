@@ -71,7 +71,6 @@ export class LeadController {
     }
 
 
-
     async getAllLeads(_: Request, res: Response) {
         const leadDbEntries = await this.leadDao.getAll();
 

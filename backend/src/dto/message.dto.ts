@@ -1,8 +1,43 @@
+import { Expose } from 'class-transformer';
 import { BaseDomainModel } from './base.dto.js';
+import { IsDate, IsString, IsUUID } from 'class-validator';
+import { UUIDTypes } from 'uuid';
 
 export class MessageDomainModel extends BaseDomainModel {
     text!: string;
     chatId!: string;
     timestamp!: Date;
     senderProviderId!: string;
+}
+
+export class CreateMessageRequestDto implements Omit<MessageDomainModel, '_id' | 'createdAt' | 'updatedAt' | '__v' | 'deletedAt'> {
+    @Expose()
+    @IsString()
+    text!: string;
+
+    @Expose()
+    @IsString()
+    chatId!: string;
+
+    @Expose()
+    @IsDate()
+    timestamp!: Date;
+
+    @Expose()
+    @IsString()
+    senderProviderId!: string;
+}
+
+export class MessageResponseDto extends CreateMessageRequestDto {
+    @Expose()
+    @IsUUID('4', { message: 'Invalid message ID. Must be a valid UUID v4.' })
+    _id!: UUIDTypes;
+
+    @Expose()
+    @IsDate()
+    createdAt!: Date;
+
+    @Expose()
+    @IsDate()
+    updatedAt!: Date;
 }
