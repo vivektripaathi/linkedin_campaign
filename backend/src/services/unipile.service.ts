@@ -131,4 +131,14 @@ export class UnipileService {
             throw new NotFoundException(`Chat does not exists with ${chatId}`);
         }
     }
+
+    async getAllMessages(): Promise<Array<IMessage>> {
+        try {
+            const client = this._getClient();
+            const response = await client.messaging.getAllMessages()
+            return response?.items?.map(this._prepareMessage.bind(this))
+        } catch (error) {
+            throw error;
+        }
+    }
 }
