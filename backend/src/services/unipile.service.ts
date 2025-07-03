@@ -1,0 +1,131 @@
+import axios from "axios";
+import { IAccount, IAttendee, IChat, IChatWithAttendee, IMessage, UnipileConnectFailureResponse, UnipileConnectSuccessResponse } from "../utils/types/unipile.js";
+import { UnipileClient } from "unipile-node-sdk"
+import { InvalidUnipileCredentialsException, NotFoundException } from "../utils/exceptions.js";
+
+export class UnipileService {
+    private client: UnipileClient;
+
+    constructor() {
+        this.client = new UnipileClient(
+            process.env.UNICIPILE_API_BASE_URL as string,
+            process.env.UNIPILE_API_KEY as string
+        );
+    }
+
+    async connectLinkedin(
+        sessionCookie: string,
+        userAgent: string
+    ): Promise<UnipileConnectSuccessResponse> {
+        const response = await axios.post<UnipileConnectSuccessResponse>(
+            `${process.env.UNIPILE_API_BASE_URL}/accounts`,
+            {
+                provider: "LINKEDIN",
+                'access_token': sessionCookie,
+                "user_agent": userAgent
+            },
+            {
+                headers: {
+                    "X-API-KEY": process.env.UNIPILE_API_KEY,
+                    "accept": "application/json",
+                    "content-type": "application/json"
+                }
+            }
+        );
+
+        if (response.status === 201) {
+            return response.data;
+        } else {
+            throw new InvalidUnipileCredentialsException();
+        }
+    }
+
+    private _prepareAccount(account: any): IAccount {
+        return {
+            id: account?.id,
+            name: account?.name,
+            providerId: account?.connection_params?.im?.id,
+            username: account?.connection_params?.im?.username,
+            publicIdentifier: account?.connection_params?.im?.publicIdentifier,
+        }
+    }
+
+    async retrieveAccount(accountId: string): Promise<IAccount> {
+        try {
+            const response = await this.client.account.getOne(accountId)
+            return this._prepareAccount(response);
+        } catch (error) {
+            throw new NotFoundException(`Account does not exists with ${accountId}`);
+        }
+    }
+
+    private _prepareAttendee(attendee: any): IAttendee {
+        return {
+            id: attendee?.id,
+            name: attendee?.name,
+            providerId: attendee?.provider_id,
+            pictureUrl: attendee?.picture_url
+        }
+    }
+
+    async getAllAttendees(): Promise<Array<IAttendee>> {
+        try {
+            const response = await this.client.messaging.getAllAttendees()
+            return response?.items?.map(this._prepareAttendee.bind(this));
+        } catch (error) {
+            throw error
+        }
+    }
+
+    private _prepareChat(chat: any): IChat {
+        return {
+            id: chat?.id,
+            accountId: chat?.account_id,
+            attendeeProviderId: chat?.attendee_provider_id
+        }
+    }
+
+    private _mergeChatsWithAttendees(chats: Array<IChat>, attendees: Array<IAttendee>): Array<IChatWithAttendee> {
+        return chats.map(chat => {
+            const attendee = attendees.find(attendee => attendee.providerId === chat.attendeeProviderId);
+            return {
+                ...chat,
+                attendeeName: attendee?.name ?? '',
+                attendeePictureUrl: attendee?.pictureUrl,
+            };
+        });
+    }
+
+
+    async getAllChats(): Promise<Array<IChatWithAttendee> | undefined> {
+        try {
+            const attendees = await this.getAllAttendees();
+            const chatsResponse = await this.client.messaging.getAllChats()
+            const chats = chatsResponse?.items?.map(this._prepareChat.bind(this));
+            return this._mergeChatsWithAttendees(chats, attendees);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    private _prepareMessage(message: any): IMessage {
+        return {
+            id: message?.id,
+            text: message?.text,
+            chatId: message?.chat_id,
+            timestamp: message?.timestamp,
+            senderProviderId: message?.sender_id
+        }
+    }
+
+    async getAllMessagesFromChat(chatId: string): Promise<Array<IMessage>> {
+        try {
+            const response = await this.client.messaging.getAllMessagesFromChat({
+                chat_id: chatId,
+            });
+            return response?.items?.map(this._prepareMessage.bind(this))
+        } catch (error) {
+            throw new NotFoundException(`Chat does not exists with ${chatId}`);
+        }
+    }
+}
