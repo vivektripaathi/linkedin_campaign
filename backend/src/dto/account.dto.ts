@@ -1,4 +1,6 @@
 import { BaseDomainModel } from './base.dto.js';
+import { IsDate, IsString } from 'class-validator';
+import { Expose } from 'class-transformer';
 
 export class AccountDomainModel extends BaseDomainModel {
     name!: string;
@@ -6,4 +8,53 @@ export class AccountDomainModel extends BaseDomainModel {
     providerId!: string;
     publicIdentifier!: string;
     attendeeProviderId!: string;
+}
+
+
+export class LinkAccountRequestDto {
+    @Expose()
+    @IsString()
+    sessionCookie!: string;
+
+    @Expose()
+    @IsString()
+    userAgent!: string;
+}
+
+
+export class CreateAccountRequestDto implements Omit<AccountDomainModel, '_id' | 'createdAt' | 'updatedAt' | '__v' | 'deletedAt'> {
+    @Expose()
+    @IsString()
+    name!: string;
+
+    @Expose()
+    @IsString()
+    username!: string;
+
+    @Expose()
+    @IsString()
+    providerId!: string;
+
+    @Expose()
+    @IsString()
+    publicIdentifier!: string;
+
+    @Expose()
+    @IsString()
+    attendeeProviderId!: string;
+}
+
+
+export class AccountResponseDto extends CreateAccountRequestDto {
+    @Expose()
+    @IsString()
+    _id!: string;
+
+    @Expose()
+    @IsDate()
+    createdAt!: Date;
+
+    @Expose()
+    @IsDate()
+    updatedAt!: Date;
 }
