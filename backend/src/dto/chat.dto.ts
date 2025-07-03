@@ -1,8 +1,43 @@
+import { Expose } from 'class-transformer';
 import { BaseDomainModel } from './base.dto.js';
+import { IsDate, IsString, IsUUID } from 'class-validator';
+import { UUIDTypes } from 'uuid';
 
 export class ChatDomainModel extends BaseDomainModel {
     accountId!: string;
     attendeeName!: string;
     attendeeProviderId!: string;
     attendeePictureUrl!: string;
+}
+
+export class CreateChatRequestDto implements Omit<ChatDomainModel, '_id' | 'createdAt' | 'updatedAt' | '__v' | 'deletedAt'> {
+    @Expose()
+    @IsString()
+    accountId!: string;
+
+    @Expose()
+    @IsString()
+    attendeeName!: string;
+
+    @Expose()
+    @IsString()
+    attendeeProviderId!: string;
+
+    @Expose()
+    @IsString()
+    attendeePictureUrl!: string;
+}
+
+export class ChatResponseDto extends CreateChatRequestDto {
+    @Expose()
+    @IsUUID('4', { message: 'Invalid chat ID. Must be a valid UUID v4.' })
+    _id!: UUIDTypes;
+
+    @Expose()
+    @IsDate()
+    createdAt!: Date;
+
+    @Expose()
+    @IsDate()
+    updatedAt!: Date;
 }
