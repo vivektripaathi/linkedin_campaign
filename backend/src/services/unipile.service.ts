@@ -4,21 +4,20 @@ import { UnipileClient } from "unipile-node-sdk"
 import { InvalidUnipileCredentialsException, NotFoundException } from "../utils/exceptions.js";
 
 export class UnipileService {
-    private client: UnipileClient;
-
-    constructor() {
-        this.client = new UnipileClient(
-            process.env.UNICIPILE_API_BASE_URL as string,
+    private _getClient() {
+        return new UnipileClient(
+            process.env.UNIPILE_API_BASE_URL as string,
             process.env.UNIPILE_API_KEY as string
         );
     }
+
 
     async connectLinkedin(
         sessionCookie: string,
         userAgent: string
     ): Promise<UnipileConnectSuccessResponse> {
         const response = await axios.post<UnipileConnectSuccessResponse>(
-            `${process.env.UNIPILE_API_BASE_URL}/accounts`,
+            `${process.env.UNIPILE_API_BASE_URL}/api/v1/accounts`,
             {
                 provider: "LINKEDIN",
                 'access_token': sessionCookie,
@@ -52,7 +51,8 @@ export class UnipileService {
 
     async retrieveAccount(accountId: string): Promise<IAccount> {
         try {
-            const response = await this.client.account.getOne(accountId)
+            const client = this._getClient();
+            const response = await client.account.getOne(accountId)
             return this._prepareAccount(response);
         } catch (error) {
             throw new NotFoundException(`Account does not exists with ${accountId}`);
@@ -70,7 +70,8 @@ export class UnipileService {
 
     async getAllAttendees(): Promise<Array<IAttendee>> {
         try {
-            const response = await this.client.messaging.getAllAttendees()
+            const client = this._getClient();
+            const response = await client.messaging.getAllAttendees()
             return response?.items?.map(this._prepareAttendee.bind(this));
         } catch (error) {
             throw error
@@ -97,10 +98,11 @@ export class UnipileService {
     }
 
 
-    async getAllChats(): Promise<Array<IChatWithAttendee> | undefined> {
+    async getAllChats(): Promise<Array<IChatWithAttendee>> {
         try {
+            const client = this._getClient();
             const attendees = await this.getAllAttendees();
-            const chatsResponse = await this.client.messaging.getAllChats()
+            const chatsResponse = await client.messaging.getAllChats()
             const chats = chatsResponse?.items?.map(this._prepareChat.bind(this));
             return this._mergeChatsWithAttendees(chats, attendees);
         } catch (error) {
@@ -120,7 +122,8 @@ export class UnipileService {
 
     async getAllMessagesFromChat(chatId: string): Promise<Array<IMessage>> {
         try {
-            const response = await this.client.messaging.getAllMessagesFromChat({
+            const client = this._getClient();
+            const response = await client.messaging.getAllMessagesFromChat({
                 chat_id: chatId,
             });
             return response?.items?.map(this._prepareMessage.bind(this))
