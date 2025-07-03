@@ -49,15 +49,20 @@ export class MessageController {
     }
 
 
+    public async createBulkMessagesUseCase(createMessagesRequest: any[]): Promise<MessageResponseDto[]> {
+        const validMessages = await this._validateAndPrepareMessagePayloads(createMessagesRequest);
+        const createdMessages = await this.messageDao.bulkCreate(validMessages);
+        return await this._validateMessageResponses(createdMessages);
+    }
+
+
     async bulkCreateMessages(req: Request, res: Response) {
         const createMessagesRequest = Array.isArray(req.body) ? req.body : [];
         if (!createMessagesRequest.length) {
             throw new InvalidRequestException('Request body must be a non-empty array of messages');
         }
 
-        const validMessages = await this._validateAndPrepareMessagePayloads(createMessagesRequest);
-        const createdMessages = await this.messageDao.bulkCreate(validMessages);
-        const response = await this._validateMessageResponses(createdMessages);
+        const response = this.createBulkMessagesUseCase(createMessagesRequest)
 
         return successResponse(res, response, 201);
     }
