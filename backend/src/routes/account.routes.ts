@@ -16,4 +16,5 @@ const accountController = new AccountController(
 );
 
 export default Router()
+    .get('', wrapAsync(accountController.getAllAccounts.bind(accountController)))
     .post('/link', wrapAsync(accountController.LinkAccountAndOnboardUser.bind(accountController)))
