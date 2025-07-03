@@ -18,7 +18,7 @@ export class MessageController {
             }
 
             const domainMessage: MessageDomainModel = {
-                _id: crypto.randomUUID(),
+                _id: messageDto.id,
                 text: messageDto.text,
                 chatId: messageDto.chatId,
                 timestamp: messageDto.timestamp,

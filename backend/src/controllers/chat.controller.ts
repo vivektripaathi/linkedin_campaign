@@ -18,7 +18,7 @@ export class ChatController {
             }
 
             const domainChat: ChatDomainModel = {
-                _id: crypto.randomUUID(),
+                _id: chatDto.id,
                 accountId: chatDto.accountId,
                 attendeeName: chatDto.attendeeName,
                 attendeeProviderId: chatDto.attendeeProviderId,

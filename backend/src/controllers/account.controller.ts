@@ -15,12 +15,11 @@ export class AccountController {
 
     private _prepareCreateAccountPayload(dto: CreateAccountRequestDto): AccountDomainModel {
         return {
-            _id: crypto.randomUUID(),
+            _id: dto.id,
             name: dto.name,
             username: dto.username,
             providerId: dto.providerId,
             publicIdentifier: dto.publicIdentifier,
-            attendeeProviderId: dto.attendeeProviderId,
             createdAt: new Date(),
             updatedAt: new Date(),
             deletedAt: null,
