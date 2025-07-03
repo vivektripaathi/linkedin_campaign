@@ -49,19 +49,23 @@ export class ChatController {
     }
 
 
+    public async createBulkChatsUseCase(createChatsRequest: any[]): Promise<ChatResponseDto[]> {
+        const validChats = await this._validateAndPrepareChatPayloads(createChatsRequest);
+        const createdChats = await this.chatDao.bulkCreate(validChats);
+        return await this._validateChatResponses(createdChats);
+    }
+
+
     async bulkCreateChats(req: Request, res: Response) {
         const createChatsRequest = Array.isArray(req.body) ? req.body : [];
         if (!createChatsRequest.length) {
             throw new InvalidRequestException('Request body must be a non-empty array of chats');
         }
 
-        const validChats = await this._validateAndPrepareChatPayloads(createChatsRequest);
-        const createdChats = await this.chatDao.bulkCreate(validChats);
-        const response = await this._validateChatResponses(createdChats);
+        const response = this.createBulkChatsUseCase(createChatsRequest)
 
         return successResponse(res, response, 201);
     }
-
 
 
     async getAllChats(_: Request, res: Response) {
