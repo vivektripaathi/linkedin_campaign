@@ -6,7 +6,7 @@ import { UUIDTypes } from 'uuid';
 export class MessageDomainModel extends BaseDomainModel {
     text!: string;
     chatId!: string;
-    timestamp!: Date;
+    timestamp!: string;
     senderProviderId!: string;
 }
 
@@ -24,8 +24,8 @@ export class CreateMessageRequestDto implements Omit<MessageDomainModel, '_id' |
     chatId!: string;
 
     @Expose()
-    @IsDate()
-    timestamp!: Date;
+    @IsString()
+    timestamp!: string;
 
     @Expose()
     @IsString()

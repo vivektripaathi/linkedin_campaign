@@ -13,7 +13,7 @@ const MessageSchema = new Schema<MessageDomainModel>({
         ref: 'Chat',
     },
     text: { type: String, required: true },
-    timestamp: { type: Date, required: true },
+    timestamp: { type: String, required: true },
     senderProviderId: { type: String, required: true },
 }, { collection: 'messages', timestamps: true });
 
