@@ -8,6 +8,7 @@ import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
 import { DataTable } from "@components/data-table";
 import { createAccountColumns } from "~/lib/components/column-definitions/account.columns";
+import { DeleteConfirmationDialog } from "~/lib/components/delete-confirmation-dialog";
 
 export function Accounts() {
     const [loading, setLoading] = useState(false);
@@ -16,6 +17,10 @@ export function Accounts() {
     const [selectedAccounts, setSelectedAccounts] = useState<
         AccountViewInterface | undefined
     >(undefined);
+    const [deletingAccount, setDeletingAccount] = useState<
+        AccountViewInterface | undefined
+    >(undefined);
+    const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
 
     const fetchAccounts = async () => {
         setLoading(true);
@@ -37,12 +42,21 @@ export function Accounts() {
         }
     };
 
-    const deleteAccount = async () => {};
+    const deleteAccount = async (
+        accountToDelete: AccountViewInterface | undefined
+    ) => {
+        console.log(
+            `Got request to delete account with id: ${accountToDelete?.id}`
+        );
+    };
+
+    const openDeleteDialog = (accountToDelete: AccountViewInterface) => {
+        setDeletingAccount(accountToDelete);
+        setShowDeleteDialog(true);
+    };
 
     const columns = createAccountColumns({
-        deleteAccount: (account) => {
-            setSelectedAccounts(account);
-        },
+        deleteAccount: openDeleteDialog,
     });
 
     const filteredAccounts = accounts.filter(
@@ -101,6 +115,14 @@ export function Accounts() {
                     />
                 </div>
             </div>
+
+            <DeleteConfirmationDialog
+                open={showDeleteDialog}
+                onOpenChange={setShowDeleteDialog}
+                onConfirm={() => deleteAccount(deletingAccount)}
+                title="Delete Account"
+                description="Are you sure you want to delete the selected account? This action cannot be undone."
+            />
         </div>
     );
 }
