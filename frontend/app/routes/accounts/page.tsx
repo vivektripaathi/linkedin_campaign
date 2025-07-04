@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, Search } from "lucide-react";
+import { Plug, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import type { AccountViewInterface } from "@lib/types";
@@ -9,18 +9,18 @@ import { Input } from "@components/ui/input";
 import { DataTable } from "@components/data-table";
 import { createAccountColumns } from "~/lib/components/column-definitions/account.columns";
 import { DeleteConfirmationDialog } from "~/lib/components/delete-confirmation-dialog";
+import { CreateAccountForm } from "~/lib/components/create-account-form";
+import type { CreateAccountFormData } from "~/lib/validations";
 
 export function Accounts() {
-    const [loading, setLoading] = useState(false);
-    const [searchQuery, setSearchQuery] = useState("");
-    const [accounts, setAccounts] = useState<AccountViewInterface[]>([]);
-    const [selectedAccounts, setSelectedAccounts] = useState<
-        AccountViewInterface | undefined
-    >(undefined);
-    const [deletingAccount, setDeletingAccount] = useState<
-        AccountViewInterface | undefined
-    >(undefined);
-    const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+    const [loading, setLoading] = useState(false),
+        [searchQuery, setSearchQuery] = useState(""),
+        [accounts, setAccounts] = useState<AccountViewInterface[]>([]),
+        [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false),
+        [showAccountForm, setShowAccountForm] = useState<boolean>(false),
+        [deletingAccount, setDeletingAccount] = useState<
+            AccountViewInterface | undefined
+        >(undefined);
 
     const fetchAccounts = async () => {
         setLoading(true);
@@ -48,6 +48,10 @@ export function Accounts() {
         console.log(
             `Got request to delete account with id: ${accountToDelete?.id}`
         );
+    };
+
+    const createAccount = async (account?: CreateAccountFormData) => {
+        console.log(`Got request to create account: ${account}`);
     };
 
     const openDeleteDialog = (accountToDelete: AccountViewInterface) => {
@@ -103,8 +107,8 @@ export function Accounts() {
                             />
                         </div>
                         <div className="flex gap-2">
-                            <Button>
-                                <Plus /> Add Account
+                            <Button onClick={() => setShowAccountForm(true)}>
+                                <Plug /> Connect an account
                             </Button>
                         </div>
                     </div>
@@ -115,6 +119,12 @@ export function Accounts() {
                     />
                 </div>
             </div>
+
+            <CreateAccountForm
+                open={showAccountForm}
+                onClose={() => setShowAccountForm(false)}
+                onSubmit={createAccount}
+            />
 
             <DeleteConfirmationDialog
                 open={showDeleteDialog}

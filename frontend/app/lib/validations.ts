@@ -20,3 +20,10 @@ export const linkedInProfileSchema = z.object({
 })
 
 export type LinkedInProfileFormData = z.infer<typeof linkedInProfileSchema>
+
+export const createAccountSchema = z.object({
+  sessionCookie: z.string().min(1, "Session cookie is required"),
+  userAgent: z.string().min(1, "User agent title is required")
+})
+
+export type CreateAccountFormData = z.infer<typeof createAccountSchema>
