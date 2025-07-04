@@ -57,3 +57,20 @@ export interface ILead {
 export type LeadViewInterface = Omit<ILead, "_id" | "createdAt" | "updatedAt"> & {
     id: string;
 };
+
+
+// Accounts Types
+
+export interface IAccount {
+    _id: string,
+    name: string,
+    username: string,
+    providerId: string,
+    publicIdentifier: string,
+    createdAt: string,
+    updatedAt: string,
+}
+
+export type AccountViewInterface = Omit<IAccount, "_id" | "createdAt" | "updatedAt"> & {
+    id: string;
+};
