@@ -9,13 +9,12 @@ export class Attendee {
 
 export class NewMessageWebhook {
     chat_id!: string;
+    message_id!: string;
     message!: string;
     timestamp!: string;
     account_id!: string;
-    sender!:  Array<Attendee>;
+    sender!:  Attendee;
     attendees!: Array<Attendee>;
-    attendeeProviderId!: string;
-    attendeePictureUrl?: string;
 }
 
 export class NewMessageWebhookRequestDto implements NewMessageWebhook{
@@ -25,6 +24,10 @@ export class NewMessageWebhookRequestDto implements NewMessageWebhook{
 
     @Expose()
     @IsString()
+    message_id!: string;
+
+    @Expose()
+    @IsString()
     message!: string;
 
     @Expose()
@@ -36,21 +39,11 @@ export class NewMessageWebhookRequestDto implements NewMessageWebhook{
     account_id!: string;
 
     @Expose()
-    @IsArray()
     @Type(() => Attendee)
-    sender!: Array<Attendee>;
+    sender!: Attendee;
 
     @Expose()
     @IsArray()
     @Type(() => Attendee)
     attendees!: Array<Attendee>;
-
-    @Expose()
-    @IsString()
-    attendeeProviderId!: string;
-
-    @Expose()
-    @IsOptional()
-    @IsString()
-    attendeePictureUrl?: string;
 }
