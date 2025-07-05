@@ -93,7 +93,7 @@ export default function Chats() {
 
         socket.on("connect", () => {
             console.log("✅ Socket connected:", socket.id);
-            socket.emit("join", "YOUR_ACCOUNT_ID"); // set your actual account id here
+            socket.emit("join", "YOUR_ACCOUNT_ID");
         });
 
         socket.on(
