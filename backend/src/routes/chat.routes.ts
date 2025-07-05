@@ -7,4 +7,5 @@ const chatController = new ChatController(new ChatDao());
 
 export default Router()
     .get('', wrapAsync(chatController.getAllChats.bind(chatController)))
+    .get('/:id', wrapAsync(chatController.getChatById.bind(chatController)))
     .post('/bulk', wrapAsync(chatController.bulkCreateChats.bind(chatController)))

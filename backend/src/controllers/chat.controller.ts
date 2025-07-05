@@ -1,7 +1,9 @@
+import { Request, Response } from "express";
 import { ChatDao } from "../dao/chat.dao.js";
+import { ParamStringIdRequestDto } from "../dto/base.dto.js";
 import { ChatDomainModel, ChatResponseDto, CreateChatRequestDto } from "../dto/chat.dto.js";
 import { successResponse } from "../utils/apiResponse.js";
-import { BadResponseException, InvalidRequestException } from "../utils/exceptions.js";
+import { BadResponseException, InvalidRequestException, NotFoundException } from "../utils/exceptions.js";
 import { validateAndParseDto } from "../utils/validateAndParseDto.js";
 
 export class ChatController {
@@ -80,4 +82,21 @@ export class ChatController {
 
         return successResponse(res, chats, 200);
     };
+
+    async getChatByIdUseCase(chatId: string) {
+        const chat = await this.chatDao.getById(chatId);
+        if (!chat) throw new NotFoundException(`Campaign with id ${chatId} not found`);
+
+        const [response, responseErrors] = await validateAndParseDto(ChatResponseDto, chat);
+        if (responseErrors.length) throw new BadResponseException(responseErrors.join(', '));
+
+        return response;
+    }
+
+    async getChatById(req: Request, res: Response) {
+        const [getRequest, errors] = await validateAndParseDto(ParamStringIdRequestDto, req.params);
+        if (errors.length) throw new InvalidRequestException(errors.join(', '));
+
+        return successResponse(res, await this.getChatByIdUseCase(getRequest.id), 200);
+    }
 }
