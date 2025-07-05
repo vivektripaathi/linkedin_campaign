@@ -99,4 +99,29 @@ export class ChatController {
 
         return successResponse(res, await this.getChatByIdUseCase(getRequest.id), 200);
     }
+
+    private _prepareChatDomainModel(dto: CreateChatRequestDto): ChatDomainModel {
+        return {
+            _id: dto.id,
+            accountId: dto.accountId,
+            attendeeName: dto.attendeeName,
+            attendeeProviderId: dto.attendeeProviderId,
+            attendeePictureUrl: dto.attendeePictureUrl,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            deletedAt: null,
+        }
+    }
+
+    async createMessageUseCase(
+        createMessageRequest: CreateChatRequestDto
+    ): Promise<ChatResponseDto> {
+        const createdChat = await this.chatDao.create(
+            this._prepareChatDomainModel(createMessageRequest)
+        );
+
+        const [response, responseErrors] = await validateAndParseDto(ChatResponseDto, createdChat);
+        if (responseErrors.length) throw new BadResponseException(responseErrors.join(', '));
+        return response;
+    }
 }
