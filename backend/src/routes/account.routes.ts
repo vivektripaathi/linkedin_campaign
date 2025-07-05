@@ -11,7 +11,7 @@ import { MessageDao } from '../dao/message.dao.js';
 const accountController = new AccountController(
     new AccountDao(),
     new UnipileService(),
-    new ChatController(new ChatDao),
+    new ChatController(new ChatDao, new UnipileService()),
     new MessageController(new MessageDao)
 );
 

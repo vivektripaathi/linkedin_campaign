@@ -5,9 +5,12 @@ import { ChatController } from '../controllers/chat.controller.js';
 import { MessageController } from '../controllers/message.controller.js';
 import { ChatDao } from '../dao/chat.dao.js';
 import { MessageDao } from '../dao/message.dao.js';
+import { UnipileService } from '../services/unipile.service.js';
 
 const webhookController = new WebhookController(
-    new ChatController(new ChatDao),
+    new ChatController(
+        new ChatDao, new UnipileService()
+    ),
     new MessageController(new MessageDao)
 );
 
