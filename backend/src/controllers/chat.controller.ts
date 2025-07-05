@@ -1,13 +1,17 @@
 import { Request, Response } from "express";
 import { ChatDao } from "../dao/chat.dao.js";
 import { ParamStringIdRequestDto } from "../dto/base.dto.js";
-import { ChatDomainModel, ChatResponseDto, CreateChatRequestDto } from "../dto/chat.dto.js";
+import { ChatDomainModel, ChatResponseDto, CreateChatRequestDto, SendMessageRequestDto } from "../dto/chat.dto.js";
 import { successResponse } from "../utils/apiResponse.js";
 import { BadResponseException, InvalidRequestException, NotFoundException } from "../utils/exceptions.js";
 import { validateAndParseDto } from "../utils/validateAndParseDto.js";
+import { UnipileService } from "../services/unipile.service.js";
 
 export class ChatController {
-    constructor(private readonly chatDao: ChatDao) { }
+    constructor(
+        private readonly chatDao: ChatDao,
+        private readonly unipileService: UnipileService
+    ) { }
 
 
     private async _validateAndPrepareChatPayloads(createChatsRequest: any[]): Promise<ChatDomainModel[]> {
@@ -123,5 +127,19 @@ export class ChatController {
         const [response, responseErrors] = await validateAndParseDto(ChatResponseDto, createdChat);
         if (responseErrors.length) throw new BadResponseException(responseErrors.join(', '));
         return response;
+    }
+
+    async sendMessage(req: Request, res: Response) {
+        const [messageRequest, errors] = await validateAndParseDto(SendMessageRequestDto, {
+            ...req.body,
+            ...req.params,
+        });
+        if (errors.length) throw new InvalidRequestException(errors.join(', '));
+
+        await this.unipileService.sendMessageInChat({
+            chatId: messageRequest.id,
+            text: messageRequest.text
+        })
+        return successResponse(res, 200);
     }
 }
