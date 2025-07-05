@@ -99,8 +99,7 @@ export function ChatList({
                                     <Avatar className="h-10 w-10 md:h-10 md:w-10">
                                         <AvatarImage
                                             src={
-                                                chat.attendeePictureUrl ||
-                                                "/placeholder.svg"
+                                                chat.attendeePictureUrl
                                             }
                                             alt={chat.attendeeName}
                                         />
