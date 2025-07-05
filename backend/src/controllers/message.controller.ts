@@ -8,6 +8,21 @@ export class MessageController {
     constructor(private readonly messageDao: MessageDao) { }
 
 
+    private _prepareMessageDomainModel(dto: CreateMessageRequestDto): MessageDomainModel {
+        return {
+            _id: dto.id,
+            text: dto.text,
+            chatId: dto.chatId,
+            timestamp: dto.timestamp,
+            accountId: dto.accountId,
+            senderProviderId: dto.senderProviderId,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            deletedAt: null,
+        };
+    }
+
+
     private async _validateAndPrepareMessagePayloads(createMessagesRequest: any[]): Promise<MessageDomainModel[]> {
         const validMessages: MessageDomainModel[] = [];
 
@@ -81,4 +96,17 @@ export class MessageController {
 
         return successResponse(res, messages, 200);
     };
+
+
+    async createMessageUseCase(
+        createMessageRequest: CreateMessageRequestDto
+    ): Promise<MessageResponseDto> {
+        const createdMessage = await this.messageDao.create(
+            this._prepareMessageDomainModel(createMessageRequest)
+        );
+
+        const [response, responseErrors] = await validateAndParseDto(MessageResponseDto, createdMessage);
+        if (responseErrors.length) throw new BadResponseException(responseErrors.join(', '));
+        return response;
+    }
 }
