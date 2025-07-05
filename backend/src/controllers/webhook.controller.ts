@@ -24,6 +24,7 @@ export class WebhookController {
             text: newMessageRequest.message,
             chatId: newMessageRequest.chat_id,
             timestamp: newMessageRequest.timestamp,
+            // TODO: get chat_attendee by id to get profile pic url
             senderProviderId: newMessageRequest.sender.attendee_provider_id
         }
     }
