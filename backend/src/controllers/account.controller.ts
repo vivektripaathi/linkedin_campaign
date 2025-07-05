@@ -83,7 +83,7 @@ export class AccountController {
         const account = await this.unipileService.retrieveAccount(linkedAccount.account_id);
 
         //create account entry in db
-        await this._createAccount(account);
+        const createdAccount = await this._createAccount(account);
 
         //list all chats
         const chats = await this.unipileService.getAllChats();
@@ -97,6 +97,6 @@ export class AccountController {
         //create messages entries in db
         await this.MessageController.createBulkMessagesUseCase(messages);
 
-        return successResponse(res, 201);
+        return successResponse(res, createdAccount, 201);
     }
 }

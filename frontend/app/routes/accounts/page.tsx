@@ -3,7 +3,7 @@
 import { Plug, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import type { AccountViewInterface } from "@lib/types";
+import type { AccountViewInterface, IAccount } from "@lib/types";
 import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
 import { DataTable } from "@components/data-table";
@@ -14,6 +14,7 @@ import type { CreateAccountFormData } from "~/lib/validations";
 
 export function Accounts() {
     const [loading, setLoading] = useState(false),
+        [isCreatingAccount, setIsCreatingAccount] = useState<boolean>(false),
         [searchQuery, setSearchQuery] = useState(""),
         [accounts, setAccounts] = useState<AccountViewInterface[]>([]),
         [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false),
@@ -21,6 +22,15 @@ export function Accounts() {
         [deletingAccount, setDeletingAccount] = useState<
             AccountViewInterface | undefined
         >(undefined);
+
+    const _prepareAccountForView = (
+        account: IAccount
+    ): AccountViewInterface => {
+        return {
+            ...account,
+            id: account?._id,
+        };
+    };
 
     const fetchAccounts = async () => {
         setLoading(true);
@@ -51,7 +61,31 @@ export function Accounts() {
     };
 
     const createAccount = async (account?: CreateAccountFormData) => {
-        console.log(`Got request to create account: ${account}`);
+        try {
+            setIsCreatingAccount(true);
+            const response = await fetch(
+                `${import.meta.env.VITE_API_BASE_URL}/api/accounts/link`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(account),
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Failed to create accounts");
+            }
+
+            const data: IAccount = await response.json();
+            setAccounts([...accounts, _prepareAccountForView(data)]);
+        } catch (error) {
+            console.log(error);
+            toast.error("Error connecting account.");
+        } finally {
+            setIsCreatingAccount(false);
+        }
     };
 
     const openDeleteDialog = (accountToDelete: AccountViewInterface) => {
