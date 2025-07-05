@@ -7,6 +7,7 @@ import { ChatController } from './chat.controller.js';
 import { MessageController } from './message.controller.js';
 import { CreateMessageRequestDto } from '../dto/message.dto.js';
 import { CreateChatRequestDto } from '../dto/chat.dto.js';
+import { io } from '../utils/socket.js';
 
 export class WebhookController {
 
@@ -62,6 +63,24 @@ export class WebhookController {
         const createdMessage = await this.messageController.createMessageUseCase(
             createMessageRequest
         );
+
+        io.to(newMessageRequest.account_id).emit("new_message", {
+            chat: {
+                id: newMessageRequest.chat_id,
+                accountId: newMessageRequest.account_id,
+                attendeeName: newMessageRequest.attendees[0].attendee_name,
+                attendeeProviderId: newMessageRequest.attendees[0].attendee_provider_id,
+                attendeePictureUrl: newMessageRequest.attendees[0].attendee_profile_url,
+            },
+            message: {
+                id: createdMessage.id,
+                accountId: createdMessage.accountId,
+                chatId: createdMessage.chatId,
+                text: createdMessage.text,
+                timestamp: createdMessage.timestamp,
+                senderProviderId: createdMessage.senderProviderId,
+            }
+        });
 
         return successResponse(res, 200);
     }
