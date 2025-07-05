@@ -11,6 +11,7 @@ const AccountSchema = new Schema<AccountDomainModel>({
     username: { type: String, required: true },
     providerId: { type: String, required: true },
     publicIdentifier: { type: String, required: true },
+    deletedAt: { type: Date, default: null },
 }, { collection: 'accounts', timestamps: true });
 
 export const Account: Model<AccountDomainModel> = model('Account', AccountSchema);

@@ -16,6 +16,7 @@ const MessageSchema = new Schema<MessageDomainModel>({
     text: { type: String, required: true },
     timestamp: { type: String, required: true },
     senderProviderId: { type: String, required: true },
+    deletedAt: { type: Date, default: null },
 }, { collection: 'messages', timestamps: true });
 
 export const Message: Model<MessageDomainModel> = model('Message', MessageSchema);

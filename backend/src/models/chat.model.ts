@@ -11,6 +11,7 @@ const ChatSchema = new Schema<ChatDomainModel>({
     attendeeName: { type: String, required: true },
     attendeeProviderId: { type: String, required: true },
     attendeePictureUrl: { type: String },
+    deletedAt: { type: Date, default: null },
 }, { collection: 'chats', timestamps: true });
 
 export const Chat: Model<ChatDomainModel> = model('Chat', ChatSchema);
