@@ -9,6 +9,7 @@ export type ViewInterface<T> = Omit<T, "_id" | "createdAt" | "updatedAt"> & {
     id: string;
 };
 
+
 // Campaign Types
 export enum CampaignStatus {
     ACTIVE = "active",
@@ -85,3 +86,36 @@ export interface IAccount {
 export type AccountViewInterface = Omit<IAccount, "_id" | "createdAt" | "updatedAt"> & {
     id: string;
 };
+
+
+// Chat Types
+
+export interface IChat extends IBase {
+    accountId: string;
+    attendeeName: string;
+    attendeeProviderId: string;
+    attendeePictureUrl: string | undefined;
+}
+
+export type ChatViewInterface = ViewInterface<IChat> & {
+    lastMessage?: string;
+    unreadCount?: number
+    isOnline?: boolean
+    lastSeen?: string
+}
+
+
+// Message Types
+
+export interface IMessage extends IBase {
+    accountId: string;
+    chatId: string;
+    text: string;
+    timestamp: string;
+    senderProviderId: string;
+}
+
+export type MessageViewInterface = ViewInterface<IMessage> & {
+    isRead?: boolean
+    deliveryStatus?: "sent" | "delivered" | "read" | "failed"
+}
