@@ -1,4 +1,4 @@
-import { LeadDomainModel } from "./lead.dto.js";
+import { LeadDomainModel } from "../../dto/lead.dto.js";
 
 export interface AgentLaunchResponse {
     containerId: string;

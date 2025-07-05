@@ -6,7 +6,7 @@ import {
     AlreadyRetrievedSearchResultsException,
     ErrorScrapingLeads
 } from "../utils/exceptions.js"
-import { LeadProfile } from "../dto/phantom-bustor.js"
+import { LeadProfile } from "../utils/types/phantom-bustor.js"
 
 
 export class LinkedInMessageService {

@@ -4,7 +4,7 @@ import {
     ContainerFetchResponse,
     ContainerResultObjectResponse,
     ContainerStatusEnum,
-} from '../dto/phantom-bustor.js';
+} from '../utils/types/phantom-bustor.js';
 
 
 export class PhantomBusterService {
