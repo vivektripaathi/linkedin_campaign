@@ -1,3 +1,14 @@
+//core
+export interface IBase {
+    _id: string;
+    createdAt: string,
+    updatedAt: string,
+}
+
+export type ViewInterface<T> = Omit<T, "_id" | "createdAt" | "updatedAt"> & {
+    id: string;
+};
+
 // Campaign Types
 export enum CampaignStatus {
     ACTIVE = "active",
