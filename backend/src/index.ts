@@ -9,6 +9,7 @@ import leadRoutes from './routes/lead.routes.js';
 import webhookRoutes from './routes/webhook.routes.js';
 import accountRoutes from './routes/account.routes.js';
 import chatRoutes from './routes/chat.routes.js';
+import messageRoutes from './routes/message.routes.js';
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ app.use('/api/personalized-message', linkedinRoutes);
 app.use('/api/leads', leadRoutes);
 app.use('/api/accounts', accountRoutes);
 app.use('/api/chats', chatRoutes);
+app.use('/api/messages', messageRoutes);
 app.use('/webhooks', webhookRoutes);
 
 // Error handling
