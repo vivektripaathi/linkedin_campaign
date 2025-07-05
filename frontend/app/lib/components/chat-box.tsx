@@ -23,16 +23,11 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
-import {
-    type ChatViewInterface,
-    type MessageViewInterface
-} from "@lib/types";
+import { type ChatViewInterface, type MessageViewInterface } from "@lib/types";
 
-
-import { cn } from "@lib/utils";
+import { cn, getInitials } from "@lib/utils";
 
 const CURRENT_USER_PROVIDER_ID = "ACoAAFBA9dUBBkgN3_tXHcj3uyjn2EXANH2W3Gg";
-
 
 interface ChatBoxProps {
     chat: ChatViewInterface | null;
@@ -83,14 +78,6 @@ export function ChatBox({
         });
     };
 
-    const getInitials = (name: string) => {
-        return name
-            .split(" ")
-            .map((n) => n[0])
-            .join("")
-            .toUpperCase();
-    };
-
     if (!chat) {
         return (
             <div className="flex-1 flex items-center justify-center bg-muted/20 w-full overflow-hidden">
@@ -130,9 +117,7 @@ export function ChatBox({
                     <div className="relative shrink-0">
                         <Avatar className="h-8 w-8 md:h-10 md:w-10">
                             <AvatarImage
-                                src={
-                                    chat.attendeePictureUrl
-                                }
+                                src={chat.attendeePictureUrl}
                                 alt={chat.attendeeName}
                             />
                             <AvatarFallback>
@@ -218,9 +203,7 @@ export function ChatBox({
                                     {!isCurrentUser && (
                                         <Avatar className="h-6 w-6 md:h-8 md:w-8 shrink-0">
                                             <AvatarImage
-                                                src={
-                                                    chat.attendeePictureUrl
-                                                }
+                                                src={chat.attendeePictureUrl}
                                                 alt={chat.attendeeName}
                                             />
                                             <AvatarFallback className="text-xs">

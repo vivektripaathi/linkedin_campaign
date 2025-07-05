@@ -15,6 +15,7 @@ import {
     AvatarFallback,
     AvatarImage
 } from "@components/ui/avatar";
+import { getInitials } from "~/lib/utils";
 
 export const createLeadColumns = ({ generateLinkedInMessage }: { generateLinkedInMessage: (lead: LeadViewInterface) => void }): ColumnDef<LeadViewInterface>[] => [
     {
@@ -37,12 +38,7 @@ export const createLeadColumns = ({ generateLinkedInMessage }: { generateLinkedI
                     React.createElement(
                         AvatarFallback,
                         null,
-                        (fullName || "")
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")
-                            .toUpperCase()
-                            .slice(0, 2)
+                        getInitials(fullName)
                     )
                 ),
                 React.createElement("span", { className: "font-medium" }, fullName)
