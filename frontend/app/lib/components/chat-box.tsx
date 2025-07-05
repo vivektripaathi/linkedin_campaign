@@ -34,6 +34,7 @@ interface ChatBoxProps {
     messages: MessageViewInterface[];
     onSendMessage: (chatId: string, content: string) => void;
     onBack?: () => void;
+    isSending: boolean
 }
 
 export function ChatBox({
@@ -41,6 +42,7 @@ export function ChatBox({
     messages,
     onSendMessage,
     onBack,
+    isSending,
 }: ChatBoxProps) {
     const [message, setMessage] = useState("");
     const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -290,7 +292,7 @@ export function ChatBox({
                         </Button>
                         <Button
                             onClick={handleSendMessage}
-                            disabled={!message.trim()}
+                            disabled={!message.trim() || isSending}
                             className="h-9 shrink-0 mb-0.5"
                         >
                             <Send className="h-4 w-4" />
