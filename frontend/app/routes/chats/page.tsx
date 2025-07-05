@@ -6,8 +6,12 @@ import { cn } from "@lib/utils";
 
 import { ChatList } from "@components/chat-list";
 import { ChatBox } from "@components/chat-box";
-import type { ChatViewInterface, MessageViewInterface } from "@lib/types";
-import { mockChats, mockChatMessages } from "@lib/mock-chat-data";
+import type {
+    ChatViewInterface,
+    IChat,
+    IMessage,
+    MessageViewInterface,
+} from "@lib/types";
 
 const CURRENT_USER_PROVIDER_ID = "ACoAAFBA9dUBBkgN3_tXHcj3uyjn2EXANH2W3Gg";
 
@@ -15,21 +19,74 @@ export default function Chats() {
     const [chats, setChats] = useState<ChatViewInterface[]>([]);
     const [messages, setMessages] = useState<MessageViewInterface[]>([]);
     const [selectedChatId, setSelectedChatId] = useState<string>();
-    const [loading, setLoading] = useState(true);
+    const [isPageLoading, setIsPageLoading] = useState(true);
     const [showChatList, setShowChatList] = useState(true);
 
+    const _prepareChatsForView = (chats: IChat[]): ChatViewInterface[] =>
+        chats.map((chat) => ({
+            id: chat?._id,
+            accountId: chat?.accountId,
+            attendeeName: chat?.attendeeName,
+            attendeeProviderId: chat?.attendeeProviderId,
+            attendeePictureUrl: chat?.attendeePictureUrl,
+        }));
+
+    const fetchChats = async (): Promise<ChatViewInterface[]> => {
+        try {
+            const response = await fetch(
+                `${import.meta.env.VITE_API_BASE_URL}/api/chats`
+            );
+            if (!response.ok) {
+                throw new Error("Failed to fetch chats");
+            }
+            const data = await response.json();
+            return _prepareChatsForView(data);
+        } catch (error) {
+            throw new Error("Failed to load chats");
+        }
+    };
+
+    const _prepareMessagesForView = (messages: IMessage[]): MessageViewInterface[] =>
+        messages.map((message) => ({
+            id: message?._id,
+            accountId: message?.accountId,
+            text: message?.text,
+            chatId: message?.chatId,
+            timestamp: message?.timestamp,
+            senderProviderId: message?.senderProviderId,
+        }));
+
+    const fetchMessages = async (): Promise<MessageViewInterface[]> => {
+        try {
+            const response = await fetch(
+                `${import.meta.env.VITE_API_BASE_URL}/api/messages`
+            );
+            if (!response.ok) {
+                throw new Error("Failed to fetch messages");
+            }
+            const data = await response.json();
+            return _prepareMessagesForView(data);
+        } catch (error) {
+            throw new Error("Failed to load messages");
+        }
+    };
+
+    const initializePage = async () => {
+        try {
+            setIsPageLoading(true);
+            setChats(await fetchChats());
+            setMessages(await fetchMessages());
+        } catch (error) {
+            toast.error(
+                (error instanceof Error ? error.message : "Failed to load page")
+            );
+        } finally {
+            setIsPageLoading(false);
+        }
+    }
+
     useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            // Simulate network delay
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-
-            setChats(mockChats);
-            setMessages(mockChatMessages);
-            setLoading(false);
-        };
-
-        fetchData();
+        initializePage();
     }, []);
 
     const selectedChat = chats.find((chat) => chat.id === selectedChatId);
@@ -74,13 +131,13 @@ export default function Chats() {
         setSelectedChatId(undefined);
     };
 
-    if (loading) {
+    if (isPageLoading) {
         return (
             <div className="flex h-screen items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                     <p className="text-muted-foreground">
-                        Loading campaigns...
+                        Loading chats...
                     </p>
                 </div>
             </div>
