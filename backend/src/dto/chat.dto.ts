@@ -1,5 +1,5 @@
 import { Expose } from 'class-transformer';
-import { BaseDomainModel } from './base.dto.js';
+import { BaseDomainModel, ParamStringIdRequestDto } from './base.dto.js';
 import { IsDate, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class ChatDomainModel extends BaseDomainModel {
@@ -44,4 +44,10 @@ export class ChatResponseDto extends CreateChatRequestDto {
     @Expose()
     @IsDate()
     updatedAt!: Date;
+}
+
+export class SendMessageRequestDto extends ParamStringIdRequestDto {
+    @Expose()
+    @IsString()
+    text!: string;
 }
