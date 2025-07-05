@@ -30,24 +30,29 @@ interface LinkedInMessageFormProps {
     open: boolean;
     onClose: () => void;
     onSubmit: (account?: CreateAccountFormData) => Promise<void>;
+    isSubmitting: boolean;
 }
 
 export function CreateAccountForm({
     open,
     onClose,
     onSubmit,
+    isSubmitting,
 }: LinkedInMessageFormProps) {
     const form = useForm<CreateAccountFormData>({
         resolver: zodResolver(createAccountSchema),
     });
 
     const handleClose = () => {
-        onClose();
-        form.reset();
+        if (!isSubmitting) {
+            onClose();
+            form.reset();
+        }
     };
 
     const handleSubmit = async (data: CreateAccountFormData) => {
         await onSubmit?.(data);
+        onClose();
         form.reset();
     };
 
@@ -81,6 +86,7 @@ export function CreateAccountForm({
                                             <Input
                                                 placeholder="Enter your li_at or li_a value"
                                                 {...field}
+                                                disabled={isSubmitting}
                                             />
                                         </FormControl>
                                         <DialogDescription>
@@ -100,11 +106,12 @@ export function CreateAccountForm({
                                 name="userAgent"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Job Title *</FormLabel>
+                                        <FormLabel>User Agent *</FormLabel>
                                         <FormControl>
                                             <Input
                                                 placeholder="Enter your user agent"
                                                 {...field}
+                                                disabled={isSubmitting}
                                             />
                                         </FormControl>
                                         <DialogDescription>
@@ -117,8 +124,14 @@ export function CreateAccountForm({
                                 )}
                             />
 
-                            <Button type="submit" className="w-full">
-                                Create Account
+                            <Button
+                                type="submit"
+                                className="w-full"
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting
+                                    ? "Connecting Account..."
+                                    : "Connect Account"}
                             </Button>
                         </form>
                     </Form>

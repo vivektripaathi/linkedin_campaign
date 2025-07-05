@@ -158,6 +158,7 @@ export function Accounts() {
                 open={showAccountForm}
                 onClose={() => setShowAccountForm(false)}
                 onSubmit={createAccount}
+                isSubmitting={isCreatingAccount}
             />
 
             <DeleteConfirmationDialog
