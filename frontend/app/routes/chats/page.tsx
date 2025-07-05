@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { cn } from "@lib/utils";
+import socket from "@lib/socket";
 
 import { ChatList } from "@components/chat-list";
 import { ChatBox } from "@components/chat-box";
@@ -46,7 +47,9 @@ export default function Chats() {
         }
     };
 
-    const _prepareMessagesForView = (messages: IMessage[]): MessageViewInterface[] =>
+    const _prepareMessagesForView = (
+        messages: IMessage[]
+    ): MessageViewInterface[] =>
         messages.map((message) => ({
             id: message?._id,
             accountId: message?.accountId,
@@ -78,16 +81,79 @@ export default function Chats() {
             setMessages(await fetchMessages());
         } catch (error) {
             toast.error(
-                (error instanceof Error ? error.message : "Failed to load page")
+                error instanceof Error ? error.message : "Failed to load page"
             );
         } finally {
             setIsPageLoading(false);
         }
-    }
+    };
 
     useEffect(() => {
         initializePage();
+
+        socket.on("connect", () => {
+            console.log("✅ Socket connected:", socket.id);
+            socket.emit("join", "YOUR_ACCOUNT_ID"); // set your actual account id here
+        });
+
+        socket.on(
+            "new_message",
+            ({
+                chat,
+                message,
+            }: {
+                chat: ChatViewInterface;
+                message: MessageViewInterface;
+            }) => {
+                console.log("📩 Received message via socket", {
+                    chat,
+                    message,
+                });
+
+                setMessages((prevMessages) => [...prevMessages, message]);
+
+                setChats((prevChats) => {
+                    const exists = prevChats.find((c) => c.id === chat.id);
+                    if (exists) {
+                        // update last message if it's existing
+                        return prevChats.map((c) =>
+                            c.id === chat.id
+                                ? { ...c, lastMessage: message.text }
+                                : c
+                        );
+                    } else {
+                        // new chat
+                        return [
+                            {
+                                id: chat.id,
+                                accountId: chat.accountId,
+                                attendeeName: chat.attendeeName,
+                                attendeeProviderId: chat.attendeeProviderId,
+                                attendeePictureUrl: chat.attendeePictureUrl,
+                                lastMessage: message.text,
+                            },
+                            ...prevChats,
+                        ];
+                    }
+                });
+            }
+        );
+
+        return () => {
+            socket.off("new_message");
+        };
     }, []);
+
+    useEffect(() => {
+        if (!chats.length) return;
+        const uniqueAccountIds = [
+            ...new Set(chats.map((chat) => chat.accountId)),
+        ];
+        uniqueAccountIds.forEach((accountId) => {
+            console.log("Joining socket room:", accountId);
+            socket.emit("join", accountId);
+        });
+    }, [chats]);
 
     const selectedChat = chats.find((chat) => chat.id === selectedChatId);
     const selectedChatMessages = messages.filter(
@@ -136,9 +202,7 @@ export default function Chats() {
             <div className="flex h-screen items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                    <p className="text-muted-foreground">
-                        Loading chats...
-                    </p>
+                    <p className="text-muted-foreground">Loading chats...</p>
                 </div>
             </div>
         );

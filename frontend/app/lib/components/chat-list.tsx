@@ -7,7 +7,7 @@ import { Button } from "@components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { Badge } from "@components/ui/badge";
 import { ScrollArea } from "@components/ui/scroll-area";
-import { cn } from "@lib/utils";
+import { cn, getInitials } from "@lib/utils";
 import type { ChatViewInterface } from "@lib/types";
 
 interface ChatListProps {
@@ -23,8 +23,12 @@ export function ChatList({
 }: ChatListProps) {
     const [searchQuery, setSearchQuery] = useState("");
 
-    const filteredChats = chats.filter((chat) =>
-        chat.attendeeName.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredChats = chats.filter(
+        (chat) =>
+            chat.attendeeName
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase()) ||
+            chat.accountId.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     const formatTime = (timestamp: string) => {
@@ -47,14 +51,6 @@ export function ChatList({
             const diffInDays = Math.floor(diffInHours / 24);
             return `${diffInDays}d`;
         }
-    };
-
-    const getInitials = (name: string) => {
-        return name
-            .split(" ")
-            .map((n) => n[0])
-            .join("")
-            .toUpperCase();
     };
 
     return (
