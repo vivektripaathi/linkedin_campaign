@@ -24,13 +24,15 @@ import {
     DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
 import {
-    CURRENT_USER_PROVIDER_ID, 
     type ChatViewInterface,
     type MessageViewInterface
 } from "@lib/types";
 
 
 import { cn } from "@lib/utils";
+
+const CURRENT_USER_PROVIDER_ID = "ACoAAFBA9dUBBkgN3_tXHcj3uyjn2EXANH2W3Gg";
+
 
 interface ChatBoxProps {
     chat: ChatViewInterface | null;
@@ -129,8 +131,7 @@ export function ChatBox({
                         <Avatar className="h-8 w-8 md:h-10 md:w-10">
                             <AvatarImage
                                 src={
-                                    chat.attendeePictureUrl ||
-                                    "/placeholder.svg"
+                                    chat.attendeePictureUrl
                                 }
                                 alt={chat.attendeeName}
                             />
@@ -219,8 +220,7 @@ export function ChatBox({
                                         <Avatar className="h-6 w-6 md:h-8 md:w-8 shrink-0">
                                             <AvatarImage
                                                 src={
-                                                    chat.attendeePictureUrl ||
-                                                    "/placeholder.svg"
+                                                    chat.attendeePictureUrl
                                                 }
                                                 alt={chat.attendeeName}
                                             />
