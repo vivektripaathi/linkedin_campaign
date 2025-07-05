@@ -22,6 +22,7 @@ export default function Chats() {
     const [selectedChatId, setSelectedChatId] = useState<string>();
     const [isPageLoading, setIsPageLoading] = useState(true);
     const [showChatList, setShowChatList] = useState(true);
+    const [isSending, setIsSending] = useState<boolean>(false);
 
     const _prepareChatsForView = (chats: IChat[]): ChatViewInterface[] =>
         chats.map((chat) => ({
@@ -160,31 +161,35 @@ export default function Chats() {
         (msg) => msg.chatId === selectedChatId
     );
 
-    const handleSendMessage = (chatId: string, content: string) => {
-        const newMessage: MessageViewInterface = {
-            id: Date.now().toString(),
-            accountId: "t5fp2R9rSyCQGivyj7zSgA", // Use your account ID
-            chatId,
-            text: content,
-            timestamp: new Date().toISOString(),
-            senderProviderId: CURRENT_USER_PROVIDER_ID,
-            // Optional enhancements
-            isRead: true,
-            deliveryStatus: "sent",
-        };
+    const handleSendMessage = async (chatId: string, content: string) => {
+        try {
+            setIsSending(true);
+            const response = await fetch(
+                `${
+                    import.meta.env.VITE_API_BASE_URL
+                }/api/chats/${chatId}/messages`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ text: content }),
+                }
+            );
 
-        setMessages((prevMessages) => [...prevMessages, newMessage]);
+            if (!response.ok) throw new Error("Failed to send message");
 
-        // Update last message in chat
-        setChats((prevChats) =>
-            prevChats.map((chat) =>
-                chat.id === chatId
-                    ? { ...chat, lastMessage: newMessage.text }
-                    : chat
-            )
-        );
-
-        toast.success("Message sent!");
+            toast.success("Message sent!");
+        } catch (error) {
+            console.error("Send message failed:", error);
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "Failed to send message"
+            );
+        } finally {
+            setIsSending(false);
+        }
     };
 
     const handleChatSelect = (chatId: string) => {
@@ -234,6 +239,7 @@ export default function Chats() {
                     messages={selectedChatMessages}
                     onSendMessage={handleSendMessage}
                     onBack={handleBackToChatList}
+                    isSending={isSending}
                 />
             </div>
         </div>
