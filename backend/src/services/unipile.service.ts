@@ -2,6 +2,7 @@ import axios from "axios";
 import { IAccount, IAttendee, IChat, IChatWithAttendee, IMessage, UnipileConnectFailureResponse, UnipileConnectSuccessResponse } from "../utils/types/unipile.js";
 import { UnipileClient } from "unipile-node-sdk"
 import { InvalidUnipileCredentialsException, NotFoundException } from "../utils/exceptions.js";
+import { SendMessageRequestDto } from "../dto/chat.dto.js";
 
 export class UnipileService {
     private _getClient() {
@@ -138,6 +139,20 @@ export class UnipileService {
             const client = this._getClient();
             const response = await client.messaging.getAllMessages()
             return response?.items?.map(this._prepareMessage.bind(this))
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async sendMessageInChat(
+        { chatId, text }: { chatId: string, text: string }
+    ): Promise<void> {
+        try {
+            const client = this._getClient();
+            await client.messaging.sendMessage({
+                chat_id: chatId,
+                text: text
+            })
         } catch (error) {
             throw error;
         }
