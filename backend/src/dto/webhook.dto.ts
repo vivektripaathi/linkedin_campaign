@@ -2,8 +2,16 @@ import { Expose, Type } from "class-transformer";
 import { IsArray, IsOptional, IsString } from "class-validator";
 
 export class Attendee {
+    @Expose()
+    @IsString()
     attendee_name!: string;
+
+    @Expose()
+    @IsString()
     attendee_provider_id!: string;
+
+    @Expose()
+    @IsString()
     attendee_profile_url!: string;
 }
 
