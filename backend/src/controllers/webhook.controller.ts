@@ -18,7 +18,6 @@ export class WebhookController {
     private _prepareCreateMessageRequest(
         newMessageRequest: NewMessageWebhookRequestDto
     ): CreateMessageRequestDto {
-        console.log("newMessageRequest.sender: ", newMessageRequest);
         return {
             id: newMessageRequest.message_id,
             accountId: newMessageRequest.account_id,
@@ -33,7 +32,7 @@ export class WebhookController {
         newMessageRequest: NewMessageWebhookRequestDto
     ): CreateChatRequestDto {
         return {
-            id: newMessageRequest.message_id,
+            id: newMessageRequest.chat_id,
             accountId: newMessageRequest.account_id,
             attendeeName: newMessageRequest.attendees[0].attendee_name,
             attendeeProviderId: newMessageRequest.attendees[0].attendee_provider_id,
