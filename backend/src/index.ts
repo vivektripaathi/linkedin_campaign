@@ -11,10 +11,16 @@ import webhookRoutes from './routes/webhook.routes.js';
 import accountRoutes from './routes/account.routes.js';
 import chatRoutes from './routes/chat.routes.js';
 import messageRoutes from './routes/message.routes.js';
+import http from 'http';
+import { initSocket } from './utils/socket.js';
+
 
 dotenv.config();
 
 const app = express();
+const server = http.createServer(app);
+
+initSocket(server);
 
 // Middleware
 app.use(cors());
@@ -41,7 +47,7 @@ connectDB(mongoUri);
 
 const port = process.env.PORT || 3000;
 
-app.listen(port, () => {
+server.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
 
