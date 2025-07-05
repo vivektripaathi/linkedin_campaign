@@ -7,6 +7,7 @@ import {
     SquareTerminal,
     Megaphone,
     Users,
+    MessageSquareText,
 } from "lucide-react";
 import { Separator } from "@components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
@@ -51,6 +52,11 @@ const data = {
             title: PAGE_TITLES[ROUTES.ACCOUNTS],
             url: ROUTES.ACCOUNTS,
             icon: Users,
+        },
+        {
+            title: PAGE_TITLES[ROUTES.CHATS],
+            url: ROUTES.CHATS,
+            icon: MessageSquareText,
         },
     ],
 };
