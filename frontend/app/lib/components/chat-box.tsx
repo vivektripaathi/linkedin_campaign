@@ -148,12 +148,11 @@ export function ChatBox({
                         <h3 className="font-medium text-sm md:text-base truncate">
                             {chat.attendeeName}
                         </h3>
-                        <p className="text-xs md:text-sm text-muted-foreground truncate">
-                            {/* Optional: Online/Last seen status (can be commented out) */}
+                        {/* <p className="text-xs md:text-sm text-muted-foreground truncate">
                             {chat.isOnline
                                 ? "Online"
                                 : `Last seen ${chat.lastSeen}`}
-                        </p>
+                        </p> */}
                     </div>
                 </div>
 

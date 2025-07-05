@@ -59,10 +59,17 @@ export function ChatList({
 
     return (
         <div className="flex flex-col h-full border-r w-full overflow-hidden">
-            {/* Fixed Header */}
             <div className="p-3 md:p-4 border-b bg-background shrink-0 sticky top-0 z-20">
-                <div className="flex items-center justify-between mb-3 md:mb-4">
-                    <h2 className="text-lg md:text-xl font-semibold">Chats</h2>
+                <div className="flex items-center justify-between">
+                    <div className="relative">
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                        <Input
+                            placeholder="Filter chats..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="pl-10 h-9 md:h-10 w-full"
+                        />
+                    </div>
                     <Button
                         size="sm"
                         variant="ghost"
@@ -70,15 +77,6 @@ export function ChatList({
                     >
                         <Plus className="h-4 w-4" />
                     </Button>
-                </div>
-                <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                    <Input
-                        placeholder="Chats search..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="pl-10 h-9 md:h-10 w-full"
-                    />
                 </div>
             </div>
 
@@ -98,9 +96,7 @@ export function ChatList({
                                 <div className="relative shrink-0">
                                     <Avatar className="h-10 w-10 md:h-10 md:w-10">
                                         <AvatarImage
-                                            src={
-                                                chat.attendeePictureUrl
-                                            }
+                                            src={chat.attendeePictureUrl}
                                             alt={chat.attendeeName}
                                         />
                                         <AvatarFallback>
