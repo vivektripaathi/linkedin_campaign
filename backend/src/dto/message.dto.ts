@@ -1,6 +1,6 @@
 import { Expose } from 'class-transformer';
 import { BaseDomainModel } from './base.dto.js';
-import { IsDate, IsString, IsUUID } from 'class-validator';
+import { IsDate, IsOptional, IsString, IsUUID } from 'class-validator';
 import { UUIDTypes } from 'uuid';
 
 export class MessageDomainModel extends BaseDomainModel {
@@ -22,6 +22,7 @@ export class CreateMessageRequestDto implements Omit<MessageDomainModel, '_id' |
 
     @Expose()
     @IsString()
+    @IsOptional()
     text: string = 'Message Deleted';
 
     @Expose()

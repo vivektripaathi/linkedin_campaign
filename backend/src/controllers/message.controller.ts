@@ -11,7 +11,7 @@ export class MessageController {
     private _prepareMessageDomainModel(dto: CreateMessageRequestDto): MessageDomainModel {
         return {
             _id: dto.id,
-            text: dto.text,
+            text: dto.text || "Message Deleted",
             chatId: dto.chatId,
             timestamp: dto.timestamp,
             accountId: dto.accountId,
@@ -34,7 +34,7 @@ export class MessageController {
 
             const domainMessage: MessageDomainModel = {
                 _id: messageDto.id,
-                text: messageDto.text,
+                text: messageDto.text || "Message Deleted",
                 chatId: messageDto.chatId,
                 timestamp: messageDto.timestamp,
                 accountId: messageDto.accountId,
