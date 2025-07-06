@@ -27,14 +27,13 @@ import { type ChatViewInterface, type MessageViewInterface } from "@lib/types";
 
 import { cn, getInitials } from "@lib/utils";
 
-const CURRENT_USER_PROVIDER_ID = "ACoAAFBA9dUBBkgN3_tXHcj3uyjn2EXANH2W3Gg";
-
 interface ChatBoxProps {
     chat: ChatViewInterface | null;
     messages: MessageViewInterface[];
     onSendMessage: (chatId: string, content: string) => void;
     onBack?: () => void;
-    isSending: boolean
+    isSending: boolean;
+    providerIds: Array<string>;
 }
 
 export function ChatBox({
@@ -43,6 +42,7 @@ export function ChatBox({
     onSendMessage,
     onBack,
     isSending,
+    providerIds,
 }: ChatBoxProps) {
     const [message, setMessage] = useState("");
     const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -185,9 +185,7 @@ export function ChatBox({
                 <ScrollArea className="h-full" ref={scrollAreaRef}>
                     <div className="p-3 md:p-4 space-y-3 md:space-y-4 w-full">
                         {sortedMessages.map((msg) => {
-                            const isCurrentUser =
-                                msg.senderProviderId ===
-                                CURRENT_USER_PROVIDER_ID;
+                            const isCurrentUser = providerIds.includes(msg.senderProviderId);
                             const senderName = isCurrentUser
                                 ? "You"
                                 : chat.attendeeName;
