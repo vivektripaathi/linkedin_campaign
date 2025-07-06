@@ -10,6 +10,7 @@ import { ChatBox } from "@components/chat-box";
 import type {
     AccountViewInterface,
     ChatViewInterface,
+    IAccount,
     IChat,
     IMessage,
     MessageViewInterface,
@@ -75,12 +76,26 @@ export default function Chats() {
         }
     };
 
+    const _prepareAccountForView = (
+        account: IAccount
+    ): AccountViewInterface => {
+        return {
+            id: account._id,
+            name: account.name,
+            username: account.username,
+            providerId: account.providerId,
+            publicIdentifier: account.publicIdentifier,
+        };
+    };
+
     const initializePage = async () => {
         try {
             setIsPageLoading(true);
             setChats(await fetchChats());
             setMessages(await fetchMessages());
-            setAccounts(await getLinkedAccounts());
+            setAccounts(
+                (await getLinkedAccounts()).map(_prepareAccountForView)
+            );
         } catch (error) {
             toast.error(
                 error instanceof Error ? error.message : "Failed to load page"
