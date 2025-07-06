@@ -27,6 +27,20 @@ export const createAccountColumns = ({ deleteAccount }: { deleteAccount: (accoun
             ),
     },
     {
+        accessorKey: "id",
+        header: "Account Id",
+        cell: ({ row }) =>
+            React.createElement(
+                "div",
+                { className: "max-w-[300px]" },
+                React.createElement(Tooltip, {
+                    title: "name",
+                    description: row.getValue("id") as string,
+                    maxLength: 60,
+                })
+            ),
+    },
+    {
         accessorKey: "providerId",
         header: "Provider Id",
         cell: ({ row }) =>
