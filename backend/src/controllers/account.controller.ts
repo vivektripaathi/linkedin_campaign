@@ -117,4 +117,8 @@ export class AccountController {
 
         return successResponse(res, undefined, 204);
     }
+
+    async isAccountExists(accountId: string) {
+        return await this.accountDao.getById(accountId);
+    }
 }
