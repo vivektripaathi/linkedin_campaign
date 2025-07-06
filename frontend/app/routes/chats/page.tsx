@@ -2,19 +2,18 @@
 
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { cn } from "@lib/utils";
+import { cn, getLinkedAccounts } from "@lib/utils";
 import socket from "@lib/socket";
 
 import { ChatList } from "@components/chat-list";
 import { ChatBox } from "@components/chat-box";
 import type {
+    AccountViewInterface,
     ChatViewInterface,
     IChat,
     IMessage,
     MessageViewInterface,
 } from "@lib/types";
-
-const CURRENT_USER_PROVIDER_ID = "ACoAAFBA9dUBBkgN3_tXHcj3uyjn2EXANH2W3Gg";
 
 export default function Chats() {
     const [chats, setChats] = useState<ChatViewInterface[]>([]);
@@ -23,6 +22,7 @@ export default function Chats() {
     const [isPageLoading, setIsPageLoading] = useState(true);
     const [showChatList, setShowChatList] = useState(true);
     const [isSending, setIsSending] = useState<boolean>(false);
+    const [accounts, setAccounts] = useState<AccountViewInterface[]>([]);
 
     const _prepareChatsForView = (chats: IChat[]): ChatViewInterface[] =>
         chats.map((chat) => ({
@@ -80,6 +80,7 @@ export default function Chats() {
             setIsPageLoading(true);
             setChats(await fetchChats());
             setMessages(await fetchMessages());
+            setAccounts(await getLinkedAccounts());
         } catch (error) {
             toast.error(
                 error instanceof Error ? error.message : "Failed to load page"
@@ -240,6 +241,7 @@ export default function Chats() {
                     onSendMessage={handleSendMessage}
                     onBack={handleBackToChatList}
                     isSending={isSending}
+                    providerIds={accounts.map((account) => account.providerId)}
                 />
             </div>
         </div>
