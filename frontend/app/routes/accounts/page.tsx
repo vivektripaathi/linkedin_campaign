@@ -11,6 +11,7 @@ import { createAccountColumns } from "~/lib/components/column-definitions/accoun
 import { DeleteConfirmationDialog } from "~/lib/components/delete-confirmation-dialog";
 import { CreateAccountForm } from "~/lib/components/create-account-form";
 import type { CreateAccountFormData } from "~/lib/validations";
+import { getLinkedAccounts } from "@lib/utils";
 
 export function Accounts() {
     const [loading, setLoading] = useState(false),
@@ -33,16 +34,9 @@ export function Accounts() {
     };
 
     const fetchAccounts = async () => {
-        setLoading(true);
         try {
-            const response = await fetch(
-                `${import.meta.env.VITE_API_BASE_URL}/api/accounts`
-            );
-            if (!response.ok) {
-                throw new Error("Failed to fetch accounts");
-            }
-            const data = await response.json();
-
+            setLoading(true);
+            const data = await getLinkedAccounts();
             setAccounts(data);
         } catch (error) {
             console.error("Error fetching accounts:", error);
