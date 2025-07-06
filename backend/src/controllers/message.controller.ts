@@ -78,7 +78,7 @@ export class MessageController {
             throw new InvalidRequestException('Request body must be a non-empty array of messages');
         }
 
-        const response = this.createBulkMessagesUseCase(createMessagesRequest)
+        const response = await this.createBulkMessagesUseCase(createMessagesRequest)
 
         return successResponse(res, response, 201);
     }
