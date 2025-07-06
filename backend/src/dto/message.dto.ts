@@ -4,7 +4,7 @@ import { IsDate, IsString, IsUUID } from 'class-validator';
 import { UUIDTypes } from 'uuid';
 
 export class MessageDomainModel extends BaseDomainModel {
-    text!: string;
+    text: string = 'Message Deleted';
     chatId!: string;
     timestamp!: string;
     accountId!: string;
@@ -22,7 +22,7 @@ export class CreateMessageRequestDto implements Omit<MessageDomainModel, '_id' |
 
     @Expose()
     @IsString()
-    text!: string;
+    text: string = 'Message Deleted';
 
     @Expose()
     @IsString()
