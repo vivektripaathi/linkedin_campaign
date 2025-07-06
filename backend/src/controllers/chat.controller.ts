@@ -138,11 +138,13 @@ export class ChatController {
 
         const { id }  = req.params;
         const { text } = req.body;
+        console.log(`Got request to send message to chat with ${id} - ${text}`);
 
         await this.unipileService.sendMessageInChat({
             chatId: id,
             text: text,
         })
+        console.log(`message sent`);
         return successResponse(res, 200);
     }
 }

@@ -149,6 +149,7 @@ export class UnipileService {
     ): Promise<void> {
         try {
             const client = this._getClient();
+            console.log(`sending message`);
             await client.messaging.sendMessage({
                 chat_id: chatId,
                 text: text
