@@ -163,7 +163,7 @@ export default function Chats() {
     useEffect(() => {
         if (!chats.length) return;
         // Always join the hardcoded websocket room
-        socket.emit("join");
+        socket.emit("join", "web_socket_key");
     }, [chats]);
 
     const selectedChat = chats.find((chat) => chat.id === selectedChatId);

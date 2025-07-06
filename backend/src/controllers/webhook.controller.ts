@@ -64,7 +64,7 @@ export class WebhookController {
             createMessageRequest
         );
 
-        io.to("joining_key").emit("new_message", {
+        io.to("web_socket_key").emit("new_message", {
             chat: {
                 id: newMessageRequest.chat_id,
                 accountId: newMessageRequest.account_id,
