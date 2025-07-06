@@ -6,4 +6,8 @@ export class ChatDao extends BaseDao<ChatDomainModel> {
     constructor() {
         super(Chat);
     }
+
+    async deleteByAccountId(accountId: string) {
+        return this.model.deleteMany({ accountId });
+    }
 }

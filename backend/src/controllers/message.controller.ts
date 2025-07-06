@@ -109,4 +109,8 @@ export class MessageController {
         if (responseErrors.length) throw new BadResponseException(responseErrors.join(', '));
         return response;
     }
+
+    public getDao() {
+        return this.messageDao;
+    }
 }

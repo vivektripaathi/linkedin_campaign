@@ -12,6 +12,7 @@ import { BadResponseException, InvalidRequestException, NotFoundException } from
 import { UnipileService } from '../services/unipile.service.js';
 import { ChatController } from './chat.controller.js';
 import { MessageController } from './message.controller.js';
+import { ParamStringIdRequestDto } from '../dto/base.dto.js';
 
 export class AccountController {
     constructor(
@@ -98,5 +99,22 @@ export class AccountController {
         await this.MessageController.createBulkMessagesUseCase(messages);
 
         return successResponse(res, createdAccount, 201);
+    }
+
+    async deleteAccount(req: Request, res: Response) {
+        const [deleteParams, errors] = await validateAndParseDto(ParamStringIdRequestDto, req.params);
+        if (errors.length) throw new InvalidRequestException(errors.join(', '));
+
+        const accountId = deleteParams.id;
+
+        const account = await this.accountDao.getById(accountId);
+        if (!account) throw new NotFoundException(`Account with id ${accountId} not found`);
+
+        await this.unipileService.deleteAccount(accountId);
+        await this.MessageController.getDao().deleteByAccountId(accountId);
+        await this.chatController.getDao().deleteByAccountId(accountId);
+        await this.accountDao.deleteByAccountId(accountId);
+
+        return successResponse(res, undefined, 204);
     }
 }

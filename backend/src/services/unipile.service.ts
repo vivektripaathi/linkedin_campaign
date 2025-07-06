@@ -157,4 +157,13 @@ export class UnipileService {
             throw error;
         }
     }
+
+    async deleteAccount(accountId: string): Promise<void> {
+        try {
+            const client = this._getClient();
+            await client.account.delete(accountId);
+        } catch (error) {
+            throw new NotFoundException(`Account does not exist on unipile with id ${accountId}`);
+        }
+    }
 }

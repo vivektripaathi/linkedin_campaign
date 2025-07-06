@@ -6,4 +6,8 @@ export class AccountDao extends BaseDao<AccountDomainModel> {
     constructor() {
         super(Account);
     }
+
+    async deleteByAccountId(accountId: string) {
+        return this.model.deleteOne({ _id: accountId });
+    }
 }

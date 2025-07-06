@@ -6,4 +6,8 @@ export class MessageDao extends BaseDao<MessageDomainModel> {
     constructor() {
         super(Message);
     }
+
+    async deleteByAccountId(accountId: string) {
+        return this.model.deleteMany({ accountId });
+    }
 }

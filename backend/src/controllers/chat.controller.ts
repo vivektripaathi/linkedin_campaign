@@ -142,4 +142,8 @@ export class ChatController {
         })
         return successResponse(res, 200);
     }
+
+    public getDao() {
+        return this.chatDao;
+    }
 }
