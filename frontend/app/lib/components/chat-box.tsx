@@ -163,13 +163,18 @@ export function ChatBox({
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                className="h-8 w-8 p-0"
+                                className="h-8 w-8 p-0 hover: cursor-pointer"
                             >
                                 <MoreHorizontal className="h-4 w-4" />
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem>View Profile</DropdownMenuItem>
+                            <DropdownMenuItem 
+                                onClick={() => window.location.href = chat.attendeePictureUrl as string}
+                                className="hover: cursor-pointer"
+                            >
+                                View Profile
+                            </DropdownMenuItem>
                             <DropdownMenuItem>Search Messages</DropdownMenuItem>
                             <DropdownMenuItem>Clear Chat</DropdownMenuItem>
                             <DropdownMenuItem className="text-destructive">
@@ -278,7 +283,7 @@ export function ChatBox({
                                 size="sm"
                                 className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0"
                             >
-                                <Smile className="h-4 w-4" />
+                                {/* <Smile className="h-4 w-4" /> */}
                             </Button>
                         </div>
                         <Button
