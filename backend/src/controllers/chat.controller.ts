@@ -130,21 +130,16 @@ export class ChatController {
     }
 
     async sendMessage(req: Request, res: Response) {
-        // const [messageRequest, errors] = await validateAndParseDto(SendMessageRequestDto, {
-        //     ...req.body,
-        //     ...req.params,
-        // });
-        // if (errors.length) throw new InvalidRequestException(errors.join(', '));
-
-        const { id }  = req.params;
-        const { text } = req.body;
-        console.log(`Got request to send message to chat with ${id} - ${text}`);
+        const [messageRequest, errors] = await validateAndParseDto(SendMessageRequestDto, {
+            ...req.body,
+            ...req.params,
+        });
+        if (errors.length) throw new InvalidRequestException(errors.join(', '));
 
         await this.unipileService.sendMessageInChat({
-            chatId: id,
-            text: text,
+            chatId: messageRequest.id,
+            text: messageRequest.text,
         })
-        console.log(`message sent`);
         return successResponse(res, 200);
     }
 }
