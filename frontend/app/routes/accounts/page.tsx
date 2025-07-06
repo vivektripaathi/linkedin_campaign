@@ -22,7 +22,8 @@ export function Accounts() {
         [showAccountForm, setShowAccountForm] = useState<boolean>(false),
         [deletingAccount, setDeletingAccount] = useState<
             AccountViewInterface | undefined
-        >(undefined);
+        >(undefined),
+        [isDeletingAccount, setIsDeletingAccount] = useState(false);
 
     const _prepareAccountForView = (
         account: IAccount
@@ -54,9 +55,34 @@ export function Accounts() {
     const deleteAccount = async (
         accountToDelete: AccountViewInterface | undefined
     ) => {
-        console.log(
-            `Got request to delete account with id: ${accountToDelete?.id}`
-        );
+        if (!accountToDelete || !accountToDelete.id) {
+            toast.error("No account selected or account ID missing.");
+            setShowDeleteDialog(false);
+            setIsDeletingAccount(false);
+            return;
+        }
+        setIsDeletingAccount(true);
+        try {
+            const response = await fetch(
+                `${import.meta.env.VITE_API_BASE_URL}/api/accounts/${
+                    accountToDelete.id
+                }`,
+                {
+                    method: "DELETE",
+                }
+            );
+            if (!response.ok) {
+                throw new Error("Failed to delete account");
+            }
+            setShowDeleteDialog(false);
+            setDeletingAccount(undefined);
+            toast.success("Account deleted successfully");
+            fetchAccounts();
+        } catch (error) {
+            toast.error("Failed to delete account");
+        } finally {
+            setIsDeletingAccount(false);
+        }
     };
 
     const createAccount = async (account?: CreateAccountFormData) => {
@@ -74,7 +100,6 @@ export function Accounts() {
             );
 
             if (!response.ok) {
-                console.log(response)
                 throw new Error("Failed to create accounts");
             }
 
@@ -167,6 +192,7 @@ export function Accounts() {
                 onConfirm={() => deleteAccount(deletingAccount)}
                 title="Delete Account"
                 description="Are you sure you want to delete the selected account? This action cannot be undone."
+                confirmLoading={isDeletingAccount}
             />
         </div>
     );

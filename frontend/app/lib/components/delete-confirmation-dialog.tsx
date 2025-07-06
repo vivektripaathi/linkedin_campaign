@@ -18,6 +18,7 @@ interface DeleteConfirmationDialogProps {
     title: string;
     description: string;
     itemCount?: number;
+    confirmLoading?: boolean;
 }
 
 export function DeleteConfirmationDialog({
@@ -27,6 +28,7 @@ export function DeleteConfirmationDialog({
     title,
     description,
     itemCount,
+    confirmLoading = false,
 }: DeleteConfirmationDialogProps) {
     return (
         <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -44,12 +46,15 @@ export function DeleteConfirmationDialog({
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogCancel disabled={confirmLoading}>
+                        Cancel
+                    </AlertDialogCancel>
                     <AlertDialogAction
                         onClick={onConfirm}
                         className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        disabled={confirmLoading}
                     >
-                        Delete
+                        {confirmLoading ? "Deleting..." : "Delete"}
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
