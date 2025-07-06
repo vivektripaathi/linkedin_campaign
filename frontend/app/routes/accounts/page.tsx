@@ -28,19 +28,24 @@ export function Accounts() {
         account: IAccount
     ): AccountViewInterface => {
         return {
-            ...account,
-            id: account?._id,
+            id: account._id,
+            name: account.name,
+            username: account.username,
+            providerId: account.providerId,
+            publicIdentifier: account.publicIdentifier,
         };
     };
 
     const fetchAccounts = async () => {
         try {
             setLoading(true);
-            const data = await getLinkedAccounts();
+            const data: AccountViewInterface[] = (
+                await getLinkedAccounts()
+            ).map(_prepareAccountForView);
             setAccounts(data);
         } catch (error) {
             console.error("Error fetching accounts:", error);
-            toast.error("Failed to load leads");
+            toast.error("Failed to load accounts");
         } finally {
             setLoading(false);
         }
@@ -69,6 +74,7 @@ export function Accounts() {
             );
 
             if (!response.ok) {
+                console.log(response)
                 throw new Error("Failed to create accounts");
             }
 
