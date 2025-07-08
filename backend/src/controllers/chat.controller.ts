@@ -6,6 +6,7 @@ import { successResponse } from "../utils/apiResponse.js";
 import { BadResponseException, InvalidRequestException, NotFoundException } from "../utils/exceptions.js";
 import { validateAndParseDto } from "../utils/validateAndParseDto.js";
 import { UnipileService } from "../services/unipile.service.js";
+import { IChatWithAttendee } from "../utils/types/unipile.js";
 
 export class ChatController {
     constructor(
@@ -74,8 +75,34 @@ export class ChatController {
     }
 
 
+    private _convertChatsToDomainModel(chats: IChatWithAttendee[]): ChatDomainModel[] {
+        return chats.map(unipileChat => {
+            const chatDbEntry = new ChatDomainModel();
+            chatDbEntry._id = unipileChat.id;
+            chatDbEntry.accountId = unipileChat.accountId;
+            chatDbEntry.attendeeName = unipileChat.attendeeName;
+            chatDbEntry.attendeeProviderId = unipileChat.attendeeProviderId;
+            chatDbEntry.attendeePictureUrl = unipileChat.attendeePictureUrl;
+            chatDbEntry.createdAt = new Date(),
+            chatDbEntry.updatedAt = new Date(),
+            chatDbEntry.deletedAt = null
+            return chatDbEntry;
+        });
+    }
+
+
     async getAllChats(_: Request, res: Response) {
-        const chatDbEntries = await this.chatDao.getAll();
+        const [chatDbEntries, chat] = await Promise.all([
+            this.chatDao.getAll(),
+            this.unipileService.getAllChats()
+        ]);
+
+        const dbChatIds = new Set(chatDbEntries.map(entry => entry._id));
+        const chatsNotInDb = chat.filter(unipileChat => !dbChatIds.has(unipileChat.id));
+
+        await this.createBulkChatsUseCase(chatsNotInDb);
+
+        chatDbEntries.push(...this._convertChatsToDomainModel(chatsNotInDb));
 
         const chats: ChatResponseDto[] = [];
         for (const chat of chatDbEntries) {
