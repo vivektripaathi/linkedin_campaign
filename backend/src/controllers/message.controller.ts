@@ -109,17 +109,7 @@ export class MessageController {
 
 
     async getAllMessages(_: Request, res: Response) {
-        const [messageDbEntries, messageUnipleEntries] = await Promise.all([
-            this.messageDao.getAll(),
-            this.unipileService.getAllMessages(),
-        ])
-
-        const dbMessageIds = new Set(messageDbEntries.map(entry => entry._id));
-        const messagesNotInDb = messageUnipleEntries.filter(message => !dbMessageIds.has(message.id));
-
-        await this.createBulkMessagesUseCase(messagesNotInDb)
-
-        messageDbEntries.push(...this._convertMessagesToDomainModel(messagesNotInDb));
+        const messageDbEntries = await this.messageDao.getAll();
 
         const messages: MessageResponseDto[] = [];
         for (const message of messageDbEntries) {
