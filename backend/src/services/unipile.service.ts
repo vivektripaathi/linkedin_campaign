@@ -92,7 +92,7 @@ export class UnipileService {
             const attendee = attendees.find(attendee => attendee.providerId === chat.attendeeProviderId);
             return {
                 ...chat,
-                attendeeName: attendee?.name ?? '',
+                attendeeName: attendee?.name ?? 'N/A',
                 attendeePictureUrl: attendee?.pictureUrl,
             };
         });
@@ -104,7 +104,8 @@ export class UnipileService {
             const client = this._getClient();
             const attendees = await this.getAllAttendees();
             const chatsResponse = await client.messaging.getAllChats({
-                account_id: accountId
+                account_id: accountId,
+                limit: 250,
             })
             const chats = chatsResponse?.items?.map(this._prepareChat.bind(this));
             return this._mergeChatsWithAttendees(chats, attendees);
@@ -140,7 +141,8 @@ export class UnipileService {
         try {
             const client = this._getClient();
             const response = await client.messaging.getAllMessages({
-                account_id: accountId
+                account_id: accountId,
+                limit: 250,
             })
             return response?.items?.map(this._prepareMessage.bind(this))
         } catch (error) {
