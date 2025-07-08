@@ -19,8 +19,12 @@ import type {
 export default function Chats() {
     const [chats, setChats] = useState<ChatViewInterface[]>([]);
     const [messages, setMessages] = useState<MessageViewInterface[]>([]);
+    const [selectedChatMessages, setSelectedChatMessages] = useState<
+        MessageViewInterface[]
+    >([]);
     const [selectedChatId, setSelectedChatId] = useState<string>();
     const [isPageLoading, setIsPageLoading] = useState(true);
+    const [isFetchingMessage, setIsFetchingMessage] = useState<boolean>(false);
     const [showChatList, setShowChatList] = useState(true);
     const [isSending, setIsSending] = useState<boolean>(false);
     const [accounts, setAccounts] = useState<AccountViewInterface[]>([]);
@@ -60,6 +64,23 @@ export default function Chats() {
             timestamp: message?.timestamp,
             senderProviderId: message?.senderProviderId,
         }));
+
+    const fetchMessageByChatId = async (
+        chatId: string
+    ): Promise<MessageViewInterface[]> => {
+        try {
+            const response = await fetch(
+                `${import.meta.env.VITE_API_BASE_URL}/api/messages/${chatId}`
+            );
+            if (!response.ok) {
+                throw new Error("Failed to fetch messages");
+            }
+            const data = await response.json();
+            return _prepareMessagesForView(data);
+        } catch (error) {
+            throw new Error("Failed to load messages");
+        }
+    };
 
     const fetchMessages = async (): Promise<MessageViewInterface[]> => {
         try {
@@ -109,7 +130,7 @@ export default function Chats() {
         initializePage();
 
         socket.on("connect", () => {
-            console.log("✅ Socket connected:", socket.id);
+            console.log("✅ Socket connected:");
         });
 
         socket.on(
@@ -121,10 +142,10 @@ export default function Chats() {
                 chat: ChatViewInterface;
                 message: MessageViewInterface;
             }) => {
-                console.log("📩 Received message via socket", {
-                    chat,
-                    message,
-                });
+                // console.log("📩 Received message via socket", {
+                //     chat,
+                //     message,
+                // });
 
                 setMessages((prevMessages) => [...prevMessages, message]);
 
@@ -152,6 +173,12 @@ export default function Chats() {
                         ];
                     }
                 });
+
+                if (chat.id === selectedChatId)
+                    setSelectedChatMessages((prevMessages) => [
+                        ...prevMessages,
+                        message,
+                    ]);
             }
         );
 
@@ -167,9 +194,6 @@ export default function Chats() {
     }, [chats]);
 
     const selectedChat = chats.find((chat) => chat.id === selectedChatId);
-    const selectedChatMessages = messages.filter(
-        (msg) => msg.chatId === selectedChatId
-    );
 
     const handleSendMessage = async (chatId: string, content: string) => {
         try {
@@ -202,14 +226,18 @@ export default function Chats() {
         }
     };
 
-    const handleChatSelect = (chatId: string) => {
+    const handleChatSelect = async (chatId: string) => {
+        setIsFetchingMessage(true);
         setSelectedChatId(chatId);
+        setSelectedChatMessages(await fetchMessageByChatId(chatId));
+        setIsFetchingMessage(false);
         setShowChatList(false); // Hide chat list on mobile when chat is selected
     };
 
     const handleBackToChatList = () => {
         setShowChatList(true);
         setSelectedChatId(undefined);
+        setSelectedChatMessages([]);
     };
 
     if (isPageLoading) {
@@ -251,6 +279,7 @@ export default function Chats() {
                     onBack={handleBackToChatList}
                     isSending={isSending}
                     providerIds={accounts.map((account) => account.providerId)}
+                    isLoading={isFetchingMessage}
                 />
             </div>
         </div>
