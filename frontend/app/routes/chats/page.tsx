@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { cn, getLinkedAccounts } from "@lib/utils";
 import socket from "@lib/socket";
@@ -179,6 +179,12 @@ export default function Chats() {
                         ...prevMessages,
                         message,
                     ]);
+
+                if (chat.id === selectedChatIdRef.current)
+                    setSelectedChatMessages((prevMessages) => [
+                        ...prevMessages,
+                        message,
+                    ]);
             }
         );
 
@@ -194,6 +200,7 @@ export default function Chats() {
     }, [chats]);
 
     const selectedChat = chats.find((chat) => chat.id === selectedChatId);
+    const selectedChatIdRef = useRef<string | undefined>(undefined);
 
     const handleSendMessage = async (chatId: string, content: string) => {
         try {
@@ -227,6 +234,7 @@ export default function Chats() {
     };
 
     const handleChatSelect = async (chatId: string) => {
+        selectedChatIdRef.current = chatId;
         setIsFetchingMessage(true);
         setSelectedChatId(chatId);
         setSelectedChatMessages(await fetchMessageByChatId(chatId));
@@ -235,6 +243,7 @@ export default function Chats() {
     };
 
     const handleBackToChatList = () => {
+        selectedChatIdRef.current = undefined;
         setShowChatList(true);
         setSelectedChatId(undefined);
         setSelectedChatMessages([]);
