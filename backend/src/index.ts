@@ -11,6 +11,7 @@ import webhookRoutes from './routes/webhook.routes.js';
 import accountRoutes from './routes/account.routes.js';
 import chatRoutes from './routes/chat.routes.js';
 import messageRoutes from './routes/message.routes.js';
+import userRoutes from './routes/user.routes.js';
 import http from 'http';
 import { initSocket } from './utils/socket.js';
 
@@ -34,6 +35,7 @@ app.use('/api/accounts', accountRoutes);
 app.use('/api/chats', chatRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/webhooks', webhookRoutes);
+app.use('/api/users', userRoutes);
 
 // Error handling
 app.use(errorHandlerMiddleware);
