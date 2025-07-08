@@ -58,3 +58,17 @@ export class InvalidUnipileCredentialsException extends AppError {
         Object.setPrototypeOf(this, InvalidUnipileCredentialsException.prototype)
     }
 }
+
+export class AlreadyExistsException extends AppError {
+    constructor(entity: string, field: string) {
+        super(`${entity} with same ${field} already exists`, 400, "ALREADY_EXISTS_EXCEPTION")
+        Object.setPrototypeOf(this, AlreadyExistsException.prototype)
+    }
+}
+
+export class InvalidCredentialsException extends AppError {
+    constructor(message = "Invalid credentials.") {
+        super(message, 400, "INVALID_CREDENTIALS")
+        Object.setPrototypeOf(this, InvalidCredentialsException.prototype)
+    }
+}
