@@ -19,22 +19,24 @@ export class ChatController {
         const validChats: ChatDomainModel[] = [];
 
         for (const [index, chatRequest] of createChatsRequest.entries()) {
-            const [chatDto, errors] = await validateAndParseDto(CreateChatRequestDto, chatRequest);
-            if (errors.length) {
-                throw new InvalidRequestException(`Validation error in chat at index ${index}: ${errors.join(', ')}`);
-            }
+            if (chatRequest.attendeeProviderId) {
+                const [chatDto, errors] = await validateAndParseDto(CreateChatRequestDto, chatRequest);
+                if (errors.length) {
+                    throw new InvalidRequestException(`Validation error in chat at index ${index}: ${errors.join(', ')}`);
+                }
 
-            const domainChat: ChatDomainModel = {
-                _id: chatDto.id,
-                accountId: chatDto.accountId,
-                attendeeName: chatDto.attendeeName,
-                attendeeProviderId: chatDto.attendeeProviderId,
-                attendeePictureUrl: chatDto.attendeePictureUrl,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                deletedAt: null,
-            };
-            validChats.push(domainChat);
+                const domainChat: ChatDomainModel = {
+                    _id: chatDto.id,
+                    accountId: chatDto.accountId,
+                    attendeeName: chatDto.attendeeName,
+                    attendeeProviderId: chatDto.attendeeProviderId,
+                    attendeePictureUrl: chatDto.attendeePictureUrl,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                    deletedAt: null,
+                };
+                validChats.push(domainChat);
+            }
         }
 
         return validChats;
@@ -83,16 +85,16 @@ export class ChatController {
             chatDbEntry.attendeeName = unipileChat.attendeeName;
             chatDbEntry.attendeeProviderId = unipileChat.attendeeProviderId;
             chatDbEntry.attendeePictureUrl = unipileChat.attendeePictureUrl;
-            chatDbEntry.createdAt = new Date(),
-            chatDbEntry.updatedAt = new Date(),
-            chatDbEntry.deletedAt = null
+            chatDbEntry.createdAt = new Date();
+            chatDbEntry.updatedAt = new Date();
+            chatDbEntry.deletedAt = null;
             return chatDbEntry;
         });
     }
 
 
     async getAllChats(_: Request, res: Response) {
-        const [chatDbEntries, chat] = await Promise.all([
+        let [chatDbEntries, chat] = await Promise.all([
             this.chatDao.getAll(),
             this.unipileService.getAllChats()
         ]);
@@ -102,7 +104,7 @@ export class ChatController {
 
         await this.createBulkChatsUseCase(chatsNotInDb);
 
-        chatDbEntries.push(...this._convertChatsToDomainModel(chatsNotInDb));
+        chatDbEntries = await this.chatDao.getAll();
 
         const chats: ChatResponseDto[] = [];
         for (const chat of chatDbEntries) {
