@@ -1,11 +1,16 @@
 import { MessageDao } from "../dao/message.dao.js";
 import { CreateMessageRequestDto, MessageDomainModel, MessageResponseDto } from "../dto/message.dto.js";
+import { UnipileService } from "../services/unipile.service.js";
 import { successResponse } from "../utils/apiResponse.js";
 import { BadResponseException, InvalidRequestException } from "../utils/exceptions.js";
+import { IMessage } from "../utils/types/unipile.js";
 import { validateAndParseDto } from "../utils/validateAndParseDto.js";
 
 export class MessageController {
-    constructor(private readonly messageDao: MessageDao) { }
+    constructor(
+        private readonly messageDao: MessageDao,
+        private readonly unipileService: UnipileService
+    ) { }
 
 
     private _prepareMessageDomainModel(dto: CreateMessageRequestDto): MessageDomainModel {
@@ -84,8 +89,35 @@ export class MessageController {
     }
 
 
+    private _convertMessagesToDomainModel(chats: IMessage[]): MessageDomainModel[] {
+        return chats.map(unipileChat => {
+            const messageDbEntry = new MessageDomainModel();
+            messageDbEntry._id = unipileChat.id;
+            messageDbEntry.accountId = unipileChat.accountId;
+            messageDbEntry.chatId = unipileChat.chatId;
+            messageDbEntry.senderProviderId = unipileChat.senderProviderId,
+            messageDbEntry.text = unipileChat.text,
+            messageDbEntry.timestamp = unipileChat.timestamp
+            messageDbEntry.createdAt = new Date();
+            messageDbEntry.updatedAt = new Date()
+            messageDbEntry.deletedAt = null;
+            return messageDbEntry;
+        });
+    }
+
+
     async getAllMessages(_: Request, res: Response) {
-        const messageDbEntries = await this.messageDao.getAll();
+        const [messageDbEntries, messageUnipleEntries] = await Promise.all([
+            this.messageDao.getAll(),
+            this.unipileService.getAllMessages(),
+        ])
+
+        const dbMessageIds = new Set(messageDbEntries.map(entry => entry._id));
+        const messagesNotInDb = messageUnipleEntries.filter(message => !dbMessageIds.has(message.id));
+
+        await this.createBulkMessagesUseCase(messagesNotInDb)
+
+        messageDbEntries.push(...this._convertMessagesToDomainModel(messagesNotInDb));
 
         const messages: MessageResponseDto[] = [];
         for (const message of messageDbEntries) {
