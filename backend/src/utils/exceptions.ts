@@ -54,7 +54,7 @@ export class AlreadyRetrievedSearchResultsException extends AppError {
 
 export class InvalidUnipileCredentialsException extends AppError {
     constructor(message = "Invalid LinkedIn credentials.") {
-        super(message, 400, "INVALID_UNIPILE_CREDENTIALS")
+        super(message, 401, "INVALID_UNIPILE_CREDENTIALS")
         Object.setPrototypeOf(this, InvalidUnipileCredentialsException.prototype)
     }
 }
