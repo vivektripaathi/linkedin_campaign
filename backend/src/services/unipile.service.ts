@@ -99,11 +99,13 @@ export class UnipileService {
     }
 
 
-    async getAllChats(): Promise<Array<IChatWithAttendee>> {
+    async getAllChats(accountId?: string): Promise<Array<IChatWithAttendee>> {
         try {
             const client = this._getClient();
             const attendees = await this.getAllAttendees();
-            const chatsResponse = await client.messaging.getAllChats()
+            const chatsResponse = await client.messaging.getAllChats({
+                account_id: accountId
+            })
             const chats = chatsResponse?.items?.map(this._prepareChat.bind(this));
             return this._mergeChatsWithAttendees(chats, attendees);
         } catch (error) {
@@ -134,10 +136,12 @@ export class UnipileService {
         }
     }
 
-    async getAllMessages(): Promise<Array<IMessage>> {
+    async getAllMessages(accountId?: string): Promise<Array<IMessage>> {
         try {
             const client = this._getClient();
-            const response = await client.messaging.getAllMessages()
+            const response = await client.messaging.getAllMessages({
+                account_id: accountId
+            })
             return response?.items?.map(this._prepareMessage.bind(this))
         } catch (error) {
             throw error;

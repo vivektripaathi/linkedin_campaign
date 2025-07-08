@@ -86,14 +86,17 @@ export class AccountController {
         //create account entry in db
         const createdAccount = await this._createAccount(account);
 
+        // 5-second delay
+        await new Promise(resolve => setTimeout(resolve, 5000));
+
         //list all chats
-        const chats = await this.unipileService.getAllChats();
+        const chats = await this.unipileService.getAllChats(linkedAccount.account_id);
 
         //create chat entries in db
         await this.chatController.createBulkChatsUseCase(chats);
 
         //list all messages
-        const messages = await this.unipileService.getAllMessages();
+        const messages = await this.unipileService.getAllMessages(linkedAccount.account_id);
 
         //create messages entries in db
         await this.MessageController.createBulkMessagesUseCase(messages);
