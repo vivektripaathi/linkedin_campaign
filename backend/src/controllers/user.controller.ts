@@ -32,20 +32,16 @@ export class UserController {
     }
 
     async login(req: Request, res: Response) {
-        try {
-            const [createRequest, errors] = await validateAndParseDto(UserSignupRequestDto, req.body ?? {});
-            if (errors.length) throw new InvalidRequestException(errors.join(', '));
+        const [createRequest, errors] = await validateAndParseDto(UserSignupRequestDto, req.body ?? {});
+        if (errors.length) throw new InvalidRequestException(errors.join(', '));
 
-            const user = await this.userDao.findByEmail(createRequest.email);
-            if (!user) throw new NotFoundException(`User with email ${createRequest.email} does now exists`);
+        const user = await this.userDao.findByEmail(createRequest.email);
+        if (!user) throw new NotFoundException(`User with email ${createRequest.email} does now exists`);
 
-            const isMatch = await bcrypt.compare(createRequest.password, user.password);
-            if (!isMatch) throw new InvalidCredentialsException();
+        const isMatch = await bcrypt.compare(createRequest.password, user.password);
+        if (!isMatch) throw new InvalidCredentialsException();
 
-            const token = JwtService.sign({ userId: user._id, email: user.email });
-            return successResponse(res, { access_token: token }, 200);
-        } catch (error) {
-            return res.status(500).json({ message: 'Internal server error.' });
-        }
+        const token = JwtService.sign({ userId: user._id, email: user.email });
+        return successResponse(res, { access_token: token }, 200);
     }
 }
