@@ -100,15 +100,15 @@ export function Accounts() {
             );
 
             if (!response.ok) {
-                throw new Error("Failed to create accounts");
+                if(response.statusText === "Unauthorized") throw new Error("Invalid credentials!")
+                else throw new Error("Failed to create accounts");
             }
 
             const data: IAccount = await response.json();
             setAccounts([...accounts, _prepareAccountForView(data)]);
             toast.success("Account linked successfully")
-        } catch (error) {
-            console.log(error);
-            toast.error("Error connecting account.");
+        } catch (error: any) {
+            toast.error(error.message || "Error connecting account.");        
         } finally {
             setIsCreatingAccount(false);
         }

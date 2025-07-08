@@ -17,25 +17,24 @@ export class UnipileService {
         sessionCookie: string,
         userAgent: string
     ): Promise<UnipileConnectSuccessResponse> {
-        const response = await axios.post<UnipileConnectSuccessResponse>(
-            `${process.env.UNIPILE_API_BASE_URL}/api/v1/accounts`,
-            {
-                provider: "LINKEDIN",
-                'access_token': sessionCookie,
-                "user_agent": userAgent
-            },
-            {
-                headers: {
-                    "X-API-KEY": process.env.UNIPILE_API_KEY,
-                    "accept": "application/json",
-                    "content-type": "application/json"
+        try {
+            const response = await axios.post<UnipileConnectSuccessResponse>(
+                `${process.env.UNIPILE_API_BASE_URL}/api/v1/accounts`,
+                {
+                    provider: "LINKEDIN",
+                    'access_token': sessionCookie,
+                    "user_agent": userAgent
+                },
+                {
+                    headers: {
+                        "X-API-KEY": process.env.UNIPILE_API_KEY,
+                        "accept": "application/json",
+                        "content-type": "application/json"
+                    }
                 }
-            }
-        );
-
-        if (response.status === 201) {
+            );
             return response.data;
-        } else {
+        } catch (error) {
             throw new InvalidUnipileCredentialsException();
         }
     }
