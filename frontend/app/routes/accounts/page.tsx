@@ -105,6 +105,7 @@ export function Accounts() {
 
             const data: IAccount = await response.json();
             setAccounts([...accounts, _prepareAccountForView(data)]);
+            toast.success("Account linked successfully")
         } catch (error) {
             console.log(error);
             toast.error("Error connecting account.");
