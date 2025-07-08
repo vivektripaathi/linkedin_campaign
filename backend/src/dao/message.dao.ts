@@ -10,4 +10,8 @@ export class MessageDao extends BaseDao<MessageDomainModel> {
     async deleteByAccountId(accountId: string) {
         return this.model.deleteMany({ accountId });
     }
+
+    async getByChatId(chatId: string) {
+        return await this.model.find({ chatId, deletedAt: null }) as MessageDomainModel[];
+    }
 }

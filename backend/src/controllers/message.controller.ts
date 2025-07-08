@@ -1,4 +1,6 @@
+import { Request, Response } from 'express';
 import { MessageDao } from "../dao/message.dao.js";
+import { ParamStringIdRequestDto } from "../dto/base.dto.js";
 import { CreateMessageRequestDto, MessageDomainModel, MessageResponseDto } from "../dto/message.dto.js";
 import { UnipileService } from "../services/unipile.service.js";
 import { successResponse } from "../utils/apiResponse.js";
@@ -95,9 +97,9 @@ export class MessageController {
             messageDbEntry._id = unipileChat.id;
             messageDbEntry.accountId = unipileChat.accountId;
             messageDbEntry.chatId = unipileChat.chatId;
-            messageDbEntry.senderProviderId = unipileChat.senderProviderId,
-            messageDbEntry.text = unipileChat.text,
-            messageDbEntry.timestamp = unipileChat.timestamp
+            messageDbEntry.senderProviderId = unipileChat.senderProviderId;
+            messageDbEntry.text = unipileChat.text;
+            messageDbEntry.timestamp = unipileChat.timestamp;
             messageDbEntry.createdAt = new Date();
             messageDbEntry.updatedAt = new Date()
             messageDbEntry.deletedAt = null;
@@ -140,6 +142,22 @@ export class MessageController {
         const [response, responseErrors] = await validateAndParseDto(MessageResponseDto, createdMessage);
         if (responseErrors.length) throw new BadResponseException(responseErrors.join(', '));
         return response;
+    }
+
+    async getMessageByChatId(req: Request, res: Response) {
+        const [getRequest, errors] = await validateAndParseDto(ParamStringIdRequestDto, req.params);
+        if (errors.length) throw new InvalidRequestException(errors.join(', '));
+
+        const messageDbEntries = await this.messageDao.getByChatId(getRequest.id);
+
+        const messages: MessageResponseDto[] = [];
+        for (const message of messageDbEntries) {
+            const [validated, errors] = await validateAndParseDto(MessageResponseDto, message);
+            if (errors.length) throw new BadResponseException(errors.join(', '));
+            messages.push(validated);
+        }
+
+        return successResponse(res, messages, 200);
     }
 
     public getDao() {

@@ -11,4 +11,5 @@ const messageController = new MessageController(
 
 export default Router()
     .get('', wrapAsync(messageController.getAllMessages.bind(messageController)))
+    .get('/:id', wrapAsync(messageController.getMessageByChatId.bind(messageController)))
     .post('/bulk', wrapAsync(messageController.bulkCreateMessages.bind(messageController)))

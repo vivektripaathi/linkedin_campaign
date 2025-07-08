@@ -10,7 +10,7 @@ export class BaseDomainModel {
 
 export class ParamIdRequestDto {
     @Expose()
-    @IsUUID('4', { message: 'Invalid campaign ID. Must be a valid UUID v4.' })
+    @IsUUID('4', { message: 'Invalid id. Must be a valid UUID v4.' })
     id!: string;
 }
 
