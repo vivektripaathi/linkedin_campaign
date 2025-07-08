@@ -148,7 +148,17 @@ export class MessageController {
         const [getRequest, errors] = await validateAndParseDto(ParamStringIdRequestDto, req.params);
         if (errors.length) throw new InvalidRequestException(errors.join(', '));
 
-        const messageDbEntries = await this.messageDao.getByChatId(getRequest.id);
+        let [messageDbEntries, messageUnipleEntries] = await Promise.all([
+            this.messageDao.getByChatId(getRequest.id),
+            this.unipileService.getAllMessagesFromChat(getRequest.id)
+        ])
+
+        const dbMessageIds = new Set(messageDbEntries.map(entry => entry._id));
+        const messagesNotInDb = messageUnipleEntries.filter(message => !dbMessageIds.has(message.id));
+
+        await this.createBulkMessagesUseCase(messagesNotInDb)
+
+        messageDbEntries = await this.messageDao.getByChatId(getRequest.id);
 
         const messages: MessageResponseDto[] = [];
         for (const message of messageDbEntries) {
