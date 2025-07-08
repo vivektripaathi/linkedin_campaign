@@ -33,6 +33,7 @@ interface ChatBoxProps {
     onSendMessage: (chatId: string, content: string) => void;
     onBack?: () => void;
     isSending: boolean;
+    isLoading: boolean;
     providerIds: Array<string>;
 }
 
@@ -42,6 +43,7 @@ export function ChatBox({
     onSendMessage,
     onBack,
     isSending,
+    isLoading = false,
     providerIds,
 }: ChatBoxProps) {
     const [message, setMessage] = useState("");
@@ -82,7 +84,7 @@ export function ChatBox({
 
     if (!chat) {
         return (
-                <div className="flex-1 flex items-center justify-center bg-muted/20 w-full h-full overflow-hidden">
+            <div className="flex-1 flex mt-20 justify-center bg-muted/20 w-full h-full overflow-hidden">
                 <div className="text-center px-4">
                     <h3 className="text-lg font-medium text-muted-foreground mb-2">
                         No chat selected
@@ -90,6 +92,17 @@ export function ChatBox({
                     <p className="text-sm text-muted-foreground">
                         Choose a conversation to start messaging
                     </p>
+                </div>
+            </div>
+        );
+    }
+
+    if (isLoading) {
+        return (
+            <div className="flex h-screen items-center justify-center">
+                <div className="flex flex-col items-center gap-4">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                    <p className="text-muted-foreground">Loading chats...</p>
                 </div>
             </div>
         );
@@ -169,8 +182,11 @@ export function ChatBox({
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem 
-                                onClick={() => window.location.href = chat.attendeePictureUrl as string}
+                            <DropdownMenuItem
+                                onClick={() =>
+                                    (window.location.href =
+                                        chat.attendeePictureUrl as string)
+                                }
                                 className="hover: cursor-pointer"
                             >
                                 View Profile
@@ -190,7 +206,9 @@ export function ChatBox({
                 <ScrollArea className="h-full" ref={scrollAreaRef}>
                     <div className="p-3 md:p-4 space-y-3 md:space-y-4 w-full">
                         {sortedMessages.map((msg) => {
-                            const isCurrentUser = providerIds.includes(msg.senderProviderId);
+                            const isCurrentUser = providerIds.includes(
+                                msg.senderProviderId
+                            );
                             const senderName = isCurrentUser
                                 ? "You"
                                 : chat.attendeeName;
