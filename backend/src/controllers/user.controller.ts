@@ -41,7 +41,7 @@ export class UserController {
         if (errors.length) throw new InvalidRequestException(errors.join(', '));
 
         const user = await this.userDao.findByEmail(createRequest.email);
-        if (!user) throw new NotFoundException(`User with email ${createRequest.email} does now exists`);
+        if (!user) throw new NotFoundException(`User with email ${createRequest.email} does not exists`);
 
         const isMatch = await bcrypt.compare(createRequest.password, user.password);
         if (!isMatch) throw new InvalidCredentialsException("Invalid email or password");
