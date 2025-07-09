@@ -261,35 +261,41 @@ export default function Chats() {
     }
 
     return (
-        <div className="flex flex-1 h-[calc(100vh-3.5rem)] md:h-[calc(100vh-4rem)] overflow-hidden">
+        <div className="flex h-[calc(100vh-3.5rem)] overflow-hidden">
             <div
                 className={cn(
-                    "w-full md:w-80 md:flex-shrink-0 md:block h-full",
+                    "w-full md:w-80 md:flex-shrink-0 md:block h-full overflow-hidden",
                     showChatList ? "block" : "hidden md:block"
                 )}
             >
-                <ChatList
-                    chats={chats}
-                    selectedChatId={selectedChatId}
-                    onChatSelect={handleChatSelect}
-                />
+                <div className="flex flex-col h-full">
+                    <ChatList
+                        chats={chats}
+                        selectedChatId={selectedChatId}
+                        onChatSelect={handleChatSelect}
+                    />
+                </div>
             </div>
 
             <div
                 className={cn(
-                    "flex-1 md:block overflow-hidden h-full",
+                    "flex-1 md:block h-full overflow-hidden",
                     !showChatList ? "block" : "hidden md:block"
                 )}
             >
-                <ChatBox
-                    chat={selectedChat || null}
-                    messages={selectedChatMessages}
-                    onSendMessage={handleSendMessage}
-                    onBack={handleBackToChatList}
-                    isSending={isSending}
-                    providerIds={accounts.map((account) => account.providerId)}
-                    isLoading={isFetchingMessage}
-                />
+                <div className="flex flex-col h-full">
+                    <ChatBox
+                        chat={selectedChat || null}
+                        messages={selectedChatMessages}
+                        onSendMessage={handleSendMessage}
+                        onBack={handleBackToChatList}
+                        isSending={isSending}
+                        providerIds={accounts.map(
+                            (account) => account.providerId
+                        )}
+                        isLoading={isFetchingMessage}
+                    />
+                </div>
             </div>
         </div>
     );
