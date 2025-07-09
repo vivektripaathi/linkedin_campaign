@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { UserDao } from '../dao/user.dao.js';
 import bcrypt from 'bcryptjs';
-import { UserSignupRequestDto } from '../dto/user.dto.js';
+import { UserLoginRequestDto, UserSignupRequestDto } from '../dto/user.dto.js';
 import { JwtService } from '../services/jwt.service.js';
 import { validateAndParseDto } from '../utils/validateAndParseDto.js';
 import { AlreadyExistsException, InvalidCredentialsException, InvalidRequestException, NotFoundException } from '../utils/exceptions.js';
@@ -32,14 +32,14 @@ export class UserController {
     }
 
     async login(req: Request, res: Response) {
-        const [createRequest, errors] = await validateAndParseDto(UserSignupRequestDto, req.body ?? {});
+        const [createRequest, errors] = await validateAndParseDto(UserLoginRequestDto, req.body ?? {});
         if (errors.length) throw new InvalidRequestException(errors.join(', '));
 
         const user = await this.userDao.findByEmail(createRequest.email);
         if (!user) throw new NotFoundException(`User with email ${createRequest.email} does now exists`);
 
         const isMatch = await bcrypt.compare(createRequest.password, user.password);
-        if (!isMatch) throw new InvalidCredentialsException();
+        if (!isMatch) throw new InvalidCredentialsException("Invalid email or password");
 
         const token = JwtService.sign({ userId: user._id, email: user.email });
         return successResponse(res, { access_token: token }, 200);
