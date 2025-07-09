@@ -7,12 +7,12 @@ type User = {
     id: string;
     email: string;
     name?: string;
-    [key: string]: any;
 };
 
 type AuthContextType = {
     user: User | null;
     isAuthenticated: boolean;
+    loading: boolean;
     logout: () => void;
     refreshUser: () => void;
 };
@@ -21,6 +21,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true); // ✅ initially true
 
     const loadUser = () => {
         const token = Cookies.get("token");
@@ -28,13 +29,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             try {
                 const decoded = jwtDecode<User>(token);
                 setUser(decoded);
-            } catch (err) {
-                console.error("Invalid token");
+            } catch {
                 setUser(null);
             }
         } else {
             setUser(null);
         }
+        setLoading(false);
     };
 
     useEffect(() => {
@@ -52,6 +53,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             value={{
                 user,
                 isAuthenticated: !!user,
+                loading,
                 logout,
                 refreshUser: loadUser,
             }}

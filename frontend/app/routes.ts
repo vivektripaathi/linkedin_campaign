@@ -17,4 +17,11 @@ export const PAGE_TITLES: Record<ROUTES, string> = {
     [ROUTES.AUTH]: "Auth",
 };
 
+export const PROTECTED_ROUTES: ROUTES[] = [
+    ROUTES.CAMPAIGNS,
+    ROUTES.LEADS,
+    ROUTES.ACCOUNTS,
+    ROUTES.CHATS,
+];
+
 export default flatRoutes() satisfies RouteConfig;

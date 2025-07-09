@@ -10,6 +10,7 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 import { AuthProvider } from "@lib/providers/auth-provider";
+import { ProtectedLayout } from "@lib/components/protected-layout";
 
 export const links: Route.LinksFunction = () => [
     { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -48,7 +49,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
     return (
         <AuthProvider>
-            <Outlet />
+            <ProtectedLayout>
+                <Outlet />
+            </ProtectedLayout>
         </AuthProvider>
     );
 }

@@ -14,8 +14,6 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Campaign() {
-    useAuth({ protectedRoute: true });
-
     return (
         <LayoutWithSidebar>
             <Campaigns />
