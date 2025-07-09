@@ -1,58 +1,112 @@
-# LinkedIn Campaign Backend
+# LinkedIn Campaign + Messaging Backend
 
-A Node.js backend service for managing LinkedIn outreach campaigns and leads with AI-powered personalized messaging .
+A Node.js backend service that powers both:
 
-## Features
+1. **LinkedIn outreach campaign management**
+2. **A real-time unified LinkedIn messaging dashboard**
 
-- Campaign management (CRUD operations)
-- Lead management
-- AI-powered personalized LinkedIn message generation
-- Export leads from LinkedIn search
+Built with TypeScript, MongoDB, PostgreSQL, and WebSockets, this backend handles AI-powered messaging, lead scraping, multi-account LinkedIn integration via Unipile, and live chat updates.
 
-## Tech Stack
 
-- **Runtime**: Node.js
-- **Language**: TypeScript
-- **Framework**: Express.js
-- **Database**: MongoDB
-- **AI Integration**: Google AI SDK
-- **Render**: Deployment
+## ✨ Features
 
-## API Endpoints
+### 🎯 Campaign & Lead Management
 
-### Campaign Routes (`/api/campaigns`)
+- Full CRUD support for campaigns
+- Bulk lead import from LinkedIn search URLs
+- Google Generative AI integration to create personalized LinkedIn messages
+- MongoDB for campaign & lead storage
 
-- `POST /` - Create a new campaign
-- `GET /` - Get all campaigns
-- `GET /:id` - Get campaign by ID
-- `PUT /:id` - Update campaign by ID
-- `DELETE /:id` - Delete campaign by ID
+### 📨 LinkedIn Messaging Dashboard
 
-### LinkedIn Message Routes (`/api/personalized-message`)
+- JWT-based user authentication (email/password)
+- LinkedIn account integration via `li_at` cookie (via Unipile)
+- Initial message sync from connected LinkedIn accounts
+- Webhook endpoint to receive new LinkedIn messages
+- PostgreSQL for message and account data
+- WebSocket setup to send live messages to frontend clients
 
-- `POST /` - Generate personalized LinkedIn message using AI
+---
 
-### Lead Routes (`/api/leads`)
+## 🧰 Tech Stack
 
-- `POST /bulk` - Create bulk leads
-- `GET /` - Get all leads
+| Layer       | Tech                                          |
+|------------ |-----------------------------------------------|
+| Runtime     | Node.js + Express.js                          |
+| Language    | TypeScript                                     |
+| Databases   | MongoDB (campaigns/leads), PostgreSQL (messages/accounts) |
+| Real-time   | WebSocket (`ws` library)                      |
+| Auth        | JWT (email & password)                        |
+| AI Engine   | Google Generative AI SDK                      |
+| LinkedIn API| Unipile (via `li_at` cookie)                  |
+| Deployment  | AWS EC2 Instance                              |
 
-## Project Structure
+
+## 📦 API Endpoints
+
+### 🔐 Auth Routes (`/api/users`)
+
+- `POST /signup` – User signup
+- `POST /login` – User login
+
+### 🧠 AI Message Generation (`/api/personalized-message`)
+
+- `POST /` – Generate LinkedIn message using Google GenAI
+
+### 📋 Campaign Routes (`/api/campaigns`)
+
+- `POST /` – Create a campaign
+- `GET /` – Get all campaigns
+- `GET /:id` – Get campaign by ID
+- `PUT /:id` – Update campaign
+- `DELETE /:id` – Delete campaign
+
+### 👥 Lead Routes (`/api/leads`)
+
+- `POST /bulk` – Bulk import leads
+- `GET /` – Get all leads
+
+### 🔗 LinkedIn Account Integration (`/api/accounts`)
+
+- `POST /link` – Link and create a LinkedIn account using `li_at`
+- `GET /` – Get user’s connected accounts
+- `DELETE /` – Unlink and delete a LinkedIn an account
+
+### 💬 Chat Routes (`/api/chats`)
+
+- `GET /` – Get all synced chats (paginated or filtered)
+- `GET /:id` – Get all synced messages by id (paginated or filtered)
+- `POST /bulk` – Bulk create chats.
+- `POST /:id/messages` – Send a message to a LinkedIn account.
+
+### 💬 Messaging Routes (`/api/messages`)
+
+- `GET /` – Get all synced messages (paginated or filtered)
+- `GET /:chat_id` – Get all synced messages by chat_id (paginated or filtered)
+- `POST /bulk` – Bulk create messages.
+
+### 🪝 Webhook Endpoint (`/webhook/unipile`)
+
+- `POST /on_new_message` – Receive new messages from Unipile webhook
+
+## ⚙️ Project Structure
 
 ```text
 linkedin_campaign_backend/
 ├── src/
-│ ├── config/ # Configuration files (DB, AI)
-│ ├── controllers/ # Request handlers
-│ ├── dao/ # Data Access Objects
-│ ├── dto/ # Data Transfer Objects and types
-│ ├── models/ # MongoDB models
-│ ├── routes/ # API routes
-│ ├── services/ # Business logic
-│ ├── utils/ # Utility functions
-│ └── index.ts # Entry point and express app setup
+│   ├── auth/           # JWT auth logic
+│   ├── config/         # DB, Unipile, Google AI configs
+│   ├── controllers/    # Request handlers
+│   ├── dao/            # Data access abstraction
+│   ├── dto/            # Types & interfaces
+│   ├── models/         # MongoDB & PostgreSQL models
+│   ├── routes/         # Express routes
+│   ├── services/       # Business logic & integrations
+│   ├── utils/          # Helpers (WebSocket, tokens, etc.)
+│   └── index.ts        # Entry point
 ├── package.json
 └── tsconfig.json
+
 ```
 
 ## Setup Instructions
@@ -88,6 +142,10 @@ linkedin_campaign_backend/
      
      # AI Configuration
      GOOGLE_GENERATIVE_AI_API_KEY=your_google_ai_api_key  # Your Google AI API key
+      
+     # Unipile
+     UNIPILE_API_KEY=your_unipile_api_key
+     UNIPILE_API_BASE_URL=https://api.unipile.com
      ```
 
 4. **Database Setup**

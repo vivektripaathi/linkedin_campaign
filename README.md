@@ -1,15 +1,19 @@
-# LinkedIn Campaign
+# LinkedIn Campaign + Messaging Dashboard
 
-A full-stack application to manage LinkedIn outreach campaigns with AI-powered personalized message generation and scraped lead integration.
+A full-stack application to manage LinkedIn outreach campaigns and unify all LinkedIn messages across accounts — with AI-powered personalized messaging, web scraping, and real-time conversation updates.
 
 ## 📌 Overview
 
-This project is built as part of the OutFlo Founding Tech Internship Task, aimed at demonstrating the ability to build a scalable, production-grade microservice-based system with:
+This project is built as part of the OutFlo Founding Tech Internship Task. It demonstrates a scalable MERN stack application with:
 
-- 🔧 A Node.js + Express + MongoDB backend
-- 🎨 A React + TypeScript frontend
-- 🤖 AI integration for message generation (using Google Generative AI)
-- 🕸️ Web scraping and lead management via LinkedIn
+- 🎯 Campaign management for LinkedIn outreach
+- 📨 Unified LinkedIn messaging dashboard
+- 🤖 AI-generated personalized messages
+- 🕸️ Lead scraping and integration
+- ⚡ Real-time WebSocket updates and webhook ingestion
+- ☁️ Fully deployed and production-ready
+
+---
 
 ## 📂 Project Structure
 
@@ -27,9 +31,13 @@ linkedin-campaign/
 | Frontend   | React, TypeScript, ShadCn UI, Tailwind CSS |
 | Backend    | Node.js, Express, TypeScript, MongoDB      |
 | AI Engine  | Google Generative AI SDK                   |
-| Deployment | Frontend: Vercel · Backend: Render         |
+| Real-time  | WebSockets via ws                          |
+| LinkedIn API | Unipile (for message sync via li_at cookie) |
+| Deployment | Frontend: Vercel · Backend: AWS EC2        |
 
 ## ✨ Features
+
+### 🎯 Campaign Management
 
 - 📋 Campaign management with full CRUD support
 - 🔄 Campaign status toggle: ACTIVE, INACTIVE, DELETED
@@ -37,7 +45,16 @@ linkedin-campaign/
 - 🔎 Lead scraping from LinkedIn search URL
 - 📥 Lead storage and searchable UI display
 
-📦 Individual Service Documentation
+### 📨 Unified LinkedIn Messaging Dashboard (Unibox)
+
+- 🔐 JWT-based user authentication (email/password)
+- 🔗 Connect multiple LinkedIn accounts using li_at cookie (via Unipile)
+- 📨 Initial message sync from all connected accounts
+- 🌐 Webhook endpoint for real-time new message ingestion
+- ⚡ WebSocket setup for pushing new messages live to the UI
+- 🧾 Unified, chronological message feed across accounts
+
+### 🔗 Live Links
 
 - `/frontend` → [Live Demo](https://campaign-pro.vercel.app/)
 - `/backend` → [Live API](https://linkedin-campaign-rest-api.onrender.com)
