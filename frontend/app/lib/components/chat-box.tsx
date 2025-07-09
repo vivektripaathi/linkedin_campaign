@@ -84,7 +84,7 @@ export function ChatBox({
 
     if (!chat) {
         return (
-            <div className="flex-1 flex mt-20 justify-center bg-muted/20 w-full h-full overflow-hidden">
+            <div className="flex-1 flex mt-20 items-center justify-center bg-muted/20 w-full h-full overflow-hidden">
                 <div className="text-center px-4">
                     <h3 className="text-lg font-medium text-muted-foreground mb-2">
                         No chat selected
