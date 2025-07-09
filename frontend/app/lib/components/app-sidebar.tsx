@@ -140,7 +140,9 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
                                         <Avatar className="h-8 w-8 rounded-lg">
                                             <AvatarImage />
                                             <AvatarFallback className="rounded-lg">
-                                                {getInitials(user?.name as string)}
+                                                {getInitials(
+                                                    user?.name as string
+                                                )}
                                             </AvatarFallback>
                                         </Avatar>
                                         <div className="grid flex-1 text-left text-sm leading-tight">
@@ -165,7 +167,9 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
                                             <Avatar className="h-8 w-8 rounded-lg">
                                                 <AvatarImage />
                                                 <AvatarFallback className="rounded-lg">
-                                                    {getInitials(user?.name as string)}
+                                                    {getInitials(
+                                                        user?.name as string
+                                                    )}
                                                 </AvatarFallback>
                                             </Avatar>
                                             <div className="grid flex-1 text-left text-sm leading-tight">

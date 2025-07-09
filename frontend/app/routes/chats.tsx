@@ -1,6 +1,7 @@
 import type { Route } from "./+types/chats";
 import LayoutWithSidebar from "@components/Layout/LayoutWithSidebar";
 import Chats from "./chats/page";
+import { useAuth } from "@lib/hooks/use-auth";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -14,6 +15,8 @@ export function meta({}: Route.MetaArgs) {
 
 
 export default function Campaign() {
+    useAuth({ protectedRoute: true });
+
     return (
         <LayoutWithSidebar>
             <Chats />

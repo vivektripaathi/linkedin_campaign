@@ -1,6 +1,7 @@
 import type { Route } from "./+types/accounts";
 import LayoutWithSidebar from "@components/Layout/LayoutWithSidebar";
 import { Accounts } from "./accounts/page";
+import { useAuth } from "@lib/hooks/use-auth";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -13,6 +14,8 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Campaign() {
+    useAuth({ protectedRoute: true });
+
     return (
         <LayoutWithSidebar>
             <Accounts />

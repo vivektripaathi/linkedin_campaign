@@ -1,3 +1,4 @@
+import { useAuth } from "@lib/hooks/use-auth";
 import type { Route } from "./+types/leads";
 import { Leads } from "./leads/page";
 import LayoutWithSidebar from "@components/Layout/LayoutWithSidebar";
@@ -14,6 +15,8 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Campaign() {
+    useAuth({ protectedRoute: true });
+
     return (
         <LayoutWithSidebar>
             <Leads />
