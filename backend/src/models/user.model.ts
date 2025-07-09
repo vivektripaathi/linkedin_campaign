@@ -8,6 +8,7 @@ const UserSchema = new Schema<UserDomainModel>({
         default: uuidV4,
     },
     email: { type: String, required: true, unique: true },
+    name: { type: String, required: true, unique: true },
     password: { type: String, required: true },
 }, { collection: 'users', timestamps: true });
 

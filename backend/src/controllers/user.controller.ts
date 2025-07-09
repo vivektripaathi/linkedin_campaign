@@ -21,13 +21,18 @@ export class UserController {
         const createdUser = await this.userDao.create({
             _id: crypto.randomUUID(),
             email: createRequest.email,
+            name: createRequest.name,
             password: hashedPassword,
             createdAt: new Date(),
             updatedAt: new Date(),
             deletedAt: null,
         });
 
-        const token = JwtService.sign({ userId: createdUser._id, email: createdUser.email });
+        const token = JwtService.sign({
+            userId: createdUser._id,
+            email: createdUser.email,
+            name: createdUser.name
+        });
         return successResponse(res, { access_token: token }, 200);
     }
 
@@ -41,7 +46,9 @@ export class UserController {
         const isMatch = await bcrypt.compare(createRequest.password, user.password);
         if (!isMatch) throw new InvalidCredentialsException("Invalid email or password");
 
-        const token = JwtService.sign({ userId: user._id, email: user.email });
+        const token = JwtService.sign({
+            userId: user._id, email: user.email, name: user.name
+        });
         return successResponse(res, { access_token: token }, 200);
     }
 }
