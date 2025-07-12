@@ -238,10 +238,26 @@ export function DataTable<TData, TValue>({
                 </Table>
             </div>
             <div className="flex items-center justify-end space-x-2 py-4">
-                {/* <div className="flex-1 text-sm text-muted-foreground">
-                    {table.getFilteredSelectedRowModel().rows.length} of{" "}
-                    {table.getFilteredRowModel().rows.length} row(s) selected.
-                </div> */}
+                <div className="flex-1 text-sm text-muted-foreground">
+                    {(() => {
+                        const currentPage =
+                            table.getState().pagination.pageIndex;
+                        const pageSize = table.getState().pagination.pageSize;
+                        const totalRows =
+                            table.getFilteredRowModel().rows.length;
+                        const startRow = currentPage * pageSize + 1;
+                        const endRow = Math.min(
+                            (currentPage + 1) * pageSize,
+                            totalRows
+                        );
+
+                        if (totalRows === 0) {
+                            return "0 of 0";
+                        }
+
+                        return `${startRow}-${endRow} of ${totalRows}`;
+                    })()}
+                </div>
                 <div className="space-x-2">
                     <Button
                         variant="outline"
