@@ -8,50 +8,77 @@ import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
 import { Badge } from "@components/ui/badge";
 import { ScrollArea } from "@components/ui/scroll-area";
 import { cn, getInitials } from "@lib/utils";
-import type { ChatViewInterface } from "@lib/types";
+import {
+    SortByEnum,
+    SortOrderEnum,
+    type AccountViewInterface,
+    type ChatFilters,
+    type ChatViewInterface,
+} from "@lib/types";
+import { ChatFilter } from "@components/chat-filter";
 
 interface ChatListProps {
     chats: ChatViewInterface[];
     selectedChatId?: string;
     onChatSelect: (chatId: string) => void;
+    accounts: AccountViewInterface[];
 }
 
 export function ChatList({
     chats,
     selectedChatId,
     onChatSelect,
+    accounts,
 }: ChatListProps) {
     const [searchQuery, setSearchQuery] = useState("");
+    const [filters, setFilters] = useState<ChatFilters>({
+        accountId: undefined,
+        attendeeName: "",
+        sortBy: SortByEnum.CREATED_AT,
+        sortOrder: SortOrderEnum.DESC,
+    });
 
-    const filteredChats = chats.filter(
-        (chat) =>
-            chat.attendeeName
-                .toLowerCase()
-                .includes(searchQuery.toLowerCase()) ||
-            chat.accountId.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    // Filter and sort chats based on search query and filters
+    const filteredAndSortedChats = chats
+        .filter((chat) => {
+            // Search query filter
+            if (
+                searchQuery &&
+                !chat.attendeeName
+                    .toLowerCase()
+                    .includes(searchQuery.toLowerCase())
+            ) {
+                return false;
+            }
 
-    const formatTime = (timestamp: string) => {
-        const date = new Date(timestamp);
-        const now = new Date();
-        const diffInHours = Math.floor(
-            (now.getTime() - date.getTime()) / (1000 * 60 * 60)
-        );
+            // Account filter
+            if (filters.accountId && chat.accountId !== filters.accountId) {
+                return false;
+            }
 
-        if (diffInHours < 1) {
-            const diffInMinutes = Math.floor(
-                (now.getTime() - date.getTime()) / (1000 * 60)
-            );
-            return `${diffInMinutes}m`;
-        } else if (diffInHours < 24) {
-            return `${diffInHours}h`;
-        } else if (diffInHours < 48) {
-            return "Yesterday";
-        } else {
-            const diffInDays = Math.floor(diffInHours / 24);
-            return `${diffInDays}d`;
-        }
-    };
+            // Attendee name filter
+            if (
+                filters.attendeeName &&
+                !chat.attendeeName
+                    .toLowerCase()
+                    .includes(filters.attendeeName.toLowerCase())
+            ) {
+                return false;
+            }
+
+            return true;
+        })
+        .sort((a, b) => {
+            let comparison = 0;
+
+            if (filters.sortBy === "createdAt") {
+                comparison =
+                    new Date(a.createdAt).getTime() -
+                    new Date(b.createdAt).getTime();
+            }
+
+            return filters.sortOrder === "desc" ? -comparison : comparison;
+        });
 
     return (
         <div className="flex flex-col h-full border-r w-full overflow-hidden">
@@ -60,7 +87,7 @@ export function ChatList({
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                         <Input
-                            placeholder="Filter chats..."
+                            placeholder="Search chats..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="pl-10 h-9 md:h-10 w-full"
@@ -71,7 +98,13 @@ export function ChatList({
                         variant="ghost"
                         className="h-8 w-8 md:h-9 md:w-9 shrink-0"
                     >
-                        <Plus className="h-4 w-4" />
+                        <ChatFilter
+                            filters={filters}
+                            onFiltersChange={setFilters}
+                            accounts={accounts}
+                            totalChats={chats.length}
+                            filteredChats={filteredAndSortedChats.length}
+                        />
                     </Button>
                 </div>
             </div>
@@ -80,7 +113,7 @@ export function ChatList({
             <div className="flex-1 overflow-hidden">
                 <ScrollArea className="h-full">
                     <div className="p-1 md:p-2">
-                        {filteredChats.map((chat) => (
+                        {filteredAndSortedChats.map((chat) => (
                             <div
                                 key={chat.id}
                                 className={cn(

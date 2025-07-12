@@ -36,6 +36,7 @@ export default function Chats() {
             attendeeName: chat?.attendeeName,
             attendeeProviderId: chat?.attendeeProviderId,
             attendeePictureUrl: chat?.attendeePictureUrl,
+            createdAt: chat?.createdAt,
         }));
 
     const fetchChats = async (): Promise<ChatViewInterface[]> => {
@@ -168,6 +169,7 @@ export default function Chats() {
                                 attendeeProviderId: chat.attendeeProviderId,
                                 attendeePictureUrl: chat.attendeePictureUrl,
                                 lastMessage: message.text,
+                                createdAt: chat.createdAt,
                             },
                             ...prevChats,
                         ];
@@ -271,6 +273,7 @@ export default function Chats() {
                 <div className="flex flex-col h-full">
                     <ChatList
                         chats={chats}
+                        accounts={accounts}
                         selectedChatId={selectedChatId}
                         onChatSelect={handleChatSelect}
                     />

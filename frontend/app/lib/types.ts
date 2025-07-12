@@ -99,9 +99,10 @@ export interface IChat extends IBase {
 
 export type ChatViewInterface = ViewInterface<IChat> & {
     lastMessage?: string;
-    unreadCount?: number
-    isOnline?: boolean
-    lastSeen?: string
+    unreadCount?: number;
+    isOnline?: boolean;
+    lastSeen?: string;
+    createdAt: string;
 }
 
 
@@ -119,3 +120,22 @@ export type MessageViewInterface = ViewInterface<IMessage> & {
     isRead?: boolean
     deliveryStatus?: "sent" | "delivered" | "read" | "failed"
 }
+
+// Chat Filters Types
+
+export enum SortByEnum {
+    CREATED_AT = "createdAt",
+}
+
+export enum SortOrderEnum {
+    ASC = "asc",
+    DESC = "desc",
+}
+
+export interface ChatFilters {
+    accountId?: string
+    attendeeName?: string
+    sortBy: SortByEnum
+    sortOrder: SortOrderEnum
+}
+
