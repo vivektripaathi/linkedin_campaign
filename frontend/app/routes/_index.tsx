@@ -3,11 +3,11 @@ import type { Route } from "./+types/_index";
 
 export function meta({}: Route.MetaArgs) {
     return [
-        { title: "CampaignPro | Vivek Tripathi" },
+        { title: "ReachFlow | Vivek Tripathi" },
         {
             name: "Campaigns Management",
             content:
-                "A service for managing LinkedIn outreach campaigns with AI-powered personalized messaging.",
+                "An solution to manage LinkedIn outreach campaigns and unify all LinkedIn messages across accounts — with AI-powered personalized messaging, web scraping, and real-time conversation updates.",
         },
     ];
 }

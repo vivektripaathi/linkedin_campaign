@@ -5,7 +5,7 @@ import { useAuth } from "@lib/hooks/use-auth";
 
 export function meta({}: Route.MetaArgs) {
     return [
-        { title: "Accounts | CampaignPro | Vivek Tripathi" },
+        { title: "Accounts | ReachFlow | Vivek Tripathi" },
         {
             name: "Accounts Dashboard",
             content: "view, link and unlink LinkedIn accounts.",

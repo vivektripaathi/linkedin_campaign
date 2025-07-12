@@ -5,7 +5,7 @@ import LayoutWithSidebar from "@components/Layout/LayoutWithSidebar";
 
 export function meta({}: Route.MetaArgs) {
     return [
-        { title: "Leads | CampaignPro | Vivek Tripathi" },
+        { title: "Leads | ReachFlow | Vivek Tripathi" },
         {
             name: "Leads Dashboard",
             content:

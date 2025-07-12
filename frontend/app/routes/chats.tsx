@@ -5,7 +5,7 @@ import { useAuth } from "@lib/hooks/use-auth";
 
 export function meta({}: Route.MetaArgs) {
     return [
-        { title: "Chats | CampaignPro | Vivek Tripathi" },
+        { title: "Chats | ReachFlow | Vivek Tripathi" },
         {
             name: "Messenger",
             content: "Manage your LinkedIn chats — view, link, and unlink accounts easily.",

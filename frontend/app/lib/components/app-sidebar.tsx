@@ -5,10 +5,10 @@ import {
     Bot,
     ChevronsUpDown,
     SquareTerminal,
-    Megaphone,
     Users,
     MessageSquareText,
     LogOut,
+    Share2,
 } from "lucide-react";
 import { Separator } from "@components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@components/ui/avatar";
@@ -81,11 +81,11 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
                                         className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground hover:cursor-pointer"
                                     >
                                         <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                                            <Megaphone className="size-4" />
+                                            <Share2 className="size-4" />
                                         </div>
                                         <div className="grid flex-1 text-left text-sm leading-tight">
                                             <span className="truncate font-semibold">
-                                                CampaignPro
+                                                ReachFlow
                                             </span>
                                         </div>
                                     </SidebarMenuButton>
