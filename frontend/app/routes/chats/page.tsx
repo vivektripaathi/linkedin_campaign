@@ -33,9 +33,8 @@ export default function Chats() {
         chats.map((chat) => ({
             id: chat?._id,
             accountId: chat?.accountId,
-            attendeeName: chat?.attendeeName,
             attendeeProviderId: chat?.attendeeProviderId,
-            attendeePictureUrl: chat?.attendeePictureUrl,
+            attendee: chat?.attendee,
             createdAt: chat?.createdAt,
         }));
 
@@ -184,9 +183,8 @@ export default function Chats() {
                             {
                                 id: chat.id,
                                 accountId: chat.accountId,
-                                attendeeName: chat.attendeeName,
                                 attendeeProviderId: chat.attendeeProviderId,
-                                attendeePictureUrl: chat.attendeePictureUrl,
+                                attendee: chat.attendee,
                                 lastMessage: message.text,
                                 createdAt: chat.createdAt,
                             },

@@ -132,11 +132,11 @@ export function ChatBox({
                     <div className="relative shrink-0">
                         <Avatar className="h-8 w-8 md:h-10 md:w-10">
                             <AvatarImage
-                                src={chat.attendeePictureUrl}
-                                alt={chat.attendeeName}
+                                src={chat.attendee.pictureUrl}
+                                alt={chat.attendee.name}
                             />
                             <AvatarFallback>
-                                {getInitials(chat.attendeeName)}
+                                {getInitials(chat.attendee.name)}
                             </AvatarFallback>
                         </Avatar>
                         {/* Optional: Online status (can be commented out) */}
@@ -146,7 +146,7 @@ export function ChatBox({
                     </div>
                     <div className="min-w-0 flex-1">
                         <h3 className="font-medium text-sm md:text-base truncate">
-                            {chat.attendeeName}
+                            {chat.attendee.name}
                         </h3>
                         {/* <p className="text-xs md:text-sm text-muted-foreground truncate">
                             {chat.isOnline
@@ -184,17 +184,14 @@ export function ChatBox({
                         <DropdownMenuContent align="end">
                             <DropdownMenuItem
                                 onClick={() =>
-                                    (window.location.href =
-                                        chat.attendeePictureUrl as string)
+                                    window.open(
+                                        chat.attendee.profileUrl as string,
+                                        "_blank"
+                                    )
                                 }
                                 className="hover: cursor-pointer"
                             >
                                 View Profile
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>Search Messages</DropdownMenuItem>
-                            <DropdownMenuItem>Clear Chat</DropdownMenuItem>
-                            <DropdownMenuItem className="text-destructive">
-                                Block User
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
@@ -211,7 +208,7 @@ export function ChatBox({
                             );
                             const senderName = isCurrentUser
                                 ? "You"
-                                : chat.attendeeName;
+                                : chat.attendee.name;
 
                             return (
                                 <div
@@ -226,11 +223,13 @@ export function ChatBox({
                                     {!isCurrentUser && (
                                         <Avatar className="h-6 w-6 md:h-8 md:w-8 shrink-0">
                                             <AvatarImage
-                                                src={chat.attendeePictureUrl}
-                                                alt={chat.attendeeName}
+                                                src={chat.attendee.pictureUrl}
+                                                alt={chat.attendee.name}
                                             />
                                             <AvatarFallback className="text-xs">
-                                                {getInitials(chat.attendeeName)}
+                                                {getInitials(
+                                                    chat.attendee.name
+                                                )}
                                             </AvatarFallback>
                                         </Avatar>
                                     )}

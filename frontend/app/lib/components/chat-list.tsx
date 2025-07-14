@@ -44,7 +44,7 @@ export function ChatList({
             // Search query filter
             if (
                 searchQuery &&
-                !chat.attendeeName
+                !chat.attendee.name
                     .toLowerCase()
                     .includes(searchQuery.toLowerCase())
             ) {
@@ -59,7 +59,7 @@ export function ChatList({
             // Attendee name filter
             if (
                 filters.attendeeName &&
-                !chat.attendeeName
+                !chat.attendee.name
                     .toLowerCase()
                     .includes(filters.attendeeName.toLowerCase())
             ) {
@@ -125,11 +125,11 @@ export function ChatList({
                                 <div className="relative shrink-0">
                                     <Avatar className="h-10 w-10 md:h-10 md:w-10">
                                         <AvatarImage
-                                            src={chat.attendeePictureUrl}
-                                            alt={chat.attendeeName}
+                                            src={chat.attendee.pictureUrl}
+                                            alt={chat.attendee.name}
                                         />
                                         <AvatarFallback>
-                                            {getInitials(chat.attendeeName)}
+                                            {getInitials(chat.attendee.name)}
                                         </AvatarFallback>
                                     </Avatar>
 
@@ -141,7 +141,7 @@ export function ChatList({
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center justify-between mb-1 gap-2">
                                         <h3 className="font-medium text-sm md:text-sm truncate flex-1">
-                                            {chat.attendeeName}
+                                            {chat.attendee.name}
                                         </h3>
                                         <div className="flex items-center gap-2 shrink-0">
                                             {chat.unreadCount &&

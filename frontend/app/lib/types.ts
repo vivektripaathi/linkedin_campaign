@@ -88,13 +88,23 @@ export type AccountViewInterface = Omit<IAccount, "_id" | "createdAt" | "updated
 };
 
 
+export interface IAttendee extends IBase {
+    id: string;
+    name: string;
+    providerId: string;
+    accountId: string;
+    pictureUrl?: string;
+    profileUrl?: string;
+}
+
+export type AttendeeViewInterface = ViewInterface<IAttendee> ;
+
 // Chat Types
 
 export interface IChat extends IBase {
     accountId: string;
-    attendeeName: string;
     attendeeProviderId: string;
-    attendeePictureUrl: string | undefined;
+    attendee: IAttendee;
 }
 
 export type ChatViewInterface = ViewInterface<IChat> & {
