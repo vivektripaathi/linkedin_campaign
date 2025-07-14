@@ -72,14 +72,16 @@ export function Accounts() {
                 }
             );
             if (!response.ok) {
-                throw new Error("Failed to delete account");
+                const data = await response.json();
+                console.error("Delete account error:", data.message);
+                throw new Error(data.message || "Failed to delete account");
             }
             setShowDeleteDialog(false);
             setDeletingAccount(undefined);
             toast.success("Account deleted successfully");
             fetchAccounts();
         } catch (error) {
-            toast.error("Failed to delete account");
+            toast.error(error instanceof Error ? error.message : "Failed to delete account");
         } finally {
             setIsDeletingAccount(false);
         }
