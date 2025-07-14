@@ -75,6 +75,15 @@ export function ChatList({
                 comparison =
                     new Date(a.createdAt).getTime() -
                     new Date(b.createdAt).getTime();
+            } else if (filters.sortBy === "lastMessage") {
+                // Sort by last message timestamp, with chats without messages at the end
+                const aTime = a.lastMessageTimestamp
+                    ? new Date(a.lastMessageTimestamp).getTime()
+                    : 0;
+                const bTime = b.lastMessageTimestamp
+                    ? new Date(b.lastMessageTimestamp).getTime()
+                    : 0;
+                comparison = aTime - bTime;
             }
 
             return filters.sortOrder === "desc" ? -comparison : comparison;

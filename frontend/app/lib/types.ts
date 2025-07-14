@@ -97,7 +97,7 @@ export interface IAttendee extends IBase {
     profileUrl?: string;
 }
 
-export type AttendeeViewInterface = ViewInterface<IAttendee> ;
+export type AttendeeViewInterface = ViewInterface<IAttendee>;
 
 // Chat Types
 
@@ -109,6 +109,7 @@ export interface IChat extends IBase {
 
 export type ChatViewInterface = ViewInterface<IChat> & {
     lastMessage?: string;
+    lastMessageTimestamp?: string;
     unreadCount?: number;
     isOnline?: boolean;
     lastSeen?: string;
@@ -135,6 +136,7 @@ export type MessageViewInterface = ViewInterface<IMessage> & {
 
 export enum SortByEnum {
     CREATED_AT = "createdAt",
+    LAST_MESSAGE = "lastMessage",
 }
 
 export enum SortOrderEnum {

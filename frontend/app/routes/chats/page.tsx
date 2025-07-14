@@ -29,14 +29,71 @@ export default function Chats() {
     const [isSending, setIsSending] = useState<boolean>(false);
     const [accounts, setAccounts] = useState<AccountViewInterface[]>([]);
 
-    const _prepareChatsForView = (chats: IChat[]): ChatViewInterface[] =>
-        chats.map((chat) => ({
-            id: chat?._id,
-            accountId: chat?.accountId,
-            attendeeProviderId: chat?.attendeeProviderId,
-            attendee: chat?.attendee,
-            createdAt: chat?.createdAt,
-        }));
+    // Helper function to update chat with latest message
+    const updateChatWithLatestMessage = (
+        chats: ChatViewInterface[],
+        chatId: string,
+        newMessage: MessageViewInterface,
+        allMessages: MessageViewInterface[]
+    ): ChatViewInterface[] => {
+        return chats.map((chat) => {
+            if (chat.id === chatId) {
+                // Get all messages for this chat including the new one
+                const chatMessages = [
+                    ...allMessages.filter((msg) => msg.chatId === chatId),
+                    newMessage,
+                ];
+
+                // Sort by timestamp and get the most recent message
+                const sortedMessages = chatMessages.sort(
+                    (a, b) =>
+                        new Date(b.timestamp).getTime() -
+                        new Date(a.timestamp).getTime()
+                );
+
+                const latestMessage = sortedMessages[0];
+
+                return {
+                    ...chat,
+                    lastMessage: latestMessage.text,
+                    lastMessageTimestamp: latestMessage.timestamp,
+                };
+            }
+            return chat;
+        });
+    };
+
+    const _prepareChatsForView = (
+        chats: IChat[],
+        allMessages: IMessage[] = []
+    ): ChatViewInterface[] => {
+        return chats.map((chat) => {
+            // Find all messages for this chat
+            const chatMessages = allMessages.filter(
+                (msg) => msg.chatId === chat._id
+            );
+
+            // Find the most recent message by timestamp
+            const lastMessage =
+                chatMessages.length > 0
+                    ? chatMessages.sort(
+                          (a, b) =>
+                              new Date(b.timestamp).getTime() -
+                              new Date(a.timestamp).getTime()
+                      )[0]
+                    : null;
+
+            return {
+                id: chat?._id,
+                accountId: chat?.accountId,
+                attendeeProviderId: chat?.attendeeProviderId,
+                attendee: chat?.attendee,
+                createdAt: chat?.createdAt,
+                lastMessage: lastMessage?.text,
+                lastMessageTimestamp: lastMessage?.timestamp,
+            };
+        });
+    };
 
     const fetchAttendee = async (): Promise<void> => {
         try {
@@ -58,14 +115,22 @@ export default function Chats() {
 
     const fetchChats = async (): Promise<ChatViewInterface[]> => {
         try {
-            const response = await fetch(
-                `${import.meta.env.VITE_API_BASE_URL}/api/chats`
-            );
-            if (!response.ok) {
+            const [chatsResponse, messagesResponse] = await Promise.all([
+                fetch(`${import.meta.env.VITE_API_BASE_URL}/api/chats`),
+                fetch(`${import.meta.env.VITE_API_BASE_URL}/api/messages`),
+            ]);
+
+            if (!chatsResponse.ok) {
                 throw new Error("Failed to fetch chats");
             }
-            const data = await response.json();
-            return _prepareChatsForView(data);
+            if (!messagesResponse.ok) {
+                throw new Error("Failed to fetch messages");
+            }
+
+            const chatsData = await chatsResponse.json();
+            const messagesData = await messagesResponse.json();
+
+            return _prepareChatsForView(chatsData, messagesData);
         } catch (error) {
             throw new Error("Failed to load chats");
         }
@@ -171,14 +236,15 @@ export default function Chats() {
                 setChats((prevChats) => {
                     const exists = prevChats.find((c) => c.id === chat.id);
                     if (exists) {
-                        // update last message if it's existing
-                        return prevChats.map((c) =>
-                            c.id === chat.id
-                                ? { ...c, lastMessage: message.text }
-                                : c
+                        // Use the helper function to update with timestamp checking
+                        return updateChatWithLatestMessage(
+                            prevChats,
+                            chat.id,
+                            message,
+                            messages
                         );
                     } else {
-                        // new chat
+                        // new chat - always set the message as lastMessage since it's the first one
                         return [
                             {
                                 id: chat.id,
@@ -186,6 +252,7 @@ export default function Chats() {
                                 attendeeProviderId: chat.attendeeProviderId,
                                 attendee: chat.attendee,
                                 lastMessage: message.text,
+                                lastMessageTimestamp: message.timestamp,
                                 createdAt: chat.createdAt,
                             },
                             ...prevChats,
