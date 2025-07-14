@@ -7,6 +7,8 @@ import { UnipileService } from '../services/unipile.service.js';
 import { ChatDao } from '../dao/chat.dao.js';
 import { MessageController } from '../controllers/message.controller.js';
 import { MessageDao } from '../dao/message.dao.js';
+import { AttendeeDao } from '../dao/attendee.dao.js';
+import { AttendeeController } from '../controllers/attendee.controller.js';
 
 const accountController = new AccountController(
     new AccountDao(),
@@ -14,6 +16,10 @@ const accountController = new AccountController(
     new ChatController(new ChatDao, new UnipileService()),
     new MessageController(
         new MessageDao,
+        new UnipileService()
+    ),
+    new AttendeeController(
+        new AttendeeDao(),
         new UnipileService()
     )
 );

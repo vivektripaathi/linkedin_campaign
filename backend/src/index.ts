@@ -14,6 +14,7 @@ import messageRoutes from './routes/message.routes.js';
 import userRoutes from './routes/user.routes.js';
 import http from 'http';
 import { initSocket } from './utils/socket.js';
+import attendeeRoutes from './routes/attendee.routes.js';
 
 
 dotenv.config();
@@ -33,6 +34,7 @@ app.use('/api/personalized-message', linkedinRoutes);
 app.use('/api/leads', leadRoutes);
 app.use('/api/accounts', accountRoutes);
 app.use('/api/chats', chatRoutes);
+app.use('/api/attendees', attendeeRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/webhooks', webhookRoutes);
 app.use('/api/users', userRoutes);

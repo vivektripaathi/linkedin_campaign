@@ -27,8 +27,10 @@ export interface IChat {
 export interface IAttendee {
     id: string;
     name: string;
+    accountId: string;
     providerId: string;
     pictureUrl?: string;
+    profileUrl?: string;
 }
 
 export interface IChatWithAttendee extends IChat {
