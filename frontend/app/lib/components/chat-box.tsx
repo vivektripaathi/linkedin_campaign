@@ -102,7 +102,7 @@ export function ChatBox({
             <div className="flex h-screen items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                    <p className="text-muted-foreground">Loading chats...</p>
+                    <p className="text-muted-foreground">Loading messages...</p>
                 </div>
             </div>
         );
