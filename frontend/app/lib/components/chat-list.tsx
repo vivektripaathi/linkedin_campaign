@@ -167,7 +167,16 @@ export function ChatList({
 
                                     {chat.lastMessage && (
                                         <div className="flex items-center gap-1">
-                                            <p className="text-sm text-muted-foreground truncate">
+                                            <p
+                                                className="text-sm text-muted-foreground leading-relaxed min-w-0 flex-1 overflow-hidden pr-1"
+                                                style={{
+                                                    display: "-webkit-box",
+                                                    WebkitLineClamp: 1,
+                                                    WebkitBoxOrient: "vertical",
+                                                    wordBreak: "break-word",
+                                                }}
+                                                title={chat.lastMessage}
+                                            >
                                                 {chat.lastMessage}
                                             </p>
                                         </div>
