@@ -39,6 +39,24 @@ export default function Chats() {
             createdAt: chat?.createdAt,
         }));
 
+    const fetchAttendee = async (): Promise<void> => {
+        try {
+            const response = await fetch(
+                `${import.meta.env.VITE_API_BASE_URL}/api/attendees`
+            );
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.message || "Failed to fetch attendees");
+            }
+        } catch (error) {
+            throw new Error(
+                error instanceof Error
+                    ? error.message
+                    : "Failed to load attendees"
+            );
+        }
+    };
+
     const fetchChats = async (): Promise<ChatViewInterface[]> => {
         try {
             const response = await fetch(
@@ -113,6 +131,7 @@ export default function Chats() {
     const initializePage = async () => {
         try {
             setIsPageLoading(true);
+            await fetchAttendee();
             setChats(await fetchChats());
             setMessages(await fetchMessages());
             setAccounts(
