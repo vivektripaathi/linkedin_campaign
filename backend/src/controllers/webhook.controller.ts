@@ -37,9 +37,7 @@ export class WebhookController {
         return {
             id: newMessageRequest.chat_id,
             accountId: newMessageRequest.account_id,
-            attendeeName: newMessageRequest.attendees[0].attendee_name,
             attendeeProviderId: newMessageRequest.attendees[0].attendee_provider_id,
-            attendeePictureUrl: newMessageRequest.attendees[0].attendee_profile_url,
         }
     };
 

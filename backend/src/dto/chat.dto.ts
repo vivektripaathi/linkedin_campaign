@@ -1,12 +1,34 @@
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 import { BaseDomainModel, ParamStringIdRequestDto } from './base.dto.js';
-import { IsDate, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsDate, IsOptional, IsString, ValidateNested } from 'class-validator';
+
+export class AttendeeDomainModel {
+    @Expose()
+    @IsString()
+    id!: string;
+
+    @Expose()
+    @IsString()
+    name!: string;
+
+    @Expose()
+    @IsString()
+    providerId!: string;
+
+    @Expose()
+    @IsOptional()
+    @IsString()
+    pictureUrl?: string;
+
+    @Expose()
+    @IsOptional()
+    @IsString()
+    profileUrl?: string;
+}
 
 export class ChatDomainModel extends BaseDomainModel {
     accountId!: string;
-    attendeeName!: string;
     attendeeProviderId!: string;
-    attendeePictureUrl!: string | undefined;
 }
 
 export class CreateChatRequestDto implements Omit<ChatDomainModel, '_id' | 'createdAt' | 'updatedAt' | '__v' | 'deletedAt'> {
@@ -20,16 +42,13 @@ export class CreateChatRequestDto implements Omit<ChatDomainModel, '_id' | 'crea
 
     @Expose()
     @IsString()
-    attendeeName!: string;
-
-    @Expose()
-    @IsString()
     attendeeProviderId!: string;
 
     @Expose()
-    @IsString()
+    @ValidateNested()
+    @Type(() => AttendeeDomainModel)
     @IsOptional()
-    attendeePictureUrl!: string;
+    attendee?: AttendeeDomainModel;
 }
 
 export class ChatResponseDto extends CreateChatRequestDto {

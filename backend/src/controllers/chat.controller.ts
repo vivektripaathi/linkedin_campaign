@@ -6,7 +6,7 @@ import { successResponse } from "../utils/apiResponse.js";
 import { BadResponseException, InvalidRequestException, NotFoundException } from "../utils/exceptions.js";
 import { validateAndParseDto } from "../utils/validateAndParseDto.js";
 import { UnipileService } from "../services/unipile.service.js";
-import { IChatWithAttendee } from "../utils/types/unipile.js";
+import { IAttendee, IChat } from "../utils/types/unipile.js";
 
 export class ChatController {
     constructor(
@@ -28,9 +28,7 @@ export class ChatController {
                 const domainChat: ChatDomainModel = {
                     _id: chatDto.id,
                     accountId: chatDto.accountId,
-                    attendeeName: chatDto.attendeeName,
                     attendeeProviderId: chatDto.attendeeProviderId,
-                    attendeePictureUrl: chatDto.attendeePictureUrl,
                     createdAt: new Date(),
                     updatedAt: new Date(),
                     deletedAt: null,
@@ -77,18 +75,40 @@ export class ChatController {
     }
 
 
-    private _convertChatsToDomainModel(chats: IChatWithAttendee[]): ChatDomainModel[] {
+    private _convertChatsToDomainModel(chats: IChat[]): ChatDomainModel[] {
         return chats.map(unipileChat => {
             const chatDbEntry = new ChatDomainModel();
             chatDbEntry._id = unipileChat.id;
             chatDbEntry.accountId = unipileChat.accountId;
-            chatDbEntry.attendeeName = unipileChat.attendeeName;
             chatDbEntry.attendeeProviderId = unipileChat.attendeeProviderId;
-            chatDbEntry.attendeePictureUrl = unipileChat.attendeePictureUrl;
             chatDbEntry.createdAt = new Date();
             chatDbEntry.updatedAt = new Date();
             chatDbEntry.deletedAt = null;
             return chatDbEntry;
+        });
+    }
+
+
+    private _mergeChatsWithAttendees(chats: Array<ChatDomainModel>, attendees: Array<IAttendee>): Array<ChatDomainModel> {
+        return chats.map(chat => {
+            const attendee = attendees.find(attendee => attendee.providerId === chat.attendeeProviderId);
+            return {
+                _id: chat._id,
+                id: chat._id,
+                accountId: chat.accountId,
+                attendeeProviderId: chat.attendeeProviderId,
+                createdAt: chat.createdAt,
+                updatedAt: chat.updatedAt,
+                deletedAt: chat.deletedAt,
+                attendee: {
+                    id: attendee?.id || '',
+                    name: attendee?.name || 'N/A',
+                    accountId: attendee?.accountId || '',
+                    providerId: chat.attendeeProviderId,
+                    pictureUrl: attendee?.pictureUrl || undefined,
+                    profileUrl: attendee?.profileUrl || undefined
+                }
+            };
         });
     }
 
@@ -105,6 +125,9 @@ export class ChatController {
         await this.createBulkChatsUseCase(chatsNotInDb);
 
         chatDbEntries = await this.chatDao.getAll();
+
+        const attendees = await this.unipileService.getAllAttendees();
+        chatDbEntries = this._mergeChatsWithAttendees(chatDbEntries, attendees);
 
         const chats: ChatResponseDto[] = [];
         for (const chat of chatDbEntries) {
@@ -137,9 +160,7 @@ export class ChatController {
         return {
             _id: dto.id,
             accountId: dto.accountId,
-            attendeeName: dto.attendeeName,
             attendeeProviderId: dto.attendeeProviderId,
-            attendeePictureUrl: dto.attendeePictureUrl,
             createdAt: new Date(),
             updatedAt: new Date(),
             deletedAt: null,

@@ -8,6 +8,8 @@ import { MessageDao } from '../dao/message.dao.js';
 import { UnipileService } from '../services/unipile.service.js';
 import { AccountController } from '../controllers/account.controller.js';
 import { AccountDao } from '../dao/account.dao.js';
+import { AttendeeController } from '../controllers/attendee.controller.js';
+import { AttendeeDao } from '../dao/attendee.dao.js';
 
 const webhookController = new WebhookController(
     new ChatController(
@@ -23,6 +25,10 @@ const webhookController = new WebhookController(
         new ChatController(new ChatDao(), new UnipileService()),
         new MessageController(
             new MessageDao(),
+            new UnipileService()
+        ),
+        new AttendeeController(
+            new AttendeeDao(),
             new UnipileService()
         )
     )

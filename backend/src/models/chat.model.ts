@@ -7,10 +7,12 @@ const ChatSchema = new Schema<ChatDomainModel>({
         type: String,
         default: uuidV4,
     },
-    accountId: { type: String, required: true },
-    attendeeName: { type: String, required: true },
-    attendeeProviderId: { type: String, required: true },
-    attendeePictureUrl: { type: String },
+    accountId: { type: String, required: true},
+    attendeeProviderId: { 
+        type: String, 
+        required: true,
+        index: true
+    },
     deletedAt: { type: Date, default: null },
 }, { collection: 'chats', timestamps: true });
 

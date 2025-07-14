@@ -1,8 +1,7 @@
 import axios from "axios";
-import { IAccount, IAttendee, IChat, IChatWithAttendee, IMessage, UnipileConnectFailureResponse, UnipileConnectSuccessResponse } from "../utils/types/unipile.js";
+import { IAccount, IAttendee, IChat, IMessage, UnipileConnectSuccessResponse } from "../utils/types/unipile.js";
 import { UnipileClient } from "unipile-node-sdk"
 import { InvalidUnipileCredentialsException, NotFoundException } from "../utils/exceptions.js";
-import { SendMessageRequestDto } from "../dto/chat.dto.js";
 
 export class UnipileService {
     private _getClient() {
@@ -63,15 +62,21 @@ export class UnipileService {
         return {
             id: attendee?.id,
             name: attendee?.name,
+            accountId: attendee?.account_id,
             providerId: attendee?.provider_id,
-            pictureUrl: attendee?.picture_url
+            pictureUrl: attendee?.picture_url,
+            profileUrl: attendee?.profile_url,
         }
     }
 
-    async getAllAttendees(): Promise<Array<IAttendee>> {
+    async getAllAttendees(accountId?: string): Promise<Array<IAttendee>> {
         try {
             const client = this._getClient();
-            const response = await client.messaging.getAllAttendees()
+            const response = await client.messaging.getAllAttendees({
+                account_id: accountId,
+                limit: 250,
+            })
+
             return response?.items?.map(this._prepareAttendee.bind(this));
         } catch (error) {
             throw error
@@ -82,32 +87,21 @@ export class UnipileService {
         return {
             id: chat?.id,
             accountId: chat?.account_id,
-            attendeeProviderId: chat?.attendee_provider_id
+            attendeeProviderId: chat?.attendee_provider_id,
+            attendee: undefined,
         }
     }
 
-    private _mergeChatsWithAttendees(chats: Array<IChat>, attendees: Array<IAttendee>): Array<IChatWithAttendee> {
-        return chats.map(chat => {
-            const attendee = attendees.find(attendee => attendee.providerId === chat.attendeeProviderId);
-            return {
-                ...chat,
-                attendeeName: attendee?.name ?? 'N/A',
-                attendeePictureUrl: attendee?.pictureUrl,
-            };
-        });
-    }
-
-
-    async getAllChats(accountId?: string): Promise<Array<IChatWithAttendee>> {
+    async getAllChats(accountId?: string): Promise<Array<IChat>> {
         try {
             const client = this._getClient();
-            const attendees = await this.getAllAttendees();
+            // const attendees = await this.getAllAttendees(accountId);
             const chatsResponse = await client.messaging.getAllChats({
                 account_id: accountId,
                 limit: 250,
             })
-            const chats = chatsResponse?.items?.map(this._prepareChat.bind(this));
-            return this._mergeChatsWithAttendees(chats, attendees);
+            return chatsResponse?.items?.map(this._prepareChat.bind(this));
+            // return this._mergeChatsWithAttendees(chats, attendees);
         } catch (error) {
             throw error;
         }

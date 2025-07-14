@@ -13,6 +13,7 @@ import { UnipileService } from '../services/unipile.service.js';
 import { ChatController } from './chat.controller.js';
 import { MessageController } from './message.controller.js';
 import { ParamStringIdRequestDto } from '../dto/base.dto.js';
+import { AttendeeController } from './attendee.controller.js';
 
 export class AccountController {
     constructor(
@@ -20,6 +21,7 @@ export class AccountController {
         private readonly unipileService: UnipileService,
         private readonly chatController: ChatController,
         private readonly MessageController: MessageController,
+        private readonly attendeeController: AttendeeController
     ) { }
 
 
@@ -85,6 +87,12 @@ export class AccountController {
 
         //create account entry in db
         const createdAccount = await this._createAccount(account);
+
+        //list all attendees
+        const attendees = await this.unipileService.getAllAttendees(linkedAccount.account_id);
+
+        //create attendees entries in db
+        await this.attendeeController.createBulkAttendeesUseCase(attendees);
 
         //list all chats
         const chats = await this.unipileService.getAllChats(linkedAccount.account_id);

@@ -22,6 +22,7 @@ export interface IChat {
     id: string;
     accountId: string;
     attendeeProviderId: string;
+    attendee?: IAttendee;
 }
 
 export interface IAttendee {
@@ -31,11 +32,6 @@ export interface IAttendee {
     providerId: string;
     pictureUrl?: string;
     profileUrl?: string;
-}
-
-export interface IChatWithAttendee extends IChat {
-    attendeeName: string;
-    attendeePictureUrl?: string;
 }
 
 export interface IMessage {
