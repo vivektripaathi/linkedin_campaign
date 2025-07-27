@@ -105,11 +105,12 @@ export default function Chats() {
                 throw new Error(data.message || "Failed to fetch attendees");
             }
         } catch (error) {
-            throw new Error(
-                error instanceof Error
-                    ? error.message
-                    : "Failed to load attendees"
-            );
+            throw new Error("Unipile subscription expired. Contact Admin.");
+        //     throw new Error(
+        //         error instanceof Error
+        //             ? error.message
+        //             : "Failed to load attendees"
+        //     );
         }
     };
 
